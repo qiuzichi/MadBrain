@@ -22,13 +22,13 @@ public class HisRecord extends MyFollow {
     /*排名*/
     private String ranking;
     /*总页数*/
-    private String totalPage;
+    private int totalPage;
 
-    public String getTotalPage() {
+    public int getTotalPage() {
         return totalPage;
     }
 
-    public void setTotalPage(String totalPage) {
+    public void setTotalPage(int totalPage) {
         this.totalPage = totalPage;
     }
 

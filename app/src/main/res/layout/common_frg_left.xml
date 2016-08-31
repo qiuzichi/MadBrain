@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:text="Lisa OR 丽莎奥那"
                 android:textColor="@color/white"
-                android:textSize="@dimen/common_text_22" />
+                android:textSize="@dimen/person_text_age_s" />
 
             <View
                 android:layout_width="match_parent"

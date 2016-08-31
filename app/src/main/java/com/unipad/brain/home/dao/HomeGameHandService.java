@@ -39,8 +39,8 @@ public class HomeGameHandService extends GlobleObserService implements ICoreServ
      * @param method
      * @param method_type true 关注  false 取消关注
      */
-    public void attention(String match_id,String user_id,String method,String method_type,String index){
-        HitopAttention hitopAttention = new HitopAttention();
+    public void attention(String match_id,String user_id,String method,String method_type,String index, int level){
+        HitopAttention hitopAttention = new HitopAttention(level);
         hitopAttention.buildRequestParams("matchId",match_id);
         hitopAttention.buildRequestParams("userId",user_id);
         hitopAttention.buildRequestParams("method","0");

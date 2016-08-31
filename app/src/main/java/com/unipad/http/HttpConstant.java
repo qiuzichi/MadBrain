@@ -110,7 +110,9 @@ public class HttpConstant {
     // 上传文件（头像）
     public static final int UOLOAD_PHOTO_FILE=0x10900;
     // 关注比赛
-    public static final int ATTENTION = 0x11000;
+    public static final int CITY_ATTENTION = 0x11000;
+    public static final int CHINA_ATTENTION = 0x11001;
+    public static final int WORLD_ATTENTION = 0x11002;
     // 获取规则
     public static final int GETRULE = 0x11100;
 

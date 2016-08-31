@@ -27,6 +27,7 @@ import com.unipad.http.HttpConstant;
 import com.unipad.io.mina.SocketThreadManager;
 import com.unipad.observer.IDataObserver;
 import com.unipad.utils.CountDownTime;
+import com.unipad.utils.DateUtil;
 import com.unipad.utils.LogUtil;
 import com.unipad.utils.PicUtil;
 import com.unipad.utils.ToastUtil;
@@ -82,7 +83,9 @@ public class CommonFragment extends Fragment implements View.OnClickListener, Co
         mCountDownTime = new CountDownTime(0, false);
         mCountDownTime.setTimeListener(this);
         mTextTime.setText(mCountDownTime.getTimeString());
-        mTextName.setText(AppContext.instance().loginUser.getUserName());
+        mTextName.setText(AppContext.instance().loginUser.getUserName()  + DateUtil.getMatchGroud(mActivity));
+        mTextAgeAds.setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
+
         mIconImageView = (ImageView) mParentLayout.findViewById(R.id.user_photo);
         ((HomeGameHandService) AppContext.instance().getService(Constant.HOME_GAME_HAND_SERVICE)).registerObserver(HttpConstant.GET_RULE_NOTIFY, this);
        // x.image().bind(mIconImageView, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto());

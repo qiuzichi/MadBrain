@@ -70,19 +70,56 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:id="@+id/ll_loaddata_progressbar"
+            android:orientation="horizontal">
+
+            <ProgressBar
+                style="@android:style/Widget.ProgressBar.Small"
+                android:layout_width="@dimen/margin_10dip"
+                android:id="@+id/progressbar_loading_list"
+                android:layout_height="@dimen/margin_10dip"
+                android:layout_gravity="center_vertical"
+                />
+
+            <TextView
+                android:id="@+id/txt_loading_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_10dip"
+                android:singleLine="true"
+                android:layout_gravity="center_vertical"
+                android:text="@string/loadmore_data"
+                android:textColor="@color/text_gray"
+                android:textSize="@dimen/common_text_22" />
+
         </LinearLayout>
 
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/lv_competition"
+    <TextView
+        android:id="@+id/txt_empty_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/margin_edge"
-        android:layout_marginRight="@dimen/margin_edge"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:text="@string/not_news_data"
+        android:textColor="@color/stroke_color"
+        android:textSize="@dimen/common_text_24" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_widget_apply"
+        android:layout_width="match_parent"
         android:layout_below="@id/ll_title"
-        android:divider="@color/white"
-        android:dividerHeight="10dp" />
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:id="@+id/lv_competition"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_edge"
+            android:layout_marginRight="@dimen/margin_edge"
+            android:divider="@color/white"
+            android:dividerHeight="10dp" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

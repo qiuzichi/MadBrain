@@ -49,7 +49,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:layout_gravity="center"
-            android:text="积分"
+            android:text="分"
             android:textSize="@dimen/text_size_18"
             android:layout_height="wrap_content" />
 

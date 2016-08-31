@@ -8,6 +8,7 @@ import com.unipad.observer.GlobleObserService;
 public class HitopAttention extends HitopRequest<Object> {
 
     private GlobleObserService sevice;
+    private int level;
 
     public HitopAttention(String path) {
         super(path);
@@ -15,6 +16,11 @@ public class HitopAttention extends HitopRequest<Object> {
 
     public HitopAttention(){
         super(HttpConstant.ATTENTION_HTTP);
+    }
+
+    public HitopAttention(int level) {
+        super(HttpConstant.ATTENTION_HTTP);
+        this.level = level;
     }
 
     @Override
@@ -25,7 +31,21 @@ public class HitopAttention extends HitopRequest<Object> {
     @Override
     public Object handleJsonData(String json) {
         // 处理返回结果
-        this.sevice.noticeDataChange(HttpConstant.ATTENTION,json);
+        switch (level){
+            case 0 :
+                this.sevice.noticeDataChange(HttpConstant.CITY_ATTENTION,json);
+                break;
+            case 1:
+                this.sevice.noticeDataChange(HttpConstant.CHINA_ATTENTION,json);
+                break;
+            case 2:
+                this.sevice.noticeDataChange(HttpConstant.WORLD_ATTENTION,json);
+                break;
+            default:
+                break;
+        }
+
+
         return null;
     }
 

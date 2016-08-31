@@ -2,8 +2,11 @@ package com.unipad.common;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,7 +30,9 @@ import com.unipad.http.HttpConstant;
 import com.unipad.io.mina.SocketThreadManager;
 import com.unipad.observer.IDataObserver;
 import com.unipad.utils.CountDownTime;
+import com.unipad.utils.DateUtil;
 import com.unipad.utils.LogUtil;
+import com.unipad.utils.PicUtil;
 import com.unipad.utils.SharepreferenceUtils;
 
 import org.json.JSONException;
@@ -79,15 +84,44 @@ public class PractiseCommLeftFragment extends Fragment implements View.OnClickLi
         mParentLayout.findViewById(R.id.text_exit).setOnClickListener(this);
 
         mTextAgeAds.setSelected(true);
+        mTextAgeAds.setText((getString(R.string.person_level) + AppContext.instance().loginUser.getLevel()));
         mTextName.setSelected(true);
         this.getBgColorArray(mParentLayout);
 
         mCountDownTime = new CountDownTime(0, false);
         mCountDownTime.setTimeListener(this);
         mTextTime.setText(mCountDownTime.getTimeString());
-        mTextName.setText(AppContext.instance().loginUser.getUserName());
+        mTextName.setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(mActivity));
         mIconImageView = (ImageView) mParentLayout.findViewById(R.id.user_photo);
-        x.image().bind(mIconImageView, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto());
+
+        if (!TextUtils.isEmpty(AppContext.instance().loginUser.getPhoto())) {
+            x.image().bind(mIconImageView, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(), new Callback.CommonCallback<Drawable>(){
+
+                @Override
+                public void onSuccess(Drawable result) {
+                    Bitmap bitmap = PicUtil.drawableToBitmap(result);
+                    mIconImageView.setImageBitmap(PicUtil.getRoundedCornerBitmap(bitmap, 360));
+                }
+
+                @Override
+                public void onError(Throwable ex, boolean isOnCallback) {
+                    mIconImageView.setImageResource(R.drawable.set_headportrait);
+                }
+
+                @Override
+                public void onCancelled(CancelledException cex) {
+
+                }
+
+                @Override
+                public void onFinished() {
+
+                }
+            });
+        } else {
+            mIconImageView.setImageResource(R.drawable.set_headportrait);
+        }
+
         //if (CompeteItemEntity.getInstance().getCompeteItem().equals(getString(R.string.project_9))) {
         //  mTextCompeteProcess.setText(R.string.playing_voice);
         //}

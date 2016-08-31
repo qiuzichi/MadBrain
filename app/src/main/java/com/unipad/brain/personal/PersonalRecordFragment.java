@@ -132,8 +132,9 @@ public class PersonalRecordFragment extends PersonalCommonFragment implements Vi
                                 if (null == mExerciseData || mExerciseData.size() == 0) {
                                     return false;
                                 }
-                                if (requestExercisePager > Integer.parseInt(mExerciseData.get(0).getTotalPage())) {
-                                    ToastUtil.showToast(getString(R.string.loadmore_null_data));
+                                if (requestExercisePager  == mExerciseData.get(0).getTotalPage()) {
+                                    if(requestExercisePager > 1)
+                                        ToastUtil.showToast(getString(R.string.loadmore_null_data));
                                     return false;
                                 }
 
@@ -141,13 +142,13 @@ public class PersonalRecordFragment extends PersonalCommonFragment implements Vi
                                     ToastUtil.showToast(getString(R.string.loadmore_data));
                                     return false;
                                 }
-
                                 service.getHistoryExerRecord(requestExercisePager, PAGESIZE);
                                 isLoadMoreData = true;
                             } else if (mRecordData.size() != 0) {
 
-                                if (requestRecordPager > Integer.parseInt(mRecordData.get(0).getTotalPage())) {
-                                    ToastUtil.showToast(getString(R.string.loadmore_null_data));
+                                if (requestRecordPager == mRecordData.get(0).getTotalPage()) {
+                                    if(requestRecordPager > 1)
+                                         ToastUtil.showToast(getString(R.string.loadmore_null_data));
                                     return false;
                                 }
 
@@ -529,12 +530,22 @@ public class PersonalRecordFragment extends PersonalCommonFragment implements Vi
 
     @Override
     public void update(int key, Object o) {
-        if (o != null) {
+        if (!(o instanceof String)) {
             switch (key) {
                 case HttpConstant.HISRECORD_OK:
+                    List<HisRecord> beans =  (List<HisRecord>) o;
+                    if(beans.size() == 0){
+                        if(mRecordData.size() ==0){
+                            showNullData();
+                        }
+                        return;
+                    }
+                    if(requestRecordPager != beans.get(0).getTotalPage()){
+                        requestRecordPager ++ ;
+                    }
                     mRecordData.addAll((List<HisRecord>) o);
                     hisRecords = mRecordData;
-                    requestRecordPager ++ ;
+
                     if (!mIsBrokenLine){
                         viewParent.removeAllViews();
                         viewParent.addView(getGridView());
@@ -544,9 +555,21 @@ public class PersonalRecordFragment extends PersonalCommonFragment implements Vi
                     break;
 
                 case HttpConstant.EXECISE_DATA:
+
+                    List<HisRecord> execiseDatas =  (List<HisRecord>) o;
+                    if(execiseDatas.size() == 0){
+                        if(mExerciseData.size() ==0){
+                            showNullData();
+                        }
+                        return;
+                    }
+                    if (requestExercisePager != execiseDatas.get(0).getTotalPage()) {
+                        requestExercisePager++;
+                    }
+
                     mExerciseData.addAll((List<HisRecord>) o);
                     hisRecords = mExerciseData;
-                    requestExercisePager++;
+
                     if (!mIsBrokenLine) {
                         viewParent.removeAllViews();
                         viewParent.addView(getGridView());
@@ -559,7 +582,12 @@ public class PersonalRecordFragment extends PersonalCommonFragment implements Vi
                     break;
             }
         } else {
-            showNullData();
+            if (mRadioExercise.isChecked()) {
+                showNullData();
+            } else if (mRecordData.size() == 0){
+                showNullData();
+            }
+            ToastUtil.showToast(((String) o).toString());
         }
     }
     private void showNullData(){
@@ -567,7 +595,7 @@ public class PersonalRecordFragment extends PersonalCommonFragment implements Vi
             null_text = new TextView(mActivity);
             RelativeLayout.LayoutParams params = new  RelativeLayout.
                     LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-            params.setMargins(0,150,0,0);
+            params.setMargins(0, 150, 0, 0);
             null_text.setLayoutParams(params);
             null_text.setGravity(Gravity.CENTER);
             null_text.setText(getString(R.string.hostory_null_data));
@@ -576,7 +604,7 @@ public class PersonalRecordFragment extends PersonalCommonFragment implements Vi
         }
 
         viewParent.removeAllViews();
-        ((RelativeLayout)viewParent).setGravity(Gravity.CENTER);
+        ((RelativeLayout)viewParent).setVerticalGravity(Gravity.CENTER_VERTICAL);
         viewParent.addView(null_text);
     }
 

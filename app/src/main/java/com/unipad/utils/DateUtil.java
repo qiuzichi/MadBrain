@@ -1,5 +1,10 @@
 package com.unipad.utils;
 
+import android.content.Context;
+
+import com.unipad.AppContext;
+import com.unipad.brain.R;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -68,5 +73,32 @@ public class DateUtil {
         float intervalHours = intervalMilliseconds * 1.0f / (60 * 60 * 1000);
         return intervalHours;
     }
+    /**
+     * 根据出生日期 获取 用户的组别
+     */
+    public static String getMatchGroud(Context context) {
+        String birthDay = AppContext.instance().loginUser.getLevel() + AppContext.instance().loginUser.getBirthday();
+//        born":"1992- -18 00:00:00","
+        int bornYear = Integer.parseInt(birthDay.trim().substring(0, birthDay.indexOf("-")));
+        int bornMonth = Integer.parseInt(birthDay.trim().substring(birthDay.indexOf("-") + 1, birthDay.lastIndexOf("-")));
+        String result  = null;
+        Calendar date = Calendar.getInstance();// 获得当前日期
+        int currentYear = date.get(Calendar.YEAR);
+        int currentMonth = date.get(Calendar.MONTH);
 
+        int age = currentYear - bornYear;
+        if (currentMonth - bornMonth < 0) {
+            age -= 1;
+        }
+        if (age <= 12) {
+           result =  context.getString(R.string.child_group);
+        } else if (age > 12 && age <= 17) {
+            result = context.getString(R.string.young_group);
+        } else if (age > 17 && age <= 59) {
+            result = context.getString(R.string.adult_level);
+        } else if (age > 60) {
+            result = context.getString(R.string.old_group);
+        }
+        return  result;
+    }
 }

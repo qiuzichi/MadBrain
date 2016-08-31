@@ -125,7 +125,6 @@ public class WordRightFragment extends BasicCommonFragment {
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
             holder.textNum.setText(mData.get(position).getNumber() + "");
-            LogUtil.e("qzc",service.state+"");
             switch (service.state) {
                 case AbsBaseGameService.GO_IN_MATCH_DOWNLOADED:
                 case AbsBaseGameService.GO_IN_MATCH_START_MEMORY:

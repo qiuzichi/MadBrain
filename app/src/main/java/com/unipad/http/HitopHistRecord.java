@@ -67,11 +67,9 @@ public class HitopHistRecord extends HitopRequest<List<HisRecord>>{
 
                     JSONObject data = jsObj.getJSONObject("data");
                     JSONArray jsonArray = data.getJSONArray("resultList");
-                    String  totalPage = data.optString("totalPage");
+                    int totalPage = data.optInt("totalPage");
                     int iSize = jsonArray.length();
-                    if (!(iSize == 0)) {
-                        hisRecords = new ArrayList<>();
-                    }
+                    hisRecords = new ArrayList<>();
                     for (int i = 0; i < iSize; i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         HisRecord bean = new HisRecord();
@@ -92,11 +90,17 @@ public class HitopHistRecord extends HitopRequest<List<HisRecord>>{
                         bean.setScore(jsonObject.optString("score"));
                         hisRecords.add(bean);
                     }
+                } else {
+                    ((PersonCenterService)AppContext.instance().getService
+                            (Constant.PERSONCENTER)).noticeDataChange(key,jsObj.getString("ret_msg"));
+                    return null;
                 }
 
 
         } catch (Exception e) {
             e.printStackTrace();
+            ((PersonCenterService)AppContext.instance().getService
+                    (Constant.PERSONCENTER)).noticeDataChange(key, "json 解析异常");
             return null;
         }
         ((PersonCenterService)AppContext.instance().getService

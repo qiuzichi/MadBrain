@@ -16,13 +16,16 @@ import com.unipad.brain.consult.ConsultBaseFragment;
 import com.unipad.brain.consult.adapter.MyInfoListAdapter;
 import com.unipad.brain.consult.entity.ConsultClassBean;
 import com.unipad.brain.consult.entity.ListEnum;
+import com.unipad.brain.home.MainBasicFragment;
 import com.unipad.http.HttpConstant;
+import com.unipad.utils.DateUtil;
 import com.unipad.utils.PicUtil;
 
 import org.xutils.common.Callback;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -50,7 +53,9 @@ public class InfoListFragment extends ConsultBaseFragment implements AdapterView
     }
 
     private void  initTitleBar(){
-        ((TextView)mInfoListView.findViewById(R.id.tv_uese_name_consult)).setText(AppContext.instance().loginUser.getUserName());
+        TextView user_name = (TextView) mInfoListView.findViewById(R.id.tv_uese_name_consult);
+        user_name.setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(getmContext()));
+        user_name.setSelected(true);
         ((TextView)mInfoListView.findViewById(R.id.tv_uese_level_consult)).setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
 
         final ImageView user_photo = (ImageView)mInfoListView.findViewById(R.id.iv_header);

@@ -32,6 +32,7 @@ import com.unipad.common.Constant;
 import com.unipad.common.widget.HIDDialog;
 import com.unipad.http.HttpConstant;
 import com.unipad.observer.IDataObserver;
+import com.unipad.utils.DateUtil;
 import com.unipad.utils.FileUtil;
 import com.unipad.utils.PicUtil;
 import com.unipad.utils.ToastUtil;
@@ -125,7 +126,7 @@ public class PersonalActivity extends BasicActivity implements IDataObserver {
 
     public void setTxtName() {
         if (txtName != null)
-            txtName.setText(AppContext.instance().loginUser.getUserName());
+            txtName.setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(this));
     }
 
     private View getView() {

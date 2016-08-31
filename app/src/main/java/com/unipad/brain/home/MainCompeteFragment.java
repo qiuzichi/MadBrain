@@ -32,6 +32,7 @@ import com.unipad.brain.home.competitionpj.view.HomePresenter;
 import com.unipad.common.Constant;
 import com.unipad.common.PractiseGameActivity;
 import com.unipad.http.HttpConstant;
+import com.unipad.utils.DateUtil;
 import com.unipad.utils.PicUtil;
 import com.unipad.utils.SharepreferenceUtils;
 import com.unipad.utils.ToastUtil;
@@ -56,7 +57,7 @@ public class MainCompeteFragment extends MainBasicFragment {
 //    private TextView txt_recall_content;
 //    private TextView txt_function_content;
     //比赛项目
-    private TextView txt_pname;
+    private TextView txt_pname, txt_target;
     //城市赛
     private TextView txt_city_memory, txt_city_recall;
     //中国赛
@@ -93,6 +94,7 @@ public class MainCompeteFragment extends MainBasicFragment {
         initUserName();
 
         txt_pname = (TextView) mActivity.findViewById(R.id.txt_pname);
+        txt_target = (TextView) mActivity.findViewById(R.id.txt_target);
         final LinearLayout ll_item_bg = (LinearLayout) mActivity.findViewById(R.id.ll_item_bg);
         txt_city_memory = (TextView) mActivity.findViewById(R.id.txt_city_memory);
         txt_city_recall = (TextView) mActivity.findViewById(R.id.txt_city_recall);
@@ -119,6 +121,7 @@ public class MainCompeteFragment extends MainBasicFragment {
 //                ll_item_bg.setBackgroundResource(iconDrawable[projectindex]);
                 homeListAdapter.notifyDataSetChanged();
                 txt_pname.setText(homeBeans.get(position).projectBean.getName());
+                txt_target.setText(homeBeans.get(position).projectBean.getTarget());
 
                 txt_city_memory.setText((homeBeans.get(position).projectBean.getMemorysDate())[0]);
                 txt_city_recall.setText((homeBeans.get(position).projectBean.getRecallsDate())[0]);
@@ -141,7 +144,7 @@ public class MainCompeteFragment extends MainBasicFragment {
     }
 
     private void initUserName() {
-        ((TextView) mActivity.findViewById(R.id.txt_uese_name)).setText(AppContext.instance().loginUser.getUserName());
+        ((TextView) mActivity.findViewById(R.id.txt_uese_name)).setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(mActivity));
         ((TextView) mActivity.findViewById(R.id.txt_uese_level)).setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
 
         final ImageView user_photo = (ImageView) mActivity.findViewById(R.id.iv_user_pic);
