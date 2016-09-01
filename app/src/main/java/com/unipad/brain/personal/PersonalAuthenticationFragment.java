@@ -33,6 +33,7 @@ import com.unipad.common.Constant;
 import com.unipad.common.widget.HIDDialog;
 import com.unipad.http.HttpConstant;
 import com.unipad.observer.IDataObserver;
+import com.unipad.utils.Identity;
 import com.unipad.utils.PicUtil;
 import com.unipad.utils.ToastUtil;
 
@@ -134,6 +135,8 @@ public class PersonalAuthenticationFragment extends PersonalCommonFragment imple
             service.getAuthInfo(AppContext.instance().loginUser.getUserId());
         }
     }
+
+
 
     @Override
     public void onStart() {
@@ -309,6 +312,11 @@ public class PersonalAuthenticationFragment extends PersonalCommonFragment imple
 
         if(TextUtils.isEmpty(authBean.getBirthDate())){
             ToastUtil.showToast(mActivity.getString(R.string.string_birthdate));
+            return;
+        }
+
+        if(Identity.checkIDCard(authBean.getIdentity())){
+            ToastUtil.showToast(mActivity.getString(R.string.check_id));
             return;
         }
 

@@ -263,10 +263,7 @@ public class ChinaCompetitionFragment extends BaseFragment implements ICompetiti
 
 				competitionPersenter.notifyData((CompetitionBean) o);
 
-				Intent intent = new Intent(getActivity(), CommonActivity.class);
-				intent.putExtra("projectId",((CompetitionBean) o).getProjectId());
-				intent.putExtra("matchId",((CompetitionBean) o).getId());
-				this.startActivity(intent);
+
 				break;
 
 			case HttpConstant.CHINA_ATTENTION :

@@ -246,6 +246,7 @@ public class PractiseCommLeftFragment extends Fragment implements View.OnClickLi
             mActivity.sendMsgGetSocre(memoryTime, rememoryTime, new Callback.CommonCallback<String>() {
                         @Override
                         public void onSuccess(String result) {
+                            LogUtil.e("",Constant.getProjectName(mActivity.getProjectId())+result);
                             String content = "";
 
                             JSONObject jsObj = null;

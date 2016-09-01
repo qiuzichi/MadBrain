@@ -7,6 +7,7 @@ import com.unipad.brain.number.view.KeyboardDialog;
 import com.unipad.brain.number.view.NumberMemoryLayout;
 import com.unipad.common.Constant;
 import com.unipad.common.widget.HIDDialog;
+import com.unipad.utils.SharepreferenceUtils;
 import com.unipad.utils.ToastUtil;
 
 /**
@@ -33,7 +34,7 @@ public class QuickRandomNumFragment extends  NumberRightFragment{
     @Override
     public void initMemoryView() {
         frameLayout.removeAllViews();
-        frameLayout.addView(new NumberMemoryLayout(mActivity, service.lineNumbers,5));
+        frameLayout.addView(new NumberMemoryLayout(getActivity(), service.lineNumbers, SharepreferenceUtils.getInt(mActivity.getProjectId() + "_linemode", 0)));
     }
 
     @Override

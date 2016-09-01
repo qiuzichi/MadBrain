@@ -118,7 +118,6 @@ public class PersonalInfoFragment extends PersonalCommonFragment implements IDat
                 detailEntity.setUserName(ed_name.getText().toString().trim());
                 detailEntity.setCountry(ed_nationality.getText().toString().trim());
                 detailEntity.setTel(ed_phone.getText().toString().trim());
-                ToastUtil.createWaitingDlg(mActivity,null,Constant.LOGIN_WAIT_DLG).show(15);
                 this.saveInfoToServer();
                 break;
             default:
@@ -135,6 +134,7 @@ public class PersonalInfoFragment extends PersonalCommonFragment implements IDat
     @Override
     protected void saveInfoToServer() {
         super.saveInfoToServer();
+        ToastUtil.createWaitingDlg(mActivity,null,Constant.LOGIN_WAIT_DLG).show(15);
         service.saveUserInfo(detailEntity);
     }
 
@@ -166,7 +166,4 @@ public class PersonalInfoFragment extends PersonalCommonFragment implements IDat
                 break;
         };
     }
-
-
-
 }

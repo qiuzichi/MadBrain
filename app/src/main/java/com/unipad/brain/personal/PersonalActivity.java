@@ -42,6 +42,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.xutils.common.Callback;
+import org.xutils.common.util.DensityUtil;
+import org.xutils.image.ImageOptions;
 import org.xutils.x;
 
 /**
@@ -409,7 +411,7 @@ public class PersonalActivity extends BasicActivity implements IDataObserver {
             if (null != chatFunctionWindow && chatFunctionWindow.isShowing()) {
                 chatFunctionWindow.dismiss();
             }
-            ToastUtil.createWaitingDlg(this, null, Constant.LOGIN_WAIT_DLG).show(15);
+           // ToastUtil.createWaitingDlg(this, null, Constant.LOGIN_WAIT_DLG).show(15);
             service.uploadAuthFile(filePath,1);
         }
     }
@@ -437,16 +439,23 @@ public class PersonalActivity extends BasicActivity implements IDataObserver {
         // 上传头像
         switch (key) {
             case HttpConstant.UOLOAD_PHOTO_FILE:
-                HIDDialog.dismissAll();
+                //HIDDialog.dismissAll();
                 UploadFileBean uploadFileBean = (UploadFileBean) o;
                 if (uploadFileBean.getRet_code() != 0)
                     return;
                 AppContext.instance().loginUser.setPhoto(uploadFileBean.getPath());
-                x.image().bind(user_photo, HttpConstant.PATH_FILE_URL + uploadFileBean.getPath(), new Callback.CommonCallback<Drawable>() {
+                ImageOptions imageOptions =new ImageOptions.Builder()
+                        //.setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小
+                        .setRadius(DensityUtil.dip2px(360))//ImageView圆角半径
+                        .setCrop(true)// 如果ImageView的大小不是定义为wrap_content, 不要crop.
+                        .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+                       // .setLoadingDrawableId(R.mipmap.ic_launcher)//加载中默认显示图片
+                       // .setFailureDrawableId(R.mipmap.ic_launcher)//加载失败后默认显示图片
+                        .build();
+                x.image().bind(user_photo, HttpConstant.PATH_FILE_URL + uploadFileBean.getPath(), imageOptions,new Callback.CommonCallback<Drawable>() {
                     @Override
                     public void onSuccess(Drawable drawable) {
                         Bitmap map = PicUtil.drawableToBitmap(drawable);
-                        user_photo.setImageBitmap(PicUtil.getRoundedCornerBitmap(map, 360));
                         mCurrentFragment.setImageBitmap(map);
                     }
 

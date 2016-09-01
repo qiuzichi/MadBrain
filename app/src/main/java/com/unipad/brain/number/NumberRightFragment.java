@@ -271,6 +271,12 @@ public abstract class NumberRightFragment extends BasicCommonFragment implements
                     service.starRememory();
                 }
             }
+
+            @Override
+            public void onItemClick(int position) {
+                mCursorPosition = position+1;
+            }
+
         });
     }
 

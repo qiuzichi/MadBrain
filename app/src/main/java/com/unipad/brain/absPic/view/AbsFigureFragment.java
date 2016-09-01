@@ -94,6 +94,8 @@ public class AbsFigureFragment extends BasicCommonFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        x.image().clearMemCache();
+        x.image().clearCacheFiles();
         AppContext.instance().clearService(service);
     }
 

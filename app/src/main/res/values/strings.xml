@@ -199,6 +199,7 @@
     <string name="string_qc">请拍摄资格证书照</string>
     <string name="string_name">请填写真实姓名</string>
     <string name="string_identity">请填写身份证件号</string>
+    <string name="check_id">请填写正确的身份证件号</string>
     <string name="string_birthdate">请填写出生日期</string>
     <string name="string_ps">请拍摄完成所需照片</string>
     <string name="string_upload_fail">上传文件失败</string>
@@ -305,4 +306,5 @@
     <string name="login_in_by_sever">服务器更新，请重新登录！</string>
     <string name="long_poker_answer_tip">第<xliff:g id="NUM">%1d</xliff:g>牌最后一个已填完！</string>
     <string name="long_poker_answer_num_tip">第<xliff:g id="NUM">%1d</xliff:g>张</string>
+    <string name="long_poker_remember_way">记忆方式</string>
 </resources>

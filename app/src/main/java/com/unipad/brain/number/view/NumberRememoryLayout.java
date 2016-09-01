@@ -92,12 +92,12 @@ public class NumberRememoryLayout extends LinearLayout implements
         if (mCompeteType.equals(mContext.getString(R.string.project_2))) {
             mRowNumber = "";
             mTextSize = 23.0f;
-        } else {
-            mLeftCursorBg = mContext.getResources().getDrawable(R.drawable.cursor_left_anim);
-            mRightCursorBg = mContext.getResources().getDrawable(R.drawable.cursor_right_anim);
-            mLeftCursorAnim = (AnimationDrawable) mLeftCursorBg;
-            mRightCursorAnim = (AnimationDrawable) mRightCursorBg;
         }
+        mLeftCursorBg = mContext.getResources().getDrawable(R.drawable.cursor_left_anim);
+        mRightCursorBg = mContext.getResources().getDrawable(R.drawable.cursor_right_anim);
+        mLeftCursorAnim = (AnimationDrawable) mLeftCursorBg;
+        mRightCursorAnim = (AnimationDrawable) mRightCursorBg;
+
 
         if (callback != null) {
             callback.begin();
@@ -163,7 +163,7 @@ public class NumberRememoryLayout extends LinearLayout implements
                 if (mCompeteType.equals(mContext.getString(R.string.project_2))) {
                     textNum.setOnClickListener(this);
                 }
-
+                textNum.setTag(line * mRows + i);
                 parent.addView(textNum, i);
             }
         }
@@ -205,7 +205,7 @@ public class NumberRememoryLayout extends LinearLayout implements
                     /**if (mCompeteType.equals(mContext.getString(R.string.project_3))
                      || mCompeteType.equals(mContext.getString(R.string.project_5))||mCompeteType.equals(mContext.getString(R.string.project_9))) {
                      */
-                    if (!mContext.getString(R.string.project_2).equals(mCompeteType)) {
+
                         ViewGroup viewGroup = (ViewGroup) getChildAt(0);// 获取行号
                         viewGroup = (ViewGroup) viewGroup.getChildAt(0);
                         TextView textNumber = (TextView) viewGroup
@@ -214,7 +214,7 @@ public class NumberRememoryLayout extends LinearLayout implements
                         textNumber.setBackground(mLeftCursorBg);
                         mLeftCursorAnim.start();
                         mTextDiffBg = textNumber;
-                    }
+
                     if (callback != null) {
                         callback.finish();
                     }
@@ -230,6 +230,16 @@ public class NumberRememoryLayout extends LinearLayout implements
     @Override
     public void onClick(View view) {
         TextView textNumber = (TextView) view;
+        int currentPosition = (int) view.getTag();
+        if (currentPosition +1==mTotalNumbers){
+            setCursorPosition(currentPosition);
+
+        }else{
+            setCursorPosition(currentPosition+1);
+        }
+        if (callback!= null){
+            callback.onItemClick(currentPosition);
+        }
         String number = textNumber.getText().toString().trim();
         if (TextUtils.isEmpty(number) || NumService.TEXT_ZERO.equals(number)) {
             textNumber.setText(NumService.TEXT_ONE);
@@ -324,7 +334,7 @@ public class NumberRememoryLayout extends LinearLayout implements
                         userAnswer = "X";
                     }
                     answerLine.append(userAnswer);
-                }else{
+                } else {
                     break;
                 }
             }

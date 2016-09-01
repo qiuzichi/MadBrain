@@ -80,7 +80,7 @@ public class CountDownTime implements App.HandlerCallback {
      * 暂停后，恢复倒计时
      */
     public void resumeCountTime() {
-        if (mPausing) {
+        if (mPausing && mStarted) {
             LogUtil.e("","---resumeCountTime");
             mPausing = false;
             mHandler.sendEmptyMessageDelayed(MSG_ADD_TIME, 1000);
@@ -95,6 +95,7 @@ public class CountDownTime implements App.HandlerCallback {
     public int stopCountTime() {
         if (mStarted) {
             LogUtil.e("","---stopCountTime");
+            mStarted = false;
             mHandler.removeMessages(MSG_END_TIME);
             mHandler.removeMessages(MSG_ADD_TIME);
         }
