@@ -455,7 +455,7 @@ public class MainCompeteFragment extends MainBasicFragment {
                 if(homeBeans.get(projectindex).projectBean.getProjectId().equals(Constant.GAME_LONG_POCKER)){
                     View view = LayoutInflater.from(getActivity()).inflate(R.layout.line_setting, null);
                     RadioGroup mRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_competition_mode);
-                    ((TextView) view.findViewById(R.id.txt_title_competition)).setText(getString(R.string.remember_mode_set));
+                    ((TextView) view.findViewById(R.id.txt_title_competition)).setText(getString(R.string.long_poker_remember_way));
                     ((RadioButton) view.findViewById(R.id.btn_default_mode)).setVisibility(View.GONE);
                     ((RadioButton) view.findViewById(R.id.btn_default_mode_3)).setText("3");
                     ((RadioButton) view.findViewById(R.id.btn_default_mode_4)).setText("5");

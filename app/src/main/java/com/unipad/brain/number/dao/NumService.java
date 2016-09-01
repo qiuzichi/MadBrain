@@ -196,7 +196,7 @@ public class NumService extends AbsBaseGameService {
         int length = answerData.length();
         if (length > 0)
         answerData.deleteCharAt(length-1);
-        LogUtil.e("","快速随机数;"+answerData.toString());
+        LogUtil.e("answer","answer ;"+answerData.toString());
         return answerData.toString();
     }
 }

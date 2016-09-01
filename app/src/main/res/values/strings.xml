@@ -305,4 +305,5 @@
     <string name="login_in_by_sever">服务器更新，请重新登录！</string>
     <string name="long_poker_answer_tip">第<xliff:g id="NUM">%1d</xliff:g>牌最后一个已填完！</string>
     <string name="long_poker_answer_num_tip">第<xliff:g id="NUM">%1d</xliff:g>张</string>
+    <string name="long_poker_remember_way">记忆方式</string>
 </resources>

@@ -9,4 +9,6 @@ public interface IInitRememoryCallBack {
     void loading(int progress);
 
     void finish();
+
+    void onItemClick(int position);
 }

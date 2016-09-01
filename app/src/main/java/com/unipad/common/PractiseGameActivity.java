@@ -147,7 +147,6 @@ public class PractiseGameActivity extends AbsMatchActivity implements IDataObser
 
 
     }
-
     public AbsBaseGameService getService() {
         return service;
     }

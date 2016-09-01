@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.unipad.AppContext;
 import com.unipad.brain.R;
+import com.unipad.brain.home.util.SharedPreferencesUtil;
 import com.unipad.brain.longPoker.IProgress;
 import com.unipad.brain.longPoker.adapter.HorRecycleAdapter;
 import com.unipad.brain.longPoker.adapter.NormalSpinerAdapter;
@@ -25,6 +26,7 @@ import com.unipad.brain.longPoker.dao.LongPokerService;
 import com.unipad.common.BasicCommonFragment;
 import com.unipad.common.Constant;
 import com.unipad.utils.LogUtil;
+import com.unipad.utils.SharepreferenceUtils;
 
 import java.util.ArrayList;
 
@@ -265,7 +267,7 @@ public class LongPokerRightFragment extends BasicCommonFragment implements IProg
         //设置布局管理器
         recyclerView.setLayoutManager(layoutManager);
         //设置item间隙
-        recyclerView.addItemDecoration(new SpaceItemDecoration(5, -150,5,3));
+        recyclerView.addItemDecoration(new SpaceItemDecoration(5, -150,5, SharepreferenceUtils.getInt(mActivity.getProjectId()+"_dividemode",3)));
         //设置为垂直布局，这也是默认的
         layoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         //设置Adapter
