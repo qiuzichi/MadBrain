@@ -38,6 +38,8 @@ import com.unipad.utils.SharepreferenceUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.Callback;
+import org.xutils.common.util.DensityUtil;
+import org.xutils.image.ImageOptions;
 import org.xutils.x;
 
 import java.util.Map;
@@ -93,31 +95,16 @@ public class PractiseCommLeftFragment extends Fragment implements View.OnClickLi
         mTextTime.setText(mCountDownTime.getTimeString());
         mTextName.setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(mActivity));
         mIconImageView = (ImageView) mParentLayout.findViewById(R.id.user_photo);
-
+        ImageOptions imageOptions =new ImageOptions.Builder()
+                //.setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小
+                .setRadius(DensityUtil.dip2px(360))//ImageView圆角半径
+                .setCrop(true)// 如果ImageView的大小不是定义为wrap_content, 不要crop.
+                .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+                        // .setLoadingDrawableId(R.mipmap.ic_launcher)//加载中默认显示图片
+                        // .setFailureDrawableId(R.mipmap.ic_launcher)//加载失败后默认显示图片
+                .build();
         if (!TextUtils.isEmpty(AppContext.instance().loginUser.getPhoto())) {
-            x.image().bind(mIconImageView, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(), new Callback.CommonCallback<Drawable>(){
-
-                @Override
-                public void onSuccess(Drawable result) {
-                    Bitmap bitmap = PicUtil.drawableToBitmap(result);
-                    mIconImageView.setImageBitmap(PicUtil.getRoundedCornerBitmap(bitmap, 360));
-                }
-
-                @Override
-                public void onError(Throwable ex, boolean isOnCallback) {
-                    mIconImageView.setImageResource(R.drawable.set_headportrait);
-                }
-
-                @Override
-                public void onCancelled(CancelledException cex) {
-
-                }
-
-                @Override
-                public void onFinished() {
-
-                }
-            });
+            x.image().bind(mIconImageView, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(), imageOptions);
         } else {
             mIconImageView.setImageResource(R.drawable.set_headportrait);
         }

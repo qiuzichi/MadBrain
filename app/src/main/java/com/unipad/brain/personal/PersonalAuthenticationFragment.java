@@ -315,7 +315,7 @@ public class PersonalAuthenticationFragment extends PersonalCommonFragment imple
             return;
         }
 
-        if(Identity.checkIDCard(authBean.getIdentity())){
+        if(!Identity.checkIDCard(authBean.getIdentity())){
             ToastUtil.showToast(mActivity.getString(R.string.check_id));
             return;
         }

@@ -94,32 +94,18 @@ public class PersonalActivity extends BasicActivity implements IDataObserver {
         TextView txtLevel = (TextView)findViewById(R.id.user_age_ads);
         txtLevel.setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
         setTxtName();
+
+        ImageOptions imageOptions =new ImageOptions.Builder()
+                //.setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小
+                .setRadius(DensityUtil.dip2px(360))//ImageView圆角半径
+                .setCrop(true)// 如果ImageView的大小不是定义为wrap_content, 不要crop.
+                .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+                        // .setLoadingDrawableId(R.mipmap.ic_launcher)//加载中默认显示图片
+                        // .setFailureDrawableId(R.mipmap.ic_launcher)//加载失败后默认显示图片
+                .build();
         if (!TextUtils.isEmpty(AppContext.instance().loginUser.getPhoto()))
-            x.image().bind(user_photo, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(), new Callback.CommonCallback<Drawable>() {
-                @Override
-                public void onSuccess(Drawable drawable) {
-                    Bitmap map = PicUtil.drawableToBitmap(drawable);
-                    user_photo.setImageBitmap(PicUtil.getRoundedCornerBitmap(map, 360));
-                }
-
-                @Override
-                public void onError(Throwable throwable, boolean b) {
-
-                }
-
-                @Override
-                public void onCancelled(CancelledException e) {
-
-                }
-
-                @Override
-                public void onFinished() {
-
-                }
-            });
-
+            x.image().bind(user_photo, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(), imageOptions);
         // 上传文件
-
     }
 
     public TextView getmTextRight(){
@@ -280,6 +266,7 @@ public class PersonalActivity extends BasicActivity implements IDataObserver {
     private void initColleagueWindow() {
         if (null == chatFunctionView) {
             chatFunctionView = new ChatFunctionView(this);
+            chatFunctionView.setPhotoPath(user_photo.getId()+"");
         }
     }
 
@@ -309,16 +296,22 @@ public class PersonalActivity extends BasicActivity implements IDataObserver {
                     break;
                 }
                 if (FileUtil.hasSDCard()) {
-                    String path = chatFunctionView.getFileName();
-                    if (null == path || "".equals(path)) {
+                    filePath = chatFunctionView.getFileName();
+                    if (null == filePath || "".equals(filePath)) {
                         ToastUtil.showToast(getString(R.string.util_getpicfile_failed));
                         return;
                     }
-                    File file = new File(path);
-                    if (file.length() > 0 && (file.getParent() != null && !"".equals(file.getParent()))) {
-                        chatFunctionView.setFileName();
-                        startCrop(file);
+                    //File file = new File(path);
+                    Bitmap picMap =  PicUtil.getImageThumbnail(filePath,86,86);
+                    if(picMap != null){
+                        mCurrentFragment.setImageBitmap(PicUtil.getRoundedCornerBitmap(picMap,360));
+
+                        setHeadImgView();
                     }
+//                    if (file.length() > 0 && (file.getParent() != null && !"".equals(file.getParent()))) {
+//                        chatFunctionView.setFileName();
+//                        startCrop(file);
+//                    }
                 } else {
                     ToastUtil.showToast(getString(R.string.util_getpicfile_failed));
                     // MyTools.showToast(this, getResources().getString());
@@ -456,6 +449,7 @@ public class PersonalActivity extends BasicActivity implements IDataObserver {
                     @Override
                     public void onSuccess(Drawable drawable) {
                         Bitmap map = PicUtil.drawableToBitmap(drawable);
+                      //  user_photo.setImageBitmap(PicUtil.getRoundedCornerBitmap(map, 360));
                         mCurrentFragment.setImageBitmap(map);
                     }
 

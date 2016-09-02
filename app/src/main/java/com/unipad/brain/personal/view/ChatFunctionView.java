@@ -70,6 +70,12 @@ public class ChatFunctionView extends RelativeLayout implements OnClickListener 
 
 	private String path;
 
+	private String photoPath;
+
+	public void setPhotoPath(String photoPath) {
+		this.photoPath = photoPath;
+	}
+
 	public ChatFunctionView(Context context, AttributeSet attrs,
 			int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
@@ -120,7 +126,6 @@ public class ChatFunctionView extends RelativeLayout implements OnClickListener 
 		mImgCamera.setOnClickListener(this);
 
 		mImgPic.setOnClickListener(this);
-
 	}
 
 	@Override
@@ -156,37 +161,34 @@ public class ChatFunctionView extends RelativeLayout implements OnClickListener 
 
 		if (context instanceof Activity) {
 
-			path = path == null ? null : path.contains(".jpg") ? path : path
-					+ ".jpg";
+			path = ".jpg";
 
-			File mSaveFile = null;
+			Intent intent = new Intent();
+			intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+			intent.addCategory(Intent.CATEGORY_DEFAULT);
 
-			if (null == path) {
-				mSaveFile = new File(mFile, System.currentTimeMillis() + ".jpg");
-			} else {
-				mSaveFile = new File(mFile, path);
+			File file = new File(App.getContext().getTakePhotoFile(), this.photoPath + path);
+			if (file.exists()) {
+				file.delete();
 			}
-			if (!mSaveFile.exists()) {
-				try {
-					mSaveFile.createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			this.path = mSaveFile.getPath();
+
+			preferencesUtil.saveString("pathNames", App.getContext().getTakePhotoFile().getAbsolutePath() + "/"+ this.photoPath + path);
+//			mPhotoFileList.put(v.getId(), file.getPath());
+
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));// 设置系统相机拍摄照片完成后图片文件的存放地址
+			((Activity) context).startActivityForResult(intent, Camera_flag);
 //            MyTools.showToast(context, this.path);
-			preferencesUtil.saveString("pathNames", this.path);
-			Uri uri = Uri.fromFile(mSaveFile);
 
-			Intent getImageByCamera = new Intent(
-					"android.media.action.IMAGE_CAPTURE");
-
-			getImageByCamera.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
-
-			getImageByCamera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-
-			((Activity) context).startActivityForResult(getImageByCamera,
-					Camera_flag);
+//			Uri uri = Uri.fromFile(mSaveFile);
+//
+//			Intent getImageByCamera = new Intent("android.media.action.IMAGE_CAPTURE");
+//
+//			getImageByCamera.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
+//
+//			getImageByCamera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//
+//			((Activity) context).startActivityForResult(getImageByCamera,
+//					Camera_flag);
 			return;
 		}
 		MyTools.showToast(context, "context in not the support type ");
