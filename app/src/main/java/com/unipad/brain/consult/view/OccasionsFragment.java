@@ -85,7 +85,6 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
                     } else {
                         ToastUtil.showToast(getString(R.string.net_error_refrush_data));
                     }
-
                     return;
                 }
                 //获取新闻页面数据
@@ -159,7 +158,6 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
         mRecyclerView = (RecyclerView) getView().findViewById(R.id.lv_introduction_recyclerview);
         mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh_widget);
 
-
         initData();
         initRecycler();
 
@@ -194,8 +192,8 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
 //                        newsDatas.clear();
-                        requestPagerNum = 1;
-                        getNews(ConsultTab.OCCASIONS.getTypeId(), null, requestPagerNum, perPageDataNumber);
+
+                        service.getNews(ConsultTab.OCCASIONS.getTypeId(), null, 1, perPageDataNumber);
                     }
                 }, 1000);
             }
@@ -217,7 +215,8 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
             public void onLoadMore() {
                 if (requestPagerNum == totalPager) {
                    /* 最后一页 直接吐司 不显示下拉加载*/
-                    ToastUtil.showToast(getString(R.string.loadmore_null_data));
+                    if(requestPagerNum > 1)
+                        ToastUtil.showToast(getString(R.string.loadmore_null_data));
                     return;
                 }
                 newsDatas.add(null);
@@ -236,7 +235,7 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
         if ((isVisibleToUser && isResumed())) {
 
             if(!isGetData){
-                getNews(ConsultTab.OCCASIONS.getTypeId(), null, requestPagerNum, perPageDataNumber);
+                service.getNews(ConsultTab.OCCASIONS.getTypeId(), null, requestPagerNum, perPageDataNumber);
                 Log.d("occasion visit ", "获取消息 界面可见");
                 isGetData = true;
             }
@@ -303,8 +302,7 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tv_load_error_show:
-                requestPagerNum = 1;
-                getNews(ConsultTab.OCCASIONS.getTypeId(), null, requestPagerNum, perPageDataNumber);
+                getNews(ConsultTab.OCCASIONS.getTypeId(), null, 1, perPageDataNumber);
                 break;
         }
     }

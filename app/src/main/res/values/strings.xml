@@ -199,6 +199,7 @@
     <string name="string_qc">请拍摄资格证书照</string>
     <string name="string_name">请填写真实姓名</string>
     <string name="string_identity">请填写身份证件号</string>
+    <string name="check_id">请填写正确的身份证件号</string>
     <string name="string_birthdate">请填写出生日期</string>
     <string name="string_ps">请拍摄完成所需照片</string>
     <string name="string_upload_fail">上传文件失败</string>
@@ -247,6 +248,10 @@
     <string name="race_pay">比赛费用</string>
     <string name="person_entry_fee">选手报名</string>
     <string name="person_level">等级·</string>
+    <string name="child_group">·儿童组</string>
+    <string name="young_group">·少年组</string>
+    <string name="adult_level">·成人组</string>
+    <string name="old_group">·老年组</string>
     <string name="search_conment">输入关键字搜索</string>
     <string name="listitem_empty">搜索不到内容</string>
     <string name="info_result">资讯搜索结果</string>
@@ -280,7 +285,7 @@
     <string name="auth_fail_hint">您提交的实名认证信息未通过，请重新提交！</string>
 
     <string name="site_name">项目名称</string>
-    <string name="site_mode">模式</string>
+    <string name="site_mode">级别</string>
     <string name="site_num">比赛时间</string>
     <string name="site_time">记忆时间</string>
     <string name="recall_time">回忆时间</string>

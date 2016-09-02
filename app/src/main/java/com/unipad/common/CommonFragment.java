@@ -27,11 +27,14 @@ import com.unipad.http.HttpConstant;
 import com.unipad.io.mina.SocketThreadManager;
 import com.unipad.observer.IDataObserver;
 import com.unipad.utils.CountDownTime;
+import com.unipad.utils.DateUtil;
 import com.unipad.utils.LogUtil;
 import com.unipad.utils.PicUtil;
 import com.unipad.utils.ToastUtil;
 
 import org.xutils.common.Callback;
+import org.xutils.common.util.DensityUtil;
+import org.xutils.image.ImageOptions;
 import org.xutils.x;
 
 import java.util.Map;
@@ -82,7 +85,9 @@ public class CommonFragment extends Fragment implements View.OnClickListener, Co
         mCountDownTime = new CountDownTime(0, false);
         mCountDownTime.setTimeListener(this);
         mTextTime.setText(mCountDownTime.getTimeString());
-        mTextName.setText(AppContext.instance().loginUser.getUserName());
+        mTextName.setText(AppContext.instance().loginUser.getUserName()  + DateUtil.getMatchGroud(mActivity));
+        mTextAgeAds.setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
+
         mIconImageView = (ImageView) mParentLayout.findViewById(R.id.user_photo);
         ((HomeGameHandService) AppContext.instance().getService(Constant.HOME_GAME_HAND_SERVICE)).registerObserver(HttpConstant.GET_RULE_NOTIFY, this);
        // x.image().bind(mIconImageView, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto());
@@ -90,29 +95,17 @@ public class CommonFragment extends Fragment implements View.OnClickListener, Co
           //  mTextCompeteProcess.setText(R.string.playing_voice);
         //}
 
+        ImageOptions imageOptions =new ImageOptions.Builder()
+                //.setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小
+                .setRadius(DensityUtil.dip2px(360))//ImageView圆角半径
+                .setCrop(true)// 如果ImageView的大小不是定义为wrap_content, 不要crop.
+                .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+                        // .setLoadingDrawableId(R.mipmap.ic_launcher)//加载中默认显示图片
+                        // .setFailureDrawableId(R.mipmap.ic_launcher)//加载失败后默认显示图片
+                .build();
+
         if (!TextUtils.isEmpty(AppContext.instance().loginUser.getPhoto())) {
-            x.image().bind(mIconImageView, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(), new Callback.CommonCallback<Drawable>() {
-                @Override
-                public void onSuccess(Drawable drawable) {
-                    Bitmap map = PicUtil.drawableToBitmap(drawable);
-                    mIconImageView.setImageBitmap(PicUtil.getRoundedCornerBitmap(map, 360));
-                }
-
-                @Override
-                public void onError(Throwable throwable, boolean b) {
-                    mIconImageView.setImageResource(R.drawable.set_headportrait);
-                }
-
-                @Override
-                public void onCancelled(CancelledException e) {
-
-                }
-
-                @Override
-                public void onFinished() {
-
-                }
-            });
+            x.image().bind(mIconImageView, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(), imageOptions);
         }else {
             mIconImageView.setImageResource(R.drawable.set_headportrait);
         }

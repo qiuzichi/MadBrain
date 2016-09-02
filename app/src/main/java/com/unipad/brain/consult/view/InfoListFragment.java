@@ -16,13 +16,18 @@ import com.unipad.brain.consult.ConsultBaseFragment;
 import com.unipad.brain.consult.adapter.MyInfoListAdapter;
 import com.unipad.brain.consult.entity.ConsultClassBean;
 import com.unipad.brain.consult.entity.ListEnum;
+import com.unipad.brain.home.MainBasicFragment;
 import com.unipad.http.HttpConstant;
+import com.unipad.utils.DateUtil;
 import com.unipad.utils.PicUtil;
 
 import org.xutils.common.Callback;
+import org.xutils.common.util.DensityUtil;
+import org.xutils.image.ImageOptions;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -50,34 +55,22 @@ public class InfoListFragment extends ConsultBaseFragment implements AdapterView
     }
 
     private void  initTitleBar(){
-        ((TextView)mInfoListView.findViewById(R.id.tv_uese_name_consult)).setText(AppContext.instance().loginUser.getUserName());
+        TextView user_name = (TextView) mInfoListView.findViewById(R.id.tv_uese_name_consult);
+        user_name.setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(getmContext()));
+        user_name.setSelected(true);
         ((TextView)mInfoListView.findViewById(R.id.tv_uese_level_consult)).setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
 
         final ImageView user_photo = (ImageView)mInfoListView.findViewById(R.id.iv_header);
-
+        ImageOptions imageOptions =new ImageOptions.Builder()
+                //.setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小
+                .setRadius(DensityUtil.dip2px(360))//ImageView圆角半径
+                .setCrop(true)// 如果ImageView的大小不是定义为wrap_content, 不要crop.
+                .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+                        // .setLoadingDrawableId(R.mipmap.ic_launcher)//加载中默认显示图片
+                        // .setFailureDrawableId(R.mipmap.ic_launcher)//加载失败后默认显示图片
+                .build();
         if (!TextUtils.isEmpty(AppContext.instance().loginUser.getPhoto())) {
-            x.image().bind(user_photo, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(), new Callback.CommonCallback<Drawable>() {
-                @Override
-                public void onSuccess(Drawable drawable) {
-                    Bitmap map = PicUtil.drawableToBitmap(drawable);
-                    user_photo.setImageBitmap(PicUtil.getRoundedCornerBitmap(map, 360));
-                }
-
-                @Override
-                public void onError(Throwable throwable, boolean b) {
-                    user_photo.setImageResource(R.drawable.set_headportrait);
-                }
-
-                @Override
-                public void onCancelled(CancelledException e) {
-
-                }
-
-                @Override
-                public void onFinished() {
-
-                }
-            });
+            x.image().bind(user_photo, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(),imageOptions);
         }else {
             user_photo.setImageResource(R.drawable.set_headportrait);
         }

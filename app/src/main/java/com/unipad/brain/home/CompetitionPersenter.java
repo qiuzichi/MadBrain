@@ -69,8 +69,24 @@ public class CompetitionPersenter {
      */
 
     public void setData(List<CompetitionBean> beans) {
-        competitionBeans.clear();
-        competitionBeans.addAll(beans);
+//        competitionBeans.clear();
+        if(competitionBeans.size() != 0){
+            for(int i = beans.size() -1 ; i>=0; i --){
+                for(int j=0; j< competitionBeans.size(); i++){
+                    if(beans.get(i).equals(competitionBeans.get(j))){
+                        break;
+                    } else {
+                        if(j == competitionBeans.size() -1){
+                            //添加最前面 新数据
+                            competitionBeans.add(0, beans.get(i));
+                        }
+                        continue;
+                    }
+                }
+            }
+        } else {
+            competitionBeans.addAll(beans);
+        }
         competitionAdapter.notifyDataSetChanged();
     }
 
@@ -103,7 +119,7 @@ public class CompetitionPersenter {
                 img_gz.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ((HomeGameHandService) AppContext.instance().getService(Constant.HOME_GAME_HAND_SERVICE)).attention(homeBean.getId(), AppContext.instance().loginUser.getUserId(), "0", !homeBean.isAttention() + "", holder.getPosition() + "");
+                        ((HomeGameHandService) AppContext.instance().getService(Constant.HOME_GAME_HAND_SERVICE)).attention(homeBean.getId(), AppContext.instance().loginUser.getUserId(), "0", !homeBean.isAttention() + "", holder.getPosition() + "", level);
                     }
                 });
                 img_gz.setTag(homeBean);
@@ -237,5 +253,9 @@ public class CompetitionPersenter {
     private void openCommonActivity(Context context) {
         Intent intent = new Intent(context, CommonActivity.class);
         context.startActivity(intent);
+    }
+
+    public List<CompetitionBean> getDatas(){
+        return competitionBeans;
     }
 }

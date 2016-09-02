@@ -91,11 +91,7 @@ public class HittopGetUserGame extends HitopRequest<List<CompetitionBean>> {
             key = HttpConstant.WORD_GET_HOME_GAME_LIST;
         }else if(gradeID == null){
             key = HttpConstant.NOTIFY_GET_NEWCOMPETITION;
-
             ((NewsService)AppContext.instance().getService(Constant.NEWS_SERVICE)).noticeDataChange(key, competitionBeanArrayList);
-
-            key = HttpConstant.CITY_GET_HOME_GAME_LIST;
-
         }
         // {"data":{"curPage":1,"nextPage":1,"pageSize":10,"prePage":1,"resultList":[{"applyMoney":5,"city":"广东省深圳市赋安科技大厦","
         // createDate":"2016-06-15 00:00:00","creater":"admin","deleted":0,"grade":"中国赛","gradeId":"00002","groupId":"00001",

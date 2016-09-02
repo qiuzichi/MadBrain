@@ -60,7 +60,7 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
         service.registerObserver(HttpConstant.NOTIFY_GET_NEWCOMPETITION, this);
         service.registerObserver(HttpConstant.NOTIFY_APPLY_NEWCOMPETITION, this);
         //默认加载第一页的数据 10条 分页加载数据
-        getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestPagerNum, 10);
+        service.getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestPagerNum, 10);
         mListView = (ListView) view.findViewById(R.id.listview_compitition_main);
         tv_error = (TextView) view.findViewById(R.id.tv_load_error_show);
 
@@ -118,7 +118,6 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
                     mSwipeRefreshLayout.setEnabled(false);
                 }
 
-
             }
         });
 
@@ -132,8 +131,7 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
                         mSwipeRefreshLayout.setRefreshing(false);
 //                        mNewCompetitionDatas.clear();
                         //默认加载第一页的数据 10条 分页加载数据
-                        requestPagerNum = 1;
-                        getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestPagerNum, 10);
+                        service.getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, 1, 10);
                     }
                 }, 2000);
             }
@@ -142,8 +140,7 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
         tv_error.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { //点击重新加载数据
-                requestPagerNum = 1;
-                getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestPagerNum, 10);
+                getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, 1, 10);
             }
         });
     }
@@ -216,9 +213,18 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
             case HttpConstant.NOTIFY_GET_NEWCOMPETITION:
                 //获取数据  关闭dialog
                 HIDDialog.dismissAll();
-                tv_error.setVisibility(View.GONE);
                 List<CompetitionBean> databean = (List<CompetitionBean>) o;
+                if(databean.size() == 0){
+                    if(mNewCompetitionDatas.size() ==0 ){
+                        tv_error.setVisibility(View.VISIBLE);
+                        mSwipeRefreshLayout.setVisibility(View.GONE);
+                    }
+                    return;
+                }
 
+
+                tv_error.setVisibility(View.GONE);
+                mSwipeRefreshLayout.setVisibility(View.VISIBLE);
                 if (requestPagerNum == 1 && databean.size() != 0) {
                     totalPager = databean.get(0).getTotalPage();
                 }

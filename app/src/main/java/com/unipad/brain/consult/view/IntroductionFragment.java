@@ -1,7 +1,6 @@
 package com.unipad.brain.consult.view;
 
 
-import android.app.ActionBar;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -134,8 +133,8 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
 //                        if(mRecyclerViewAdapter.getIsVisibility()){
 //                            newsDatas.add(0, new NewEntity("header"));
 //                        }
-                        requestPagerNum = 1;
-                        getNews(ConsultTab.INTRODUCATION.getTypeId(), null, requestPagerNum, permaryDataNumber);
+
+                        service.getNews(ConsultTab.INTRODUCATION.getTypeId(), null, 1, permaryDataNumber);
 
                     }
                 }, 1000);
@@ -172,7 +171,8 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
             public void onLoadMore() {
                 if (requestPagerNum == totalPager) {
                    /* 最后一页 直接吐司 不显示下拉加载*/
-                    ToastUtil.showToast(getString(R.string.loadmore_null_data));
+                    if(requestPagerNum > 1)
+                        ToastUtil.showToast(getString(R.string.loadmore_null_data));
                     return;
                 }
                 /*禁用下拉刷新功能    */
@@ -302,7 +302,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
         if ((isVisibleToUser && isResumed())) {
 
             if(!isGetData){
-                getNews(ConsultTab.INTRODUCATION.getTypeId(), null, requestPagerNum, permaryDataNumber);
+                service.getNews(ConsultTab.INTRODUCATION.getTypeId(), null, requestPagerNum, permaryDataNumber);
                 service.getAdverts(ConsultTab.INTRODUCATION.getTypeId());
                 service.getApkVersion();
                 Log.d("introduction visit ", "获取消息 界面可见");
@@ -433,8 +433,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                 showUpdateVersionDialog(mActivity);
                 break;
             case R.id.tv_load_error_show:
-                requestPagerNum = 1;
-                getNews(ConsultTab.INTRODUCATION.getTypeId(), null, requestPagerNum, permaryDataNumber);
+                getNews(ConsultTab.INTRODUCATION.getTypeId(), null, 1, permaryDataNumber);
                 break;
             default:
                 break;

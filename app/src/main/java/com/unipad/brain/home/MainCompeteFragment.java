@@ -32,12 +32,15 @@ import com.unipad.brain.home.competitionpj.view.HomePresenter;
 import com.unipad.common.Constant;
 import com.unipad.common.PractiseGameActivity;
 import com.unipad.http.HttpConstant;
+import com.unipad.utils.DateUtil;
 import com.unipad.utils.PicUtil;
 import com.unipad.utils.SharepreferenceUtils;
 import com.unipad.utils.ToastUtil;
 import com.unipad.utils.Util;
 
 import org.xutils.common.Callback;
+import org.xutils.common.util.DensityUtil;
+import org.xutils.image.ImageOptions;
 import org.xutils.x;
 
 import java.util.ArrayList;
@@ -56,7 +59,7 @@ public class MainCompeteFragment extends MainBasicFragment {
 //    private TextView txt_recall_content;
 //    private TextView txt_function_content;
     //比赛项目
-    private TextView txt_pname;
+    private TextView txt_pname, txt_target;
     //城市赛
     private TextView txt_city_memory, txt_city_recall;
     //中国赛
@@ -93,6 +96,7 @@ public class MainCompeteFragment extends MainBasicFragment {
         initUserName();
 
         txt_pname = (TextView) mActivity.findViewById(R.id.txt_pname);
+        txt_target = (TextView) mActivity.findViewById(R.id.txt_target);
         final LinearLayout ll_item_bg = (LinearLayout) mActivity.findViewById(R.id.ll_item_bg);
         txt_city_memory = (TextView) mActivity.findViewById(R.id.txt_city_memory);
         txt_city_recall = (TextView) mActivity.findViewById(R.id.txt_city_recall);
@@ -119,6 +123,7 @@ public class MainCompeteFragment extends MainBasicFragment {
 //                ll_item_bg.setBackgroundResource(iconDrawable[projectindex]);
                 homeListAdapter.notifyDataSetChanged();
                 txt_pname.setText(homeBeans.get(position).projectBean.getName());
+                txt_target.setText(homeBeans.get(position).projectBean.getTarget());
 
                 txt_city_memory.setText((homeBeans.get(position).projectBean.getMemorysDate())[0]);
                 txt_city_recall.setText((homeBeans.get(position).projectBean.getRecallsDate())[0]);
@@ -141,34 +146,20 @@ public class MainCompeteFragment extends MainBasicFragment {
     }
 
     private void initUserName() {
-        ((TextView) mActivity.findViewById(R.id.txt_uese_name)).setText(AppContext.instance().loginUser.getUserName());
+        ((TextView) mActivity.findViewById(R.id.txt_uese_name)).setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(mActivity));
         ((TextView) mActivity.findViewById(R.id.txt_uese_level)).setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
 
         final ImageView user_photo = (ImageView) mActivity.findViewById(R.id.iv_user_pic);
-
+        ImageOptions imageOptions =new ImageOptions.Builder()
+                //.setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小
+                .setRadius(DensityUtil.dip2px(360))//ImageView圆角半径
+                .setCrop(true)// 如果ImageView的大小不是定义为wrap_content, 不要crop.
+                .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+                        // .setLoadingDrawableId(R.mipmap.ic_launcher)//加载中默认显示图片
+                        // .setFailureDrawableId(R.mipmap.ic_launcher)//加载失败后默认显示图片
+                .build();
         if (!TextUtils.isEmpty(AppContext.instance().loginUser.getPhoto())) {
-            x.image().bind(user_photo, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(), new Callback.CommonCallback<Drawable>() {
-                @Override
-                public void onSuccess(Drawable drawable) {
-                    Bitmap map = PicUtil.drawableToBitmap(drawable);
-                    user_photo.setImageBitmap(PicUtil.getRoundedCornerBitmap(map, 360));
-                }
-
-                @Override
-                public void onError(Throwable throwable, boolean b) {
-                    user_photo.setImageResource(R.drawable.set_headportrait);
-                }
-
-                @Override
-                public void onCancelled(CancelledException e) {
-
-                }
-
-                @Override
-                public void onFinished() {
-
-                }
-            });
+            x.image().bind(user_photo, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(),imageOptions);
         } else {
             user_photo.setImageResource(R.drawable.set_headportrait);
         }

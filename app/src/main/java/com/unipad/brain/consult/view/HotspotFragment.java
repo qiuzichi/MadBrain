@@ -204,8 +204,8 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
 //                        newsDatas.clear();
-                        requestPagerNum = 1;
-                        getNews(ConsultTab.HOTSPOT.getTypeId(), null, requestPagerNum, perPageDataNumber);
+
+                        service.getNews(ConsultTab.HOTSPOT.getTypeId(), null, 1, perPageDataNumber);
                     }
                 }, 1000);
             }
@@ -228,7 +228,8 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
 
                 if (totalPager == requestPagerNum) {
                    /* 最后一页 直接吐司 不显示下拉加载*/
-                    ToastUtil.showToast(getString(R.string.loadmore_null_data));
+                    if(requestPagerNum > 1)
+                        ToastUtil.showToast(getString(R.string.loadmore_null_data));
                     return;
                 }
 
@@ -261,7 +262,7 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
         if ((isVisibleToUser && isResumed())) {
 
             if(!isGetData){
-                getNews(ConsultTab.HOTSPOT.getTypeId(), null, requestPagerNum, perPageDataNumber);
+                service.getNews(ConsultTab.HOTSPOT.getTypeId(), null, requestPagerNum, perPageDataNumber);
                 //获取广告的数据
                 service.getAdverts("00002");
                 Log.d("hotspot visit ", "获取消息 界面可见");
@@ -389,8 +390,7 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tv_load_error_show:
-                requestPagerNum = 1;
-                getNews(ConsultTab.HOTSPOT.getTypeId(), null, requestPagerNum, perPageDataNumber);
+                getNews(ConsultTab.HOTSPOT.getTypeId(), null, 1, perPageDataNumber);
                 break;
         }
     }

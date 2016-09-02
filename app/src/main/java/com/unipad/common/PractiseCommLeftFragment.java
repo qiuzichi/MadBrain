@@ -2,8 +2,11 @@ package com.unipad.common;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,12 +30,16 @@ import com.unipad.http.HttpConstant;
 import com.unipad.io.mina.SocketThreadManager;
 import com.unipad.observer.IDataObserver;
 import com.unipad.utils.CountDownTime;
+import com.unipad.utils.DateUtil;
 import com.unipad.utils.LogUtil;
+import com.unipad.utils.PicUtil;
 import com.unipad.utils.SharepreferenceUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.Callback;
+import org.xutils.common.util.DensityUtil;
+import org.xutils.image.ImageOptions;
 import org.xutils.x;
 
 import java.util.Map;
@@ -79,15 +86,29 @@ public class PractiseCommLeftFragment extends Fragment implements View.OnClickLi
         mParentLayout.findViewById(R.id.text_exit).setOnClickListener(this);
 
         mTextAgeAds.setSelected(true);
+        mTextAgeAds.setText((getString(R.string.person_level) + AppContext.instance().loginUser.getLevel()));
         mTextName.setSelected(true);
         this.getBgColorArray(mParentLayout);
 
         mCountDownTime = new CountDownTime(0, false);
         mCountDownTime.setTimeListener(this);
         mTextTime.setText(mCountDownTime.getTimeString());
-        mTextName.setText(AppContext.instance().loginUser.getUserName());
+        mTextName.setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(mActivity));
         mIconImageView = (ImageView) mParentLayout.findViewById(R.id.user_photo);
-        x.image().bind(mIconImageView, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto());
+        ImageOptions imageOptions =new ImageOptions.Builder()
+                //.setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小
+                .setRadius(DensityUtil.dip2px(360))//ImageView圆角半径
+                .setCrop(true)// 如果ImageView的大小不是定义为wrap_content, 不要crop.
+                .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+                        // .setLoadingDrawableId(R.mipmap.ic_launcher)//加载中默认显示图片
+                        // .setFailureDrawableId(R.mipmap.ic_launcher)//加载失败后默认显示图片
+                .build();
+        if (!TextUtils.isEmpty(AppContext.instance().loginUser.getPhoto())) {
+            x.image().bind(mIconImageView, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(), imageOptions);
+        } else {
+            mIconImageView.setImageResource(R.drawable.set_headportrait);
+        }
+
         //if (CompeteItemEntity.getInstance().getCompeteItem().equals(getString(R.string.project_9))) {
         //  mTextCompeteProcess.setText(R.string.playing_voice);
         //}

@@ -38,7 +38,7 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:layout_gravity="center"
                 android:textColor="@color/white"
-                android:textSize="@dimen/common_text_24" />
+                android:textSize="@dimen/person_name_size" />
 
             <View
                 android:layout_width="match_parent"
