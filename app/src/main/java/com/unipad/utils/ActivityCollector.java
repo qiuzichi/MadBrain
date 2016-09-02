@@ -49,10 +49,7 @@ public class ActivityCollector {
         }
     }
     public static void finishAllActivityExceptTop(){
-        if (mActivityList.size()<2){
-            return;
-        }
-        for(int i = 0;i<mActivityList.size()-2;i++){
+        for(int i = 0;i<mActivityList.size();i++){
             mActivityList.get(i).finish();
         }
     }
