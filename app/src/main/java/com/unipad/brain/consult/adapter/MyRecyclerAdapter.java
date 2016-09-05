@@ -104,10 +104,14 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     //获取 RecycleView第一个子view
                     View childView = mRecyclerView.getChildAt(0);
                     //获取第一个子view的顶部坐标
-                    int top = childView.getTop();
-                    //正常来说RecycleView的顶部坐标应该是0,但是严格来考虑,当RecycleView设置了paddingTop时,所有子view的绘制将以paddingTop的位置为起始位置,所以实际的顶部应该是paddingTop的高度的数值.
-                    int topEdge = mRecyclerView.getPaddingTop();
-                    mSwipeRefreshLayout.setEnabled(top >= topEdge);
+                    if (null != childView) {
+                        int top = childView.getTop();
+                        //正常来说RecycleView的顶部坐标应该是0,但是严格来考虑,当RecycleView设置了paddingTop时,
+                        // 所有子view的绘制将以paddingTop的位置为起始位置,所以实际的顶部应该是paddingTop的高度的数值.
+                        int topEdge = mRecyclerView.getPaddingTop();
+                        mSwipeRefreshLayout.setEnabled(top >= topEdge);
+                    }
+
                     if (!isLoadMoreData && newState == RecyclerView.SCROLL_STATE_IDLE
                             && lastVisibleItem + 1  == mRecyclerView.getAdapter().getItemCount()) {
                             onLoadMoreListener.onLoadMore();
