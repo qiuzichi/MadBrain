@@ -9,6 +9,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -110,24 +113,24 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
                     requestPagerNum++;
                 }
 
-                if (newsDatas.size() != 0) {
-                    for (int i = databean.size()-1; i >= 0; i--) {
-                        for (int j = 0; j < newsDatas.size(); j++) {
-                            if (databean.get(i).equals(newsDatas.get(j))) {
-                                break;
-                            } else {
-                                if (j == newsDatas.size() - 1) {
-                                    //不同 则是新数据
-                                    newsDatas.add(0, databean.get(i));
-                                    break;
-                                }
-                                continue;
-                            }
-                        }
-                    }
-                } else {
-                    newsDatas.addAll(databean);
-                }
+//                if (newsDatas.size() != 0) {
+//                    for (int i = databean.size()-1; i >= 0; i--) {
+//                        for (int j = 0; j < newsDatas.size(); j++) {
+//                            if (databean.get(i).equals(newsDatas.get(j))) {
+//                                break;
+//                            } else {
+//                                if (j == newsDatas.size() - 1) {
+//                                    //不同 则是新数据
+//                                    newsDatas.add(0, databean.get(i));
+//                                    break;
+//                                }
+//                                continue;
+//                            }
+//                        }
+//                    }
+//                } else {
+                newsDatas.addAll(databean);
+//                }
                 mRecyclerViewAdapter.notifyDataSetChanged();
                 break;
 
@@ -191,7 +194,7 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
-//                        newsDatas.clear();
+                        newsDatas.clear();
 
                         service.getNews(ConsultTab.OCCASIONS.getTypeId(), null, 1, perPageDataNumber);
                     }
@@ -207,7 +210,7 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mSwipeRefreshLayout.setRefreshing(false);
 
-        mRecyclerViewAdapter = new MyRecyclerAdapter(mActivity, mRecyclerView, newsDatas,1);
+        mRecyclerViewAdapter = new MyRecyclerAdapter(mActivity, mRecyclerView, newsDatas, 1, mSwipeRefreshLayout);
 
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerViewAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {

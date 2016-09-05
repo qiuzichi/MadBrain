@@ -2,6 +2,8 @@ package com.unipad.http;
 import android.util.Log;
 
 import com.unipad.AppContext;
+import com.unipad.brain.App;
+import com.unipad.brain.R;
 import com.unipad.brain.home.bean.HisRecord;
 import com.unipad.brain.personal.dao.PersonCenterService;
 import com.unipad.common.Constant;
@@ -100,7 +102,7 @@ public class HitopHistRecord extends HitopRequest<List<HisRecord>>{
         } catch (Exception e) {
             e.printStackTrace();
             ((PersonCenterService)AppContext.instance().getService
-                    (Constant.PERSONCENTER)).noticeDataChange(key, "json 解析异常");
+                    (Constant.PERSONCENTER)).noticeDataChange(key,  App.getContext().getString(R.string.string_json_error));
             return null;
         }
         ((PersonCenterService)AppContext.instance().getService

@@ -74,6 +74,7 @@
                         <ImageView
                             android:id="@+id/iv_item_introduction_comment"
                             android:layout_width="@dimen/favorite_width"
+                            android:visibility="gone"
                             android:layout_height="@dimen/favorite_width"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/margin_30dp"

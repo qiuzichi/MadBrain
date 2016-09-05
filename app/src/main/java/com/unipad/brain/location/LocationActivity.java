@@ -1,7 +1,10 @@
 package com.unipad.brain.location;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -24,6 +27,9 @@ import com.unipad.http.HttpConstant;
 import com.unipad.observer.IDataObserver;
 import com.unipad.utils.ToastUtil;
 
+import org.xutils.common.util.DensityUtil;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,10 +50,12 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
     private List<CityBean> cityBeans;
     private List<CompetitionBean> competitionBeans;
     private TextView txt_nodata;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        competitionBeans = new ArrayList<CompetitionBean>();
         setContentView(R.layout.location_aty);
     }
 
@@ -58,6 +66,7 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
         lv_city = (ListView) findViewById(R.id.lv_city);
         lv_city.setOnItemClickListener(this);
         lv_com = (ListView) findViewById(R.id.lv_com);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_pull_refresh_listview);
         txt_nodata = (TextView) findViewById(R.id.txt_null_data);
         lv_com.setOnItemClickListener(this);
         findViewById(R.id.title_bar_left_text).setOnClickListener(this);
@@ -69,9 +78,48 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
         service.registerObserver(HttpConstant.LOCATION_APPLY_GAME, this);
         ToastUtil.createWaitingDlg(this,null,Constant.LOGIN_WAIT_DLG).show(15);
         service.getProvinceList();
+
+        initEvent();
     }
 
+    private void initEvent(){
 
+        mSwipeRefreshLayout.setColorSchemeResources(
+                R.color.light_blue2,
+                R.color.red,
+                R.color.stroke_color,
+                R.color.black
+        );
+        mSwipeRefreshLayout.setProgressViewOffset(false, 0, DensityUtil.dip2px(24));
+        mSwipeRefreshLayout.setRefreshing(false);
+         /*避免出现item太大 之后 避免冲突scroll*/
+        lv_com.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    /*第一项可见 的时候 才可以响应swipe的滑动刷新事件*/
+                mSwipeRefreshLayout.setEnabled(firstVisibleItem == 0);
+            }
+        });
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+//                        competitionBeans.clear();
+                        service.getCompetitionList(cityBeans.get((Integer) mSwipeRefreshLayout.getTag()).cityId);
+                    }
+                }, 2000);
+            }
+        });
+    }
     @Override
     public void onClick(View v) {
         super.onClick(v);
@@ -164,14 +212,19 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
                 if (o instanceof String) {
                     ToastUtil.showToast((String) o);
                 } else {
-                    competitionBeans = (List<CompetitionBean>) o;
-                    if(competitionBeans.size() == 0){ //没有比赛
-                        txt_nodata.setVisibility(View.VISIBLE);
-                        lv_com.setVisibility(View.GONE);
+                    List<CompetitionBean> databean = (List<CompetitionBean>) o;
+                    if(databean.size() == 0){ //没有比赛
+                        if(competitionBeans.size() == 0){
+                            txt_nodata.setVisibility(View.VISIBLE);
+                            mSwipeRefreshLayout.setVisibility(View.GONE);
+                        }
+
                     }else {
                         txt_nodata.setVisibility(View.GONE);
-                        lv_com.setVisibility(View.VISIBLE);
+                        mSwipeRefreshLayout.setVisibility(View.VISIBLE);
                     }
+
+
                     lv_com.setAdapter(new CommonAdapter<CompetitionBean>(this, competitionBeans, R.layout.location_msg_item_layout) {
                         @Override
                         public void convert(ViewHolder holder, final CompetitionBean competitionBean) {
@@ -179,10 +232,10 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
                             holder.setText(R.id.txt_name, competitionBean.getName() + "/" + competitionBean.getProjecNname());
                             holder.setText(R.id.txt_addr, competitionBean.getAddr());
                             holder.setText(R.id.txt_cost, competitionBean.getCost());
-                            TextView in_game = (TextView)holder.getView(R.id.in_game);
+                            TextView in_game = (TextView) holder.getView(R.id.in_game);
 
 //                            in_game.setText(competitionBean.getIsApply() == 0 ? getString(R.string.my_apply) : getString(R.string.applied) );
-                           // holder.getView(R.id.in_game).setVisibility(competitionBean.getApplyState() == 0 ? View.VISIBLE : View.GONE);
+                            // holder.getView(R.id.in_game).setVisibility(competitionBean.getApplyState() == 0 ? View.VISIBLE : View.GONE);
                             //holder.setImageResource(R.id.img_photo, homeBean.isSelect ? homeBean.selImgId : homeBean.norImgId);
                             //holder.setTextColor(R.id.txt_name, homeBean.isSelect ? iHome.getContext().getResources().getColor(R.color.main_1) : iHome.getContext().getResources().getColor(R.color.black));
                             /////////----- 以下两行代码表示 设置某个控件的点击事件-----////
@@ -209,6 +262,26 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
                             }
                         }
                     });
+
+                    if (competitionBeans.size() != 0) {
+                        for (int i = databean.size()-1; i >= 0; i--) {
+                            for (int j = 0; j < competitionBeans.size(); j++) {
+                                if (databean.get(i).equals(competitionBeans.get(j))) {
+                                    break;
+                                } else {
+                                    if (j == competitionBeans.size() - 1) {
+                                        //不同 则是新数据
+                                        competitionBeans.add(0, databean.get(i));
+                                        break;
+                                    }
+                                    continue;
+                                }
+                            }
+                        }
+                    } else {
+                        competitionBeans.addAll(databean);
+                    }
+                    ((BaseAdapter)lv_com.getAdapter()).notifyDataSetChanged();
                 }
                 break;
             case HttpConstant.LOCATION_APPLY_GAME:
@@ -268,7 +341,9 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
                 }
                 if(competitionBeans != null){
                     competitionBeans.clear();
-                    ((BaseAdapter)lv_com.getAdapter()).notifyDataSetChanged();
+                    if(null != (BaseAdapter)lv_com.getAdapter()){
+                        ((BaseAdapter)lv_com.getAdapter()).notifyDataSetChanged();
+                    }
                 }
                 ((BaseAdapter)parent.getAdapter()).notifyDataSetChanged();
                 service.getCityList(provinceBeans.get(position).provinceId);
@@ -285,6 +360,8 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
                     }
                 }
                 ((BaseAdapter)parent.getAdapter()).notifyDataSetChanged();
+                mSwipeRefreshLayout.setTag(position);
+                competitionBeans.clear();
                 service.getCompetitionList(cityBeans.get(position).cityId);
                 break;
         }
