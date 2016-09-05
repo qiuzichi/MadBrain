@@ -92,6 +92,9 @@ public class PersonCenterService extends GlobleObserService implements ICoreServ
         Map<String, File> mapFile = new HashMap<String, File>();
         mapFile.put("image", new File(path));
         hitopAuthUploadFile.UpLoadFile(mapFile);}
+
+
+
     public void uploadAuthFile(String path,int index){
         if(index == 0){
             HitopAuthUploadFile hitopAuthUploadFile = new HitopAuthUploadFile();

@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.unipad.brain.R;
-
+import com.unipad.utils.ActivityCollector;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -28,6 +28,7 @@ public class BaseFragmentActivity extends FragmentActivity implements FragmentCa
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		ActivityCollector.addActivity(this);
 		super.onCreate(savedInstanceState);
 	}
 
@@ -95,6 +96,11 @@ public class BaseFragmentActivity extends FragmentActivity implements FragmentCa
 		setIcon(id, button_left);
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		ActivityCollector.removeActivity(this);
+	}
 
 	/**
 	 * 设置左边图片

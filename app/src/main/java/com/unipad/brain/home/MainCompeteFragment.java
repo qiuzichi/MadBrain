@@ -42,6 +42,8 @@ import com.unipad.utils.ToastUtil;
 import com.unipad.utils.Util;
 
 import org.xutils.common.Callback;
+import org.xutils.common.util.DensityUtil;
+import org.xutils.image.ImageOptions;
 import org.xutils.x;
 
 import java.util.ArrayList;
@@ -155,30 +157,16 @@ public class MainCompeteFragment extends MainBasicFragment {
         ((TextView) mActivity.findViewById(R.id.txt_uese_level)).setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
 
         final ImageView user_photo = (ImageView) mActivity.findViewById(R.id.iv_user_pic);
-
+        ImageOptions imageOptions =new ImageOptions.Builder()
+                //.setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小
+                .setRadius(DensityUtil.dip2px(360))//ImageView圆角半径
+                .setCrop(true)// 如果ImageView的大小不是定义为wrap_content, 不要crop.
+                .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+                        // .setLoadingDrawableId(R.mipmap.ic_launcher)//加载中默认显示图片
+                        // .setFailureDrawableId(R.mipmap.ic_launcher)//加载失败后默认显示图片
+                .build();
         if (!TextUtils.isEmpty(AppContext.instance().loginUser.getPhoto())) {
-            x.image().bind(user_photo, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(), new Callback.CommonCallback<Drawable>() {
-                @Override
-                public void onSuccess(Drawable drawable) {
-                    Bitmap map = PicUtil.drawableToBitmap(drawable);
-                    user_photo.setImageBitmap(PicUtil.getRoundedCornerBitmap(map, 360));
-                }
-
-                @Override
-                public void onError(Throwable throwable, boolean b) {
-                    user_photo.setImageResource(R.drawable.set_headportrait);
-                }
-
-                @Override
-                public void onCancelled(CancelledException e) {
-
-                }
-
-                @Override
-                public void onFinished() {
-
-                }
-            });
+            x.image().bind(user_photo, HttpConstant.PATH_FILE_URL + AppContext.instance().loginUser.getPhoto(),imageOptions);
         } else {
             user_photo.setImageResource(R.drawable.set_headportrait);
         }
