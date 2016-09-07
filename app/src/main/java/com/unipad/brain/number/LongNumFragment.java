@@ -59,7 +59,6 @@ public class LongNumFragment extends NumberRightFragment {
         mKeyboardDialog = new KeyboardDialog(mActivity);
         mKeyboardDialog.setKeyboardClickListener(this);
     }
-
     @Override
     public void startMemory() {
         super.startMemory();

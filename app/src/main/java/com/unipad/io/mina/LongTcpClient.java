@@ -111,32 +111,37 @@ public class LongTcpClient implements ClientSessionHandler.IDataHandler {
             connector.getSessionConfig().setIdleTime(IdleStatus.WRITER_IDLE, 50000);//写(发送通道)空闲时间:50秒
             connector.getFilterChain().addLast("keeplive", new KeepAliveFilter(new ClientKeepAliveMessageFactoryImp(), IdleStatus.READER_IDLE, KeepAliveRequestTimeoutHandler.DEAF_SPEAKER, 10, 5));
             connector.setDefaultRemoteAddress(new InetSocketAddress(HOSTNAME, PORT));
-                for (; ; ) {
-                    if (!isReconnect){
-                        break;
-                    }
-                    try {
-                        ConnectFuture future = connector.connect();
-                    future.awaitUninterruptibly();// 等待连接创建完成
-                    session = future.getSession();
-                    if (session.isConnected()) {
-                        isInstanceed = true;
-                        break;
-                    } else {
-
-                    }
-
-                }catch(Exception e){
-                    System.err.println("Failed to connect.");
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    for (; ; ) {
+                        if (!isReconnect){
+                            break;
                         }
-                        e.printStackTrace();
+                        try {
+                            ConnectFuture future = connector.connect();
+                            future.awaitUninterruptibly();// 等待连接创建完成
+                            session = future.getSession();
+                            if (session.isConnected()) {
+                                isInstanceed = true;
+                                break;
+                            } else {
 
+                            }
+                        }catch(Exception e){
+                            System.err.println("Failed to connect.");
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            }
+                            e.printStackTrace();
+                        }
+                    }
                 }
-            }
+            }.start();
+
         }
         return isInstanceed;
     }

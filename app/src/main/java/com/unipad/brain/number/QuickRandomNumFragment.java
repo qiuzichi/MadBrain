@@ -1,6 +1,10 @@
 package com.unipad.brain.number;
 
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.unipad.brain.AbsBaseGameService;
 import com.unipad.brain.number.view.KeyboardDialog;
@@ -18,6 +22,12 @@ public class QuickRandomNumFragment extends  NumberRightFragment{
     @Override
     public boolean isNeedShowCurrent() {
         return true;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
