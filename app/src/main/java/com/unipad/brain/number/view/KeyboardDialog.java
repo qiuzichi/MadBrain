@@ -69,7 +69,10 @@ public class KeyboardDialog extends RelativeLayout implements View.OnClickListen
         setBackground(null);
         View view = LayoutInflater.from(context).inflate(R.layout.keyboard_dialog, null);
         //setBackground(null);
-        dragView.setBackgroundResource(R.drawable.cycle_bg);
+
+        LayoutParams dragPa = new LayoutParams(50,50);
+        dragView.setLayoutParams(dragPa);
+        dragView.setBackgroundResource(R.drawable.drag_icon);
         dragView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
