@@ -45,6 +45,7 @@ import com.unipad.common.adapter.CommonAdapter;
 import com.unipad.common.widget.HIDDialog;
 import com.unipad.http.HttpConstant;
 import com.unipad.observer.IDataObserver;
+import com.unipad.utils.LogUtil;
 import com.unipad.utils.ToastUtil;
 import org.xutils.common.util.DensityUtil;
 import org.xutils.image.ImageOptions;
@@ -191,7 +192,6 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
         adAdapter = new AdViewPagerAdapter(getActivity(),newsAdvertDatas,R.layout.ad_gallery_item);
         mAdvertLuobo.setAdapter(adAdapter);
 
-        Log.e(getClass().getSimpleName(), mAdvertLuobo.getMeasuredHeight() + "高度 ======" + mAdvertLuobo.getMeasuredWidth());
     }
 
     private void getNews(String contentType,String title,int page,int size ){
@@ -204,18 +204,18 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
         PackageInfo pi = null;
         try {
             pi = pm.getPackageInfo(mActivity.getPackageName(), 0);
+            String versionName = pi.versionName;
+            if (versionName.equals(versionBean.getVersion())) {
+                return true;
+            }
+            ((TextView) getView().findViewById(R.id.text_update_version)).setText(getString(R.string.check_version) + versionBean.getVersion());
+            return false;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+            return  false;
         }
-        String versionName = pi.versionName;
-        int versioncode = pi.versionCode;
+//        int versioncode = pi.versionCode;
 //        String versionName = getString(R.string.versionName);
-
-        if(versionName.equals(versionBean.getVersion())){
-            return true;
-        }
-        ((TextView)getView().findViewById(R.id.text_update_version)).setText(getString(R.string.check_version) + versionBean.getVersion());
-        return  false;
     }
 
     private BaseConfirmDialog.OnActionClickListener mDialogListener = new BaseConfirmDialog.OnActionClickListener() {
@@ -311,7 +311,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                         //设置加载过程中的图片
                 .setLoadingDrawableId(R.drawable.default_advert_pic)
                         //设置加载失败后的图片
-                .setFailureDrawableId(R.drawable.default_advert_pic)
+                .setFailureDrawableId(loadingDrawableId)
                         //设置使用缓存
                 .build();
     }
@@ -366,6 +366,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
     @Override
     public void onDestroy() {
         super.onDestroy();
+        LogUtil.e(getClass().getSimpleName(), "onDestroy" );
         clear();
     }
 

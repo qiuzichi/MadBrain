@@ -82,7 +82,7 @@ public class LoadService extends Service {
 	private void load(String path) {
 		//删除以前下载的apk 文件
 		deleteApkFile();
-		String apkName = path.substring(path.lastIndexOf("\\") + 1,
+		String apkName = path.substring(path.lastIndexOf("/") + 1,
 				path.length());
 		DownloadManager.Request down = new DownloadManager.Request(
 				Uri.parse(path));

@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
@@ -22,22 +21,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import com.unipad.AppContext;
 import com.unipad.brain.R;
 import com.unipad.brain.consult.ConsultBaseFragment;
 import com.unipad.brain.consult.entity.ConsultTab;
 import com.unipad.brain.consult.widget.CustomViewPager;
 import com.unipad.brain.home.MainBasicFragment;
-import com.unipad.common.Constant;
-import com.unipad.http.HttpConstant;
 import com.unipad.utils.DensityUtil;
 
 import java.lang.reflect.Field;
@@ -193,7 +187,7 @@ public class ConsultMainFragment extends ConsultBaseFragment{
                 closePopup();
                 return false;
             }
-            MainBasicFragment baseFragment = (MainBasicFragment) com.unipad.brain.consult.manager.
+            MainBasicFragment baseFragment = (MainBasicFragment) com.unipad.brain.consult.Manager.
                     FragmentManager.getFragment(mConsultTabs[mCurrentIndex]);
             List<String> titleTip = baseFragment.getNewsDatas();
 
@@ -273,6 +267,7 @@ public class ConsultMainFragment extends ConsultBaseFragment{
             Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
             childFragmentManager.setAccessible(true);
             childFragmentManager.set(this, null);
+            com.unipad.brain.consult.Manager.FragmentManager.maps.clear();
 
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
@@ -291,7 +286,7 @@ public class ConsultMainFragment extends ConsultBaseFragment{
         @Override
         public Fragment getItem(int position) {
             initTabs();
-            return com.unipad.brain.consult.manager.FragmentManager.getFragment(mConsultTabs[position]);
+            return com.unipad.brain.consult.Manager.FragmentManager.getFragment(mConsultTabs[position]);
         }
 
         @Override
