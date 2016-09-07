@@ -146,7 +146,7 @@
     <string name="message_world">世界赛</string>
     <string name="str_back">返回</string>
     <string name="jump_over"> 跳过</string>
-    <string name="action_rule">比赛项目规则</string>
+    <string name="action_rule">比赛项目目标</string>
     <string name="str_apply">比赛报名</string>
     <string name="str_exercise">练习模式</string>
     <string name="memory">记忆：</string>
@@ -258,6 +258,9 @@
     <string name="competetion_result">赛事搜索结果</string>
     <string name="hotspot_result">热点搜索结果</string>
     <string name="update_version_info">优化更多细节，提升客户体验 尝鲜版不容错过</string>
+    <string name="olduser_origin_pwd">如果您是老用户，可用原始密码（123456）登录，之后在个人信息修改密码即可哦~</string>
+    <string name="hello_user">亲爱的用户!</string>
+    <string name="kindly_reminder">温馨提示</string>
     <string name="update_version_title">更新版本号：</string>
     <string name="confirm_update">确认更新</string>
     <string name="exercise_not_open">练习模式暂未开通</string>

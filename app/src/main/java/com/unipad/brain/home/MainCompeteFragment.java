@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -112,7 +115,9 @@ public class MainCompeteFragment extends MainBasicFragment {
 
         relatlayout.setVisibility(View.GONE);
         lv_project.setAdapter(homeListAdapter);//(new nvvervi());
-        final int[] iconDrawable = new int[]{R.drawable.ic_launcher};
+        final int[] iconDrawable = new int[]{R.drawable.person_icon_bg, R.drawable.binary_num_bg, R.drawable.long_num_bg,
+                R.drawable.abs_picture_bg, R.drawable.item_bg, R.drawable.virtual_date_bg, R.drawable.quickiy_pocker_bg, R.drawable.random_num_bg,
+                R.drawable.liston_and_memory_bg, R.drawable.quickiy_pocker_bg};
         lv_project.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -120,10 +125,12 @@ public class MainCompeteFragment extends MainBasicFragment {
                     relatlayout.setVisibility(View.VISIBLE);
                 }
                 projectindex = position;
-//                ll_item_bg.setBackgroundResource(iconDrawable[projectindex]);
+                ll_item_bg.setBackgroundResource(iconDrawable[projectindex]);
                 homeListAdapter.notifyDataSetChanged();
                 txt_pname.setText(homeBeans.get(position).projectBean.getName());
-                txt_target.setText(homeBeans.get(position).projectBean.getTarget());
+                SpannableStringBuilder bulid = new SpannableStringBuilder(homeBeans.get(position).projectBean.getTarget().trim());
+                bulid.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.light_blue2)), 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                txt_target.setText(bulid);
 
                 txt_city_memory.setText((homeBeans.get(position).projectBean.getMemorysDate())[0]);
                 txt_city_recall.setText((homeBeans.get(position).projectBean.getRecallsDate())[0]);
@@ -443,7 +450,7 @@ public class MainCompeteFragment extends MainBasicFragment {
                 if(homeBeans.get(projectindex).projectBean.getProjectId().equals(Constant.GAME_LONG_POCKER)){
                     View view = LayoutInflater.from(getActivity()).inflate(R.layout.line_setting, null);
                     RadioGroup mRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_competition_mode);
-                    ((TextView) view.findViewById(R.id.txt_title_competition)).setText(getString(R.string.long_poker_remember_way));
+                    ((TextView) view.findViewById(R.id.txt_title_competition)).setText(getString(R.string.remember_mode_set));
                     ((RadioButton) view.findViewById(R.id.btn_default_mode)).setVisibility(View.GONE);
                     ((RadioButton) view.findViewById(R.id.btn_default_mode_3)).setText("3");
                     ((RadioButton) view.findViewById(R.id.btn_default_mode_4)).setText("5");

@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -63,8 +64,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private boolean isLoadMoreData = false;
     private boolean isShowVersion = false;
     private LayoutInflater mLayoutInflater;
-    private int lastVisibleItem;
-    private int firstVisibleItem;
     private final int TYPE_ITEM = 0;
     private final int TYPE_FOOTER = 1;
     private final int TYPE_HEADER = 2;
@@ -82,7 +81,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private ImageOptions imageOptions;
 
 
-    public MyRecyclerAdapter(Activity mActivity, final RecyclerView mRecyclerView, List<NewEntity> datas ,int pageId) {
+    public MyRecyclerAdapter(Activity mActivity, final RecyclerView mRecyclerView, List<NewEntity> datas ,int pageId, final SwipeRefreshLayout mSwipeRefreshLayout) {
         this.mActivity = mActivity;
         this.newsDatas = datas;
 
@@ -99,9 +98,18 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-                    if(mRecyclerView.getAdapter().getItemCount() == 1){
-                        lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-                        firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+
+                    int lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+                    int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+                    //获取 RecycleView第一个子view
+                    View childView = mRecyclerView.getChildAt(0);
+                    //获取第一个子view的顶部坐标
+                    if (null != childView) {
+                        int top = childView.getTop();
+                        //正常来说RecycleView的顶部坐标应该是0,但是严格来考虑,当RecycleView设置了paddingTop时,
+                        // 所有子view的绘制将以paddingTop的位置为起始位置,所以实际的顶部应该是paddingTop的高度的数值.
+                        int topEdge = mRecyclerView.getPaddingTop();
+                        mSwipeRefreshLayout.setEnabled(top >= topEdge);
                     }
 
                     if (!isLoadMoreData && newState == RecyclerView.SCROLL_STATE_IDLE
@@ -113,8 +121,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-                    lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-                    firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+//                    lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+//                    firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+//                    mSwipeRefreshLayout.setEnabled(linearLayoutManager.findFirstVisibleItemPosition() == 0);
                 }
             });
         }
@@ -278,9 +287,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }else {
             //移除 header 的数据 如果不移除 会出现空白item页面
             newsDatas.remove(0);
-            adapter.notifyItemRemoved(firstVisibleItem);
+//            adapter.notifyItemRemoved(firstVisibleItem);
         }
-        adapter.notifyItemChanged(firstVisibleItem);
+//        adapter.notifyItemChanged(firstVisibleItem);
         mRecyclerView.setAdapter(adapter);
 
     }

@@ -129,7 +129,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
-//                        newsDatas.clear();
+                        newsDatas.clear();
 //                        if(mRecyclerViewAdapter.getIsVisibility()){
 //                            newsDatas.add(0, new NewEntity("header"));
 //                        }
@@ -149,29 +149,15 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mSwipeRefreshLayout.setRefreshing(false);
 
-
-        mRecyclerViewAdapter = new MyRecyclerAdapter(mActivity, mRecyclerView, newsDatas, 0);
+        mRecyclerViewAdapter = new MyRecyclerAdapter(mActivity, mRecyclerView, newsDatas, 0, mSwipeRefreshLayout);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
-
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                mSwipeRefreshLayout.setEnabled(mLayoutManager.findFirstVisibleItemPosition() == 0);
-//                int topRowVerticalPosition = (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-//                if(topRowVerticalPosition>0){
-//                    mSwipeRefreshLayout.setRefreshing(false);
-//                }
-            }
-        });
-
 
         mRecyclerViewAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
                 if (requestPagerNum == totalPager) {
                    /* 最后一页 直接吐司 不显示下拉加载*/
-                    if(requestPagerNum > 1)
+                    if (requestPagerNum > 1)
                         ToastUtil.showToast(getString(R.string.loadmore_null_data));
                     return;
                 }
@@ -204,6 +190,8 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
 
         adAdapter = new AdViewPagerAdapter(getActivity(),newsAdvertDatas,R.layout.ad_gallery_item);
         mAdvertLuobo.setAdapter(adAdapter);
+
+        Log.e(getClass().getSimpleName(), mAdvertLuobo.getMeasuredHeight() + "高度 ======" + mAdvertLuobo.getMeasuredWidth());
     }
 
     private void getNews(String contentType,String title,int page,int size ){
@@ -466,10 +454,8 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                         if(newsDatas.size() == 0){
                             tv_error.setVisibility(View.VISIBLE);
                             mSwipeRefreshLayout.setVisibility(View.GONE);
-                            tv_error.setText(getString(R.string.net_error_refrush_data));
-                        }else {
-                            ToastUtil.showToast(getString(R.string.net_error_refrush_data));
                         }
+                        ToastUtil.showToast(getString(R.string.net_error_refrush_data));
                         return;
                     }
                     //获取新闻页面数据
@@ -479,7 +465,6 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                         if(newsDatas.size() == 0){
                             tv_error.setVisibility(View.VISIBLE);
                             mSwipeRefreshLayout.setVisibility(View.GONE);
-                            tv_error.setText(getString(R.string.not_news_data));
                         }
                         return;
                     }
@@ -493,24 +478,24 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                         requestPagerNum++;
                     }
 
-                    if (newsDatas.size() != 0) {
-                        for (int i = databean.size()-1; i >= 0; i--) {
-                            for (int j = 0; j < newsDatas.size(); j++) {
-                                if (databean.get(i).equals(newsDatas.get(j))) {
-                                    break;
-                                } else {
-                                    if (j == newsDatas.size() - 1) {
-                                        //不同 则是新数据
-                                        newsDatas.add(0, databean.get(i));
-                                        break;
-                                    }
-                                    continue;
-                                }
-                            }
-                        }
-                    } else {
-                        newsDatas.addAll(databean);
-                    }
+//                    if (newsDatas.size() != 0) {
+//                        for (int i = databean.size()-1; i >= 0; i--) {
+//                            for (int j = 0; j < newsDatas.size(); j++) {
+//                                if (databean.get(i).equals(newsDatas.get(j))) {
+//                                    break;
+//                                } else {
+//                                    if (j == newsDatas.size() - 1) {
+//                                        //不同 则是新数据
+//                                        newsDatas.add(0, databean.get(i));
+//                                        break;
+//                                    }
+//                                    continue;
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                    }
+                    newsDatas.addAll(databean);
                     mRecyclerViewAdapter.notifyDataSetChanged();
                     break;
 

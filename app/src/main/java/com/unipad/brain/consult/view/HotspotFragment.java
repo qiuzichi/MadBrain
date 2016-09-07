@@ -105,24 +105,24 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
                         //始终记录是最后一页的  页数
                         requestPagerNum++;
                     }
-                    if (newsDatas.size() != 0) {
-                        for (int i = databean.size()-1; i >= 0; i--) {
-                            for (int j = 0; j < newsDatas.size(); j++) {
-                                if (databean.get(i).equals(newsDatas.get(j))) {
-                                    break;
-                                } else {
-                                    if (j == newsDatas.size() - 1) {
-                                        //不同 则是新数据
-                                        newsDatas.add(0, databean.get(i));
-                                        break;
-                                    }
-                                    continue;
-                                }
-                            }
-                        }
-                    } else {
-                        newsDatas.addAll(databean);
-                    }
+//                    if (newsDatas.size() != 0) {
+//                        for (int i = databean.size()-1; i >= 0; i--) {
+//                            for (int j = 0; j < newsDatas.size(); j++) {
+//                                if (databean.get(i).equals(newsDatas.get(j))) {
+//                                    break;
+//                                } else {
+//                                    if (j == newsDatas.size() - 1) {
+//                                        //不同 则是新数据
+//                                        newsDatas.add(0, databean.get(i));
+//                                        break;
+//                                    }
+//                                    continue;
+//                                }
+//                            }
+//                        }
+//                    } else {
+                    newsDatas.addAll(databean);
+//                    }
                     mRecyclerViewAdapter.notifyDataSetChanged();
                     break;
 
@@ -203,7 +203,7 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
-//                        newsDatas.clear();
+                        newsDatas.clear();
 
                         service.getNews(ConsultTab.HOTSPOT.getTypeId(), null, 1, perPageDataNumber);
                     }
@@ -218,7 +218,7 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mSwipeRefreshLayout.setRefreshing(false);
 
-        mRecyclerViewAdapter = new MyRecyclerAdapter(mActivity, mRecyclerView, newsDatas,2);
+        mRecyclerViewAdapter = new MyRecyclerAdapter(mActivity, mRecyclerView, newsDatas,2, mSwipeRefreshLayout);
 
 //        mRecyclerViewAdapter = new MyRecyclerViewAdapter();
         mRecyclerView.setAdapter(mRecyclerViewAdapter);

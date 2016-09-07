@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -79,7 +80,8 @@ public class LoadService extends Service {
 	/* 下载 */
 	@SuppressWarnings("deprecation")
 	private void load(String path) {
-
+		//删除以前下载的apk 文件
+		deleteApkFile();
 		String apkName = path.substring(path.lastIndexOf("\\") + 1,
 				path.length());
 		DownloadManager.Request down = new DownloadManager.Request(
@@ -105,6 +107,22 @@ public class LoadService extends Service {
 					DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
 		} catch (Exception e) {
+		}
+	}
+
+	private void deleteApkFile() {
+
+		File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "MLC/upload" );
+		if (file.exists()) {
+			//删除以前存在的apk结尾文件
+			File[] filename = file.listFiles();
+			for (int i = 0; i < filename.length; i++) {
+				if (filename[i].isFile()) {
+					if (filename[i].getName().endsWith("apk")) {
+						filename[i].delete();
+					}
+				}
+			}
 		}
 	}
 

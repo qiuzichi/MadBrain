@@ -133,4 +133,18 @@ public class CompetitionBean {
 				+ "]";
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if(o == null) return false;
+		if(this == o) return true;
+		if(getClass() != o.getClass()) return false;
+		if(o instanceof CompetitionBean){
+			CompetitionBean bean = (CompetitionBean)o;
+			if(bean.getComId().equals(this.getComId())){
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
