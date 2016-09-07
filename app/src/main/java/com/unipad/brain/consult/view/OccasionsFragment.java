@@ -71,7 +71,7 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MyRecyclerAdapter mRecyclerViewAdapter;
-    private TextView tv_error;
+    private RelativeLayout emptyView;
 
 
     @Override
@@ -82,9 +82,9 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
                 if(null == o){
                     //网络访问错误 刷新数据
                     if(newsDatas.size() == 0){
-                        tv_error.setVisibility(View.VISIBLE);
+                        emptyView.setVisibility(View.VISIBLE);
                         mSwipeRefreshLayout.setVisibility(View.GONE);
-                        tv_error.setText(getString(R.string.net_error_refrush_data));
+
                     } else {
                         ToastUtil.showToast(getString(R.string.net_error_refrush_data));
                     }
@@ -95,14 +95,13 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
                 if(databean.size() == 0){
                     //数据为空 显示默认 刷新数据
                     if(newsDatas.size() == 0){
-                        tv_error.setVisibility(View.VISIBLE);
+                        emptyView.setVisibility(View.VISIBLE);
                         mSwipeRefreshLayout.setVisibility(View.GONE);
-                        tv_error.setText(getString(R.string.not_news_data));
                     }
                     return;
                 }
 
-                tv_error.setVisibility(View.GONE);
+                emptyView.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setVisibility(View.VISIBLE);
                 if (requestPagerNum == 1 && databean.size() != 0) {
                     totalPager = databean.get(0).getTotalPager();
@@ -156,8 +155,9 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
         RelativeLayout mLunBoPic = (RelativeLayout) getView().findViewById(R.id.rl_advert_view);
         mLunBoPic.setVisibility(View.GONE);
 
-        tv_error = (TextView) getView().findViewById(R.id.tv_load_error_show);
+        TextView tv_error = (TextView) getView().findViewById(R.id.tv_load_error_show);
         tv_error.setOnClickListener(this);
+        emptyView = (RelativeLayout) getView().findViewById(R.id.rl_empty_view);
         mRecyclerView = (RecyclerView) getView().findViewById(R.id.lv_introduction_recyclerview);
         mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh_widget);
 

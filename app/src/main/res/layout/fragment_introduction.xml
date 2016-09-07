@@ -24,23 +24,30 @@
             android:layout_marginBottom="20dp" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv_load_error_show"
+    <RelativeLayout
+        android:id="@+id/rl_empty_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_centerInParent="true"
-        android:clickable="true"
-        android:text="@string/not_news_data"
-        android:textSize="@dimen/common_text_24"
-        android:textColor="@color/text_gray_hint"
-        android:visibility="gone" />
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_below="@id/rl_advert_view">
+
+        <TextView
+            android:id="@+id/tv_load_error_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:clickable="true"
+            android:text="@string/not_news_data"
+            android:textColor="@color/text_gray_hint"
+            android:textSize="@dimen/common_text_24" />
+    </RelativeLayout>
+
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_widget"
-        android:layout_below="@id/rl_advert_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_advert_view">
 
         <RelativeLayout
             android:layout_width="match_parent"
