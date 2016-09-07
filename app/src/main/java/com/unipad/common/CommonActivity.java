@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -195,6 +196,12 @@ public class CommonActivity extends AbsMatchActivity implements IOperateGame {
         super.onResume();
         startTime = startTime - System.currentTimeMillis();
         LogUtil.e("-------", "time = " + startTime);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        LogUtil.e("","Activity on touch x="+event.getRawX()+",y = "+event.getRawY());
+        return super.onTouchEvent(event);
     }
 
     @Override
