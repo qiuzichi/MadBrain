@@ -4,6 +4,12 @@ package com.unipad.brain.consult.entity;
  * Created by jiangLu on 2016/6/24.
  */
 public class AdPictureBean {
+
+   public AdPictureBean(){}
+
+   public AdPictureBean(String advertPath){
+       this.advertPath = advertPath;
+   }
    //广告id
     private String advertId;
     //广告标题

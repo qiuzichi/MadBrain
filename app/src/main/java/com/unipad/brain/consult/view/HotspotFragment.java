@@ -9,10 +9,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.unipad.AppContext;
 import com.unipad.brain.R;
@@ -63,8 +65,8 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
     private AdViewPagerAdapter adAdapter;
     //总页面大小
     private int totalPager = 1;
-    private TextView tv_error;
     private Boolean isNoAdvertData = false;
+    private RelativeLayout emptyView;
 
     @Override
     public void update(int key, Object o) {
@@ -74,9 +76,8 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
                     if(null == o){
                         //网络访问错误 刷新数据
                         if(newsDatas.size() == 0){
-                            tv_error.setVisibility(View.VISIBLE);
+                            emptyView.setVisibility(View.VISIBLE);
                             mSwipeRefreshLayout.setVisibility(View.GONE);
-                            tv_error.setText(getString(R.string.net_error_refrush_data));
                         }else {
                             ToastUtil.showToast(getString(R.string.net_error_refrush_data));
                         }
@@ -87,14 +88,13 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
                     if(databean.size() == 0){
                         //数据为空 显示默认 刷新数据
                         if(newsDatas.size() == 0){
-                            tv_error.setVisibility(View.VISIBLE);
+                            emptyView.setVisibility(View.VISIBLE);
                             mSwipeRefreshLayout.setVisibility(View.GONE);
-                            tv_error.setText(getString(R.string.not_news_data));
                         }
                         return;
                     }
 
-                    tv_error.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.GONE);
                     mSwipeRefreshLayout.setVisibility(View.VISIBLE);
 
                     if(requestPagerNum == 1 && databean.size() != 0){
@@ -136,7 +136,7 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
                     if(((List<AdPictureBean>)o).size() == 0){
                         //服务器数据为null 没有数据
                         isNoAdvertData = true;
-                        startLunPic();
+//                        startLunPic();
                         return;
                     }
 
@@ -165,12 +165,12 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
         super.onActivityCreated(savedInstanceState);
         newsDatas = new ArrayList<NewEntity>();
         newsAdvertDatas = new ArrayList<AdPictureBean>();
+        //播放轮播广告
+        startLunPic();
         //初始化轮播图
         initLunPic();
         initData();
         initRecycler();
-        //播放轮播广告
-        startLunPic();
     }
 
 
@@ -184,8 +184,9 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
 
     private void initRecycler(){
         mRecyclerView = (RecyclerView) getView().findViewById(R.id.lv_introduction_recyclerview);
-        tv_error = (TextView) getView().findViewById(R.id.tv_load_error_show);
+        TextView tv_error = (TextView) getView().findViewById(R.id.tv_load_error_show);
         tv_error.setOnClickListener(this);
+        emptyView = (RelativeLayout) getView().findViewById(R.id.rl_empty_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh_widget);
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.light_blue2,
@@ -304,7 +305,11 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
         @Override
         public void convert(ViewHolder holder, AdPictureBean adPictureBean) {
             ImageView imageView = holder.getView(R.id.ad_gallery_item);
-            x.image().bind(imageView, adPictureBean.getAdvertPath(),imageOptions);
+            if(TextUtils.isEmpty(adPictureBean.getAdvertPath())){
+                imageView.setImageResource(R.drawable.default_advert_pic);
+            } else {
+                x.image().bind(imageView, adPictureBean.getAdvertPath(), imageOptions);
+            }
         }
     }
 
@@ -359,7 +364,7 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
         imageOptions = new ImageOptions.Builder()
                 // 加载中或错误图片的ScaleType;
                 //.setPlaceholderScaleType(ImageView.ScaleType.MATRIX)
-                .setImageScaleType(ImageView.ScaleType.FIT_XY)
+                .setImageScaleType(ImageView.ScaleType.CENTER)
                         //设置加载过程中的图片
                 .setLoadingDrawableId(R.drawable.default_advert_pic)
                         //设置加载失败后的图片

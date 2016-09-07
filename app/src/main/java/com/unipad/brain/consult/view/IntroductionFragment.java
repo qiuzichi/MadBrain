@@ -23,6 +23,8 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.lidroid.xutils.BitmapUtils;
 import com.unipad.AppContext;
 import com.unipad.brain.R;
 import com.unipad.brain.consult.adapter.MyRecyclerAdapter;
@@ -79,25 +81,26 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
     private VersionBean versionBean;
     private ConfirmUpdateDialog mConfirmDialog;
     private RelativeLayout mRelativeLayoutVersion;
-    private TextView tv_error;
     private Boolean isNoAdvertData = false;
+    private RelativeLayout emptyView;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         newsDatas = new ArrayList<NewEntity>();
         newsAdvertDatas = new ArrayList<AdPictureBean>();
+        //播放轮播广告
+        startLunPic(R.drawable.default_advert_pic);
         //初始化轮播图
         initLunPic();
         initData();
         initRecycler();
-        //播放轮播广告
-        startLunPic(R.drawable.default_advert_pic);
     }
 
     private void initData() {
         mRecyclerView = (RecyclerView) getView().findViewById(R.id.lv_introduction_recyclerview);
-        tv_error = (TextView) getView().findViewById(R.id.tv_load_error_show);
+        TextView tv_error = (TextView) getView().findViewById(R.id.tv_load_error_show);
+        emptyView = (RelativeLayout) getView().findViewById(R.id.rl_empty_view);
         tv_error.setOnClickListener(this);
         mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh_widget);
 
@@ -438,7 +441,13 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
         @Override
         public void convert(ViewHolder holder, final AdPictureBean adPictureBean) {
             ImageView imageView = holder.getView(R.id.ad_gallery_item);
-            x.image().bind(imageView, adPictureBean.getAdvertPath(), imageOptions);
+//            imageView.setScaleType(ImageView.ScaleType.CENTER);
+            if(TextUtils.isEmpty(adPictureBean.getAdvertPath())){
+                imageView.setImageResource(R.drawable.default_advert_pic);
+            } else {
+                x.image().bind(imageView, adPictureBean.getAdvertPath(), imageOptions);
+            }
+
         }
     }
 
@@ -453,7 +462,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                     if(null == o ){
                         //网络访问错误 刷新数据
                         if(newsDatas.size() == 0){
-                            tv_error.setVisibility(View.VISIBLE);
+                            emptyView.setVisibility(View.VISIBLE);
                             mSwipeRefreshLayout.setVisibility(View.GONE);
                         }
                         ToastUtil.showToast(getString(R.string.net_error_refrush_data));
@@ -464,12 +473,12 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                     if(databean.size() == 0){
                         //数据为空 显示默认 刷新数据
                         if(newsDatas.size() == 0){
-                            tv_error.setVisibility(View.VISIBLE);
+                            emptyView.setVisibility(View.VISIBLE);
                             mSwipeRefreshLayout.setVisibility(View.GONE);
                         }
                         return;
                     }
-                    tv_error.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.GONE);
                     mSwipeRefreshLayout.setVisibility(View.VISIBLE);
                     if (requestPagerNum == 1 && databean.size() != 0) {
                         totalPager = databean.get(0).getTotalPager();
