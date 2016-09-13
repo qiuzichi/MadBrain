@@ -374,7 +374,7 @@ int index = 0;
                     }
                     //格子里的数为空且不在第一个position时 index--
                 }
-                if (holder.editNUmView.getText().length() == 0 && holder != null && index != 0) {
+                if (holder != null && holder.editNUmView.getText().length() == 0 && index != 0) {
                     VirtualMemoryAdapter.MyViewHolder nextHolder = (VirtualMemoryAdapter.MyViewHolder) (memoryRv.findViewHolderForAdapterPosition(index));
                     if (null == nextHolder) {
 
