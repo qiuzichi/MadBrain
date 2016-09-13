@@ -1,5 +1,7 @@
 package com.unipad.brain.quickPoker.entity;
 
+import android.graphics.drawable.Drawable;
+
 import java.io.Serializable;
 
 /**
@@ -23,14 +25,15 @@ public class ChannelItem implements Serializable {
 	 * */
 	public Integer resId;
 
-	
+	public Drawable drawable;
 	public ChannelItem() {
 	}
 
-	public ChannelItem(int id,  int orderId,String name) {
+	public ChannelItem(int id,  int orderId,String name,Drawable drawable) {
 		this.id = Integer.valueOf(id);
 		this.resId = Integer.valueOf(orderId);
 		this.name = name;
+		this.drawable = drawable;
 	}
 
 

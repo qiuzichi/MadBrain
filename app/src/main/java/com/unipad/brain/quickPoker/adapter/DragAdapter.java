@@ -77,7 +77,7 @@ public class DragAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder)convertView.getTag();
 		}
-		holder.img.setImageBitmap(PokerEntity.getInstance().getBitmap(getItem(position).resId));
+		holder.img.setImageDrawable(getItem(position).drawable);
 		// item_text.setText(channel.getName());
 		// if ((position == 0) || (position == 1)) {
 		// item_text.setEnabled(false);

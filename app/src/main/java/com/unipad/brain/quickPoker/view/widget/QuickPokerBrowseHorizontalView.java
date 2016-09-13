@@ -201,7 +201,8 @@ public class QuickPokerBrowseHorizontalView extends HorizontalScrollView
 							.setRadius(5)
 							.build());
 					 */
-					imageView.setImageBitmap(PokerEntity.getInstance().getBitmap(pokerSortArray.get(index).resId));
+				imageView.setImageDrawable(pokerSortArray.get(index).drawable);
+
 				}
 			}
 			scrollTo(0,0);

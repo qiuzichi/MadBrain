@@ -415,6 +415,8 @@ public class DragGrid extends GridView {
         ImageView imageView = (ImageView) dragGroup.getChildAt(0);
         if (imageView.getColorFilter() == null) {
             imageView.setColorFilter(new ColorMatrixColorFilter(BT_SELECTED));
+
+            imageView.getDrawable().setColorFilter(new ColorMatrixColorFilter(BT_SELECTED));
         }
         ViewGroup dragGroupbefore = (ViewGroup) getChildAt(dragPosition);
         ImageView dragImageView = (ImageView) dragGroupbefore.getChildAt(0);

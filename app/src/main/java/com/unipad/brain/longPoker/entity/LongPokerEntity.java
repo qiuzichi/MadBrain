@@ -13,7 +13,7 @@ public class LongPokerEntity extends ChannelItem {
     private int userAnswer;
     private int num;
     public LongPokerEntity(int id, int orderId, String name,int num) {
-        super(id, orderId, name);
+        super(id, orderId, name,null);
         this.num = num;
     }
     public LongPokerEntity() {

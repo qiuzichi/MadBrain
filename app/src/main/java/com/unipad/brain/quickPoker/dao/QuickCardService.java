@@ -5,7 +5,9 @@ import java.util.Map;
 
 import android.util.SparseIntArray;
 
+import com.unipad.AppContext;
 import com.unipad.brain.AbsBaseGameService;
+import com.unipad.brain.App;
 import com.unipad.brain.R;
 import com.unipad.brain.quickPoker.entity.ChannelItem;
 import com.unipad.brain.quickPoker.entity.PokerEntity;
@@ -122,7 +124,7 @@ public class QuickCardService extends AbsBaseGameService{
 
 		for (int i = 0; i < Constant.POKER_NUM; i++) {
 
-			bottomCards.add(new ChannelItem(i+1, R.drawable.poker_fangkuai_01 + i,huaSe[i/13]+dian[i%13]));
+			bottomCards.add(new ChannelItem(i+1, R.drawable.poker_fangkuai_01 + i,huaSe[i/13]+dian[i%13], App.getContext().getResources().getDrawable(R.drawable.poker_fangkuai_01 + i)));
 
 		}
 		LogUtil.e("","bottom size = "+bottomCards.size());
