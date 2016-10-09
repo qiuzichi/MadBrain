@@ -212,7 +212,7 @@ public class QuickPokerRightFragment extends BasicCommonFragment implements
             if (service.isLastRound()) {
 
             } else {
-                ToastUtil.createTipDialog(getActivity(), Constant.SHOW_GAME_PAUSE, "开始准备下一轮").show();
+                ToastUtil.createTipDialog(getActivity(), Constant.SHOW_GAME_PAUSE, "开始准备下一轮",R.drawable.wait_next_turn).show();
                 new Thread() {
                     @Override
                     public void run() {

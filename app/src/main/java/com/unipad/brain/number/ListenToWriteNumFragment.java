@@ -99,7 +99,7 @@ public class ListenToWriteNumFragment extends NumberRightFragment{
                 ToastUtil.showToast("本场比赛结束，退出比赛");
                 mActivity.finish();
             }else {
-                ToastUtil.createTipDialog(mActivity, Constant.SHOW_GAME_PAUSE, "开始准备下一轮").show();
+                ToastUtil.createTipDialog(mActivity, Constant.SHOW_GAME_PAUSE, "开始准备下一轮",R.drawable.wait_next_turn).show();
                 new Thread() {
                     @Override
                     public void run() {

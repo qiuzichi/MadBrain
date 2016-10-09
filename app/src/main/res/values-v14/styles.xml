@@ -28,6 +28,9 @@
 <style name="dialog" parent="android:style/Theme.Holo.DialogWhenLarge">
     <item name="android:windowBackground">@drawable/dialog_background</item>
 </style>
+    <style name="noBackground" parent="@android:Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 <style name="dlg_body_666666_24dip_wwrap_hwrap">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>

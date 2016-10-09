@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.unipad.AppContext;
@@ -105,14 +106,14 @@ public class CommonActivity extends AbsMatchActivity implements IOperateGame {
                         break;
                     case DOWNLOAD_QUESTION:
                         LogUtil.e(TAG, "DOWNLOAD_QUESTION");
-                        ToastUtil.createTipDialog(CommonActivity.this, Constant.SHOW_GAME_PAUSE, "下载试题中").show();
+                        ToastUtil.createTipDialog(CommonActivity.this, Constant.SHOW_GAME_PAUSE, "下载试题中",R.drawable.wait_match_loading).show();
                         break;
                     case PAUSE_GAME:
                         LogUtil.e(TAG, "PAUSE_GAME");
                         HIDDialog.dismissAll();
                         gameFragment.pauseGame();
                         mCommonFragment.pauseGame();
-                        ToastUtil.createTipDialog(CommonActivity.this, Constant.SHOW_GAME_PAUSE, "比赛暂停").show();
+                        ToastUtil.createTipDialog(CommonActivity.this, Constant.SHOW_GAME_PAUSE, "比赛暂停",R.drawable.match_pause).show();
                         break;
                     case RESTAT_GAME:
                         LogUtil.e(TAG, "RESTAT_GAME");
@@ -130,9 +131,10 @@ public class CommonActivity extends AbsMatchActivity implements IOperateGame {
                         HIDDialog dialog = HIDDialog.getExistDialog(Constant.SHOW_GAME_PAUSE);
                         if (dialog == null) {
                             HIDDialog.dismissAll();
-                            ToastUtil.createTipDialog(CommonActivity.this, Constant.SHOW_GAME_PAUSE, "等待裁判准备开始").show();
+                            ToastUtil.createTipDialog(CommonActivity.this, Constant.SHOW_GAME_PAUSE, "等待裁判准备开始",R.drawable.wait_start_game).show();
                         } else {
                             ((TextView) dialog.findViewById(R.id.dialog_tip_content)).setText("等待裁判准备开始");
+                            ((ImageView) dialog.findViewById(R.id.dialog_tip_icon)).setImageResource(R.drawable.wait_start_game);
                         }
                         break;
                     case INIT_DATA_FINISH:
@@ -245,9 +247,17 @@ public class CommonActivity extends AbsMatchActivity implements IOperateGame {
         mCommonFragment = null;
         matchId = null;
         LogUtil.e(TAG, "destory");
-        service.setOperateGame(null);
-        SocketThreadManager.sharedInstance().releaseInstance();
-        AppContext.instance().clearService(service);
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                service.setOperateGame(null);
+                AppContext.instance().clearService(service);
+                SocketThreadManager.sharedInstance().releaseInstance();
+            }
+        }.start();
+
+
 
     }
 

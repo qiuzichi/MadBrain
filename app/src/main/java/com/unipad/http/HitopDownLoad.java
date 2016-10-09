@@ -110,7 +110,7 @@ public class HitopDownLoad extends HitopRequest<File> {
                     HIDDialog dialog = HIDDialog.getExistDialog(Constant.SHOW_GAME_PAUSE);
                     if (dialog == null) {
                         HIDDialog.dismissAll();
-                        ToastUtil.createTipDialog(App.getContext(), Constant.SHOW_GAME_PAUSE, "下载试题中："+progress).show();
+                        ToastUtil.createTipDialog(App.getContext(), Constant.SHOW_GAME_PAUSE, "下载试题中："+progress,R.drawable.wait_match_loading).show();
                     } else {
                         ((TextView) dialog.findViewById(R.id.dialog_tip_content)).setText("下载试题中："+progress);
                     }
