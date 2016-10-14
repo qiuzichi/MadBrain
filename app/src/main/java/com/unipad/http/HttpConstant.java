@@ -45,7 +45,7 @@ public class HttpConstant {
      */
     public static String APPLY_GAME = "/api/match/apply";
     // 获取图片路径 http://192.168.0.104:8090/crazybrain-mng
-    public static final String url = "http://192.168.0.117:8090/crazybrain-mng";
+    public static final String url = "http://221.5.109.34/crazybrain-mng";
 
     public static String PATH_FILE_URL  = url +  "/image/getFile?filePath=";
     // 更新用户信息

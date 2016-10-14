@@ -26,7 +26,7 @@ public class FragmentManager {
        SoftReference<Fragment> softReference = maps.get(consultTab.getType());
         if(softReference == null){
             MainBasicFragment fragment = creatNewFragment(consultTab);
-            return  (MainBasicFragment)fragment;
+            return  fragment;
         }else{
             Fragment fragment = softReference.get();
             if(fragment == null){

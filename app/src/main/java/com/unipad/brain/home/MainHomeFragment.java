@@ -29,6 +29,7 @@ import com.unipad.brain.dialog.ConfirmUpdateDialog;
 import com.unipad.brain.home.bean.VersionBean;
 import com.unipad.brain.home.dao.LoadService;
 import com.unipad.brain.home.dao.NewsService;
+import com.unipad.brain.main.MainActivity;
 import com.unipad.common.Constant;
 import com.unipad.http.HttpConstant;
 import com.unipad.observer.IDataObserver;
@@ -53,6 +54,14 @@ public class MainHomeFragment extends MainBasicFragment implements InfoListFragm
         //初始化界面;
         initView();
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity mActivity= (MainActivity)getActivity();
+        if(mActivity.getFragmentView() != null && !mActivity.getFragmentView().isHidden() )
+            getTransaction().hide(mActivity.getFragmentView());
     }
 
     @Override
@@ -99,6 +108,8 @@ public class MainHomeFragment extends MainBasicFragment implements InfoListFragm
             mConsultMainFragment = new ConsultMainFragment();
             mRightFragment = mConsultMainFragment;
         }
+
+//
         transaction.add(R.id.fl_mainpager_info, mRightFragment);
         //步骤三：调用commit()方法使得FragmentTransaction实例的改变生效
         transaction.commit();
@@ -130,12 +141,12 @@ public class MainHomeFragment extends MainBasicFragment implements InfoListFragm
         FragmentTransaction transaction = getTransaction();
         transaction.hide(mRightFragment);
 
-        mRightFragment = mCompititionMainFragment;
         if(mCompititionMainFragment == null){
             mCompititionMainFragment = new CompititionMainFragment();
             mRightFragment = mCompititionMainFragment;
             transaction.add(R.id.fl_mainpager_info, mRightFragment);
         }else {
+            mRightFragment = mCompititionMainFragment;
             transaction.show(mRightFragment);
         }
         //步骤三：调用commit()方法使得FragmentTransaction实例的改变生效

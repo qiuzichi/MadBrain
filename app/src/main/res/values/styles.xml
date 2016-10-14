@@ -10,9 +10,13 @@
         <item name="android:minHeight">50dip</item>
         <item name="android:maxHeight">50dip</item>
     </style>
-    <!--dialog style begin-->
     <style name="dialog_wait" parent="android:style/Theme.Holo.Dialog">
         <item name="android:windowBackground"> @drawable/y_tips_bg
+        </item>
+    </style>
+
+    <style name="dialog_wait_requestinternet" parent="android:style/Theme.Holo.Dialog">
+        <item name="android:windowBackground"> @color/transparent
         </item>
     </style>
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/consult_tab_searchtab" />
+    <corners
+        android:bottomLeftRadius="@dimen/margin_5dip"
+        android:bottomRightRadius="@dimen/margin_5dip"
+        android:topLeftRadius="@dimen/margin_5dip"
+        android:topRightRadius="@dimen/margin_5dip" />
+    <size
+        android:width="@dimen/dip_2"
+        android:height="@dimen/set_tabwidget_height"/><!-- 宽度和高度 -->
+</shape>

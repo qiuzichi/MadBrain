@@ -11,6 +11,7 @@
     <color name="blue">#0000FF</color>
     <color name="light_blue">#fff2dc</color>
     <color name="light_blue2">#279AEC</color>
+    <color name="light_blue3">#71D2FF</color>
     <color name="light_blue_item">#92BDFA</color>
     <color name="blue_bg">#BBD0EB</color>
     <color name="light_blue_tran">#EFF5FD</color>
@@ -63,7 +64,7 @@
     <color name="comment_popwindows_input">#EAF3FE</color>
     <color name="comment_popwindows_bg">#EFEDED</color>
     <color name="refresh_progress_bar_bg">#EDEDED</color>
-    <color name="update_text_bg">#FEEFB6</color>
+    <color name="update_text_bg">#CBCFD2</color>
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
@@ -76,6 +77,15 @@
     <color name="introduction_text_color_red">#FD5A5A</color>
     <color name="green_bg">#00FF7F</color>
     <color name="yellow_light">#F2E115</color>
+    <color name="info_bg_username">#242A38</color>
+    <color name="info_bg_usergroup">#2B374F</color>
+    <color name="consult_tab_searchtab">#59616E</color>
+    <color name="consult_tab_normal_bg">#6E7585</color>
+    <color name="consult_tab_select_bg">#71D2FF</color>
+    <color name="info_list_bg">#A7A7A7</color>
+    <color name="user_icon_bg">#8E9399</color>
+    <color name="search_bg_color">#F0F0F0</color>
+
 
 
     <!-- 咨询相关颜色-->

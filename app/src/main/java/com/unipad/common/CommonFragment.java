@@ -85,8 +85,9 @@ public class CommonFragment extends Fragment implements View.OnClickListener, Co
         mCountDownTime = new CountDownTime(0, false);
         mCountDownTime.setTimeListener(this);
         mTextTime.setText(mCountDownTime.getTimeString());
-        mTextName.setText(AppContext.instance().loginUser.getUserName()  + DateUtil.getMatchGroud(mActivity));
+        mTextName.setText(AppContext.instance().loginUser.getUserName());
         mTextAgeAds.setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
+        ((TextView) mParentLayout.findViewById(R.id.txt_user_group_match)).setText("" + DateUtil.getMatchGroud(mActivity));
 
         mIconImageView = (ImageView) mParentLayout.findViewById(R.id.user_photo);
         ((HomeGameHandService) AppContext.instance().getService(Constant.HOME_GAME_HAND_SERVICE)).registerObserver(HttpConstant.GET_RULE_NOTIFY, this);

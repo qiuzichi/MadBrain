@@ -153,8 +153,9 @@ public class MainCompeteFragment extends MainBasicFragment {
     }
 
     private void initUserName() {
-        ((TextView) mActivity.findViewById(R.id.txt_uese_name)).setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(mActivity));
+        ((TextView) mActivity.findViewById(R.id.txt_uese_name)).setText(AppContext.instance().loginUser.getUserName());
         ((TextView) mActivity.findViewById(R.id.txt_uese_level)).setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
+        ((TextView) mActivity.findViewById(R.id.txt_user_group_compete)).setText("" + DateUtil.getMatchGroud(mActivity));
 
         final ImageView user_photo = (ImageView) mActivity.findViewById(R.id.iv_user_pic);
         ImageOptions imageOptions =new ImageOptions.Builder()

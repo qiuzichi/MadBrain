@@ -76,7 +76,8 @@ public class PersonalActivity extends BasicActivity implements IDataObserver {
         if (null != savedInstanceState) {
             filePath = savedInstanceState.getString("path");
             ToastUtil.createWaitingDlg(this, null, Constant.LOGIN_WAIT_DLG).show(15);
-            service.uploadAuthFile(filePath,1);
+            if(!TextUtils.isEmpty(filePath))
+                service.uploadAuthFile(filePath,1);
         }
 
         setContentView(R.layout.personal_aty);
@@ -86,6 +87,7 @@ public class PersonalActivity extends BasicActivity implements IDataObserver {
     public void initData() {
         findViewById(R.id.title_bar_left_text).setOnClickListener(this);
         txtName = (TextView) findViewById(R.id.user_name);
+        ((TextView) findViewById(R.id.txt_user_group_person)).setText("" + DateUtil.getMatchGroud(this));
         mTextRight = (TextView) findViewById(R.id.title_bar_right_text);
         mTextRight.setOnClickListener(this);
         user_photo = (ImageView) findViewById(R.id.user_photo);
@@ -114,7 +116,7 @@ public class PersonalActivity extends BasicActivity implements IDataObserver {
 
     public void setTxtName() {
         if (txtName != null)
-            txtName.setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(this));
+            txtName.setText(AppContext.instance().loginUser.getUserName());
     }
 
     private View getView() {

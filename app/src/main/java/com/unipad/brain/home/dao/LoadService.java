@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.unipad.brain.R;
@@ -62,6 +63,7 @@ public class LoadService extends Service {
 		context = getApplicationContext();
 		manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
 		receiver = new DownloadCompleteReceiver();
+
 	}
 
 	@Override
@@ -82,6 +84,7 @@ public class LoadService extends Service {
 	private void load(String path) {
 		//删除以前下载的apk 文件
 		deleteApkFile();
+		Log.d("loadservice", "laodPath" + path);
 		String apkName = path.substring(path.lastIndexOf("/") + 1,
 				path.length());
 		DownloadManager.Request down = new DownloadManager.Request(
@@ -105,6 +108,7 @@ public class LoadService extends Service {
 		try {
 			context.registerReceiver(receiver, new IntentFilter(
 					DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
 
 		} catch (Exception e) {
 		}

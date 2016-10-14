@@ -55,7 +55,7 @@ public class ToastUtil {
      * @return HIDDialog
      */
     public static HIDDialog createWaitingDlg(Context mContext, String message, String id) {
-        HIDDialog WaitingDialog = new HIDDialog(mContext, R.style.dialog_wait, id);
+        HIDDialog WaitingDialog = new HIDDialog(mContext, R.style.dialog_wait_requestinternet, id);
         if (null == message) {
             message = mContext.getString(R.string.ui_please_wait);
         }
@@ -64,12 +64,13 @@ public class ToastUtil {
                 (int) mContext.getResources().getDimension(R.dimen.wait_dialog_width), (int) mContext.getResources()
                         .getDimension(R.dimen.wait_dialog_height));
 
+
         // 必须放在设置 view之后,自定义的view是不能设置该方法的，注释掉
-        ((TextView) WaitingDialog.findViewById(R.id.dialog_text)).setText(message);
+//        ((TextView) WaitingDialog.findViewById(R.id.dialog_text)).setText(message);
         Window win = WaitingDialog.getWindow();
         WindowManager.LayoutParams lp = win.getAttributes();
         win.setGravity(Gravity.CENTER_VERTICAL);
-
+//        lp.alpha = 0.0f;
         win.setAttributes(lp);
         // HLog.v(TAG, "~~~~~~~~create waite dialog...the dialog id:" + id + "~~~the message:" + message);
         return WaitingDialog;

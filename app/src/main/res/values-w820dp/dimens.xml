@@ -62,7 +62,7 @@
     <dimen name="history_answer_item_heigth">60dip</dimen>
     <dimen name="point_navigation_space">20dp</dimen>
     <dimen name="Thumb_height">150dp</dimen>
-    <dimen name="Thumb_weight">150dp</dimen>
+    <dimen name="Thumb_weight">220dp</dimen>
     //轮播图的高度
     <dimen name="adver_lunbo_height">230dp</dimen>
     <dimen name="newlist_height">100dp</dimen>

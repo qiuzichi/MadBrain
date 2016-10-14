@@ -87,13 +87,14 @@ public class PractiseCommLeftFragment extends Fragment implements View.OnClickLi
 
         mTextAgeAds.setSelected(true);
         mTextAgeAds.setText((getString(R.string.person_level) + AppContext.instance().loginUser.getLevel()));
+        ((TextView) mParentLayout.findViewById(R.id.txt_user_group_match)).setText("" + DateUtil.getMatchGroud(mActivity));
         mTextName.setSelected(true);
         this.getBgColorArray(mParentLayout);
 
         mCountDownTime = new CountDownTime(0, false);
         mCountDownTime.setTimeListener(this);
         mTextTime.setText(mCountDownTime.getTimeString());
-        mTextName.setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(mActivity));
+        mTextName.setText(AppContext.instance().loginUser.getUserName());
         mIconImageView = (ImageView) mParentLayout.findViewById(R.id.user_photo);
         ImageOptions imageOptions =new ImageOptions.Builder()
                 //.setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小

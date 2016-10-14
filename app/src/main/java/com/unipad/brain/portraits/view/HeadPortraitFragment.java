@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -120,7 +121,6 @@ public class HeadPortraitFragment extends BasicCommonFragment {
     public void startRememory() {
         super.startRememory();
         mStubShade.setVisibility(View.GONE);
-
     }
 
     @Override
@@ -154,6 +154,7 @@ public class HeadPortraitFragment extends BasicCommonFragment {
             final EditText firstName = (EditText) holder.getView(R.id.first_name);
             final EditText lastName = (EditText) holder.getView(R.id.last_name);
             TextView holeName = (TextView) holder.getView(R.id.name_text);
+
             switch (service.state) {
                 case AbsBaseGameService.GO_IN_MATCH_START_RE_MEMORY:
                 case AbsBaseGameService.GO_IN_MATCH_END_MEMORY:

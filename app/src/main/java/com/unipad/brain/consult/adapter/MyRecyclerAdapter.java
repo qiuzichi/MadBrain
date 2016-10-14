@@ -150,7 +150,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             final NewEntity bean = newsDatas.get(position);
 
             ((ItemViewHolder) holder).text_title.setText(bean.getTitle());
-            ((ItemViewHolder) holder).text_updatetime.setText(bean.getPublishDate());
+            ((ItemViewHolder) holder).txt_brief.setText(bean.getBrief());
+//            ((ItemViewHolder) holder).txt_brief.setEllipsis("...更多");//...替换剩余字符串
+//            ((ItemViewHolder) holder).txt_brief.setMaxLines(3);
 
             final ImageView iv_icon = ((ItemViewHolder) holder).iv_picture;
             if(null == imageOptions){
@@ -221,9 +223,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     showPopupWindows(iv_comment);
                 }
             });
-            final RelativeLayout rl_checkDetail =  ((ItemViewHolder) holder).rl_checkDetail;
+            final TextView txt_brief =  ((ItemViewHolder) holder).txt_brief;
             //查看详情点击
-            rl_checkDetail.setOnClickListener(new View.OnClickListener() {
+            txt_brief.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //查看详情的界面
@@ -321,7 +323,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView text_title;
-        TextView text_updatetime;
+        TextView txt_brief;
         ImageView iv_pager_zan;
         ImageView iv_pager_comment;
         ImageView iv_picture;
@@ -329,11 +331,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public ItemViewHolder(View view) {
             super(view);
             text_title = (TextView) view.findViewById(R.id.tv_item_introduction_news_title);
-            text_updatetime = (TextView) view.findViewById(R.id.tv_item_introduction_updatetime);
+            txt_brief = (TextView) view.findViewById(R.id.view_line_item_brief);
             iv_picture = (ImageView) view.findViewById(R.id.iv_item_introduction_icon);
             iv_pager_zan = (ImageView) view.findViewById(R.id.iv_item_introduction_zan);
             iv_pager_comment = (ImageView) view.findViewById(R.id.iv_item_introduction_comment);
-            rl_checkDetail = (RelativeLayout) view.findViewById(R.id.rl_item_introduction_detail);
+//            rl_checkDetail = (RelativeLayout) view.findViewById(R.id.rl_item_introduction_detail);
         }
     }
 

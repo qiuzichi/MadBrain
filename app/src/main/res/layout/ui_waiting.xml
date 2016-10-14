@@ -2,25 +2,26 @@
 
 <RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/transparent"
 	android:gravity="center">
-	<TextView
-		android:id="@+id/dialog_text"
+	<!--<TextView-->
+		<!--android:id="@+id/dialog_text"-->
+		<!--android:layout_width="wrap_content"-->
+		<!--android:maxWidth="430dip"-->
+		<!--android:layout_gravity="center_horizontal"-->
+
+		<!--android:textSize="25dip"-->
+		<!--android:layout_height="wrap_content"-->
+
+		<!--android:text="@string/ui_please_wait"-->
+		<!--android:gravity="center"/>-->
+	<ImageView
+		android:id="@+id/img_wait_load_dialog"
 		android:layout_width="wrap_content"
-		android:maxWidth="430dip"
-		android:textSize="25dip"
 		android:layout_height="wrap_content"
-		android:layout_centerInParent="true"
-		android:text="@string/ui_please_wait"
-		android:gravity="center"></TextView>
-	<ProgressBar
-		android:id="@+id/wait_progress"
-		style="@style/wait_progressbar_rotate"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_toLeftOf="@+id/dialog_text"
-		android:layout_marginRight="15dip"
-		android:layout_centerVertical="true"></ProgressBar>
+		android:src="@drawable/waiting_loading"
+		/>
 </RelativeLayout>
 

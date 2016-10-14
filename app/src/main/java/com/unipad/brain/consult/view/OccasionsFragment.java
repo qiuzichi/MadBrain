@@ -152,9 +152,6 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
         super.onActivityCreated(savedInstanceState);
         newsDatas = new ArrayList<NewEntity>();
         //隐藏轮播图的view
-        RelativeLayout mLunBoPic = (RelativeLayout) getView().findViewById(R.id.rl_advert_view);
-        mLunBoPic.setVisibility(View.GONE);
-
         TextView tv_error = (TextView) getView().findViewById(R.id.tv_load_error_show);
         tv_error.setOnClickListener(this);
         emptyView = (RelativeLayout) getView().findViewById(R.id.rl_empty_view);
@@ -206,7 +203,7 @@ public class OccasionsFragment extends MainBasicFragment implements IDataObserve
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mRecyclerView.addItemDecoration(new DividerDecoration(mActivity));
+        mRecyclerView.addItemDecoration(new DividerDecoration(mActivity, LinearLayoutManager.VERTICAL, R.drawable.list_divider_line));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mSwipeRefreshLayout.setRefreshing(false);
 

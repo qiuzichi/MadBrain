@@ -15,15 +15,18 @@
 -->
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/text1"
+    android:id="@+id/txt_history_item"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/head_portrait_width"
     android:ellipsize="end"
     android:singleLine="true"
+    android:drawableLeft="@drawable/race_time"
+    android:drawablePadding="@dimen/margin_10dip"
+    android:layout_marginLeft="@dimen/margin_30dp"
     android:textAppearance="?android:attr/textAppearanceListItemSmall"
     android:gravity="center_vertical"
-    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+    android:paddingLeft="@dimen/margin_30dp"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:textColor="@color/black"
+    android:textColor="@color/memory_order"
+    android:textSize="@dimen/common_text_24"
     />

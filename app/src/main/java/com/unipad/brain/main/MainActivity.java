@@ -1,10 +1,12 @@
 package com.unipad.brain.main;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -48,6 +50,12 @@ public class MainActivity extends BasicActivity implements  ShowDialog.OnShowDia
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_aty);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("mainActiviyt", "onresume is   run" );
     }
 
     @Override
@@ -175,5 +183,7 @@ public class MainActivity extends BasicActivity implements  ShowDialog.OnShowDia
         mTextLocation.setSelected(true);
     }
 
-
+    public MainBasicFragment getFragmentView(){
+        return mCompeteFragment;
+    }
 }

@@ -3,8 +3,10 @@ package com.unipad.brain.consult.listener;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -21,12 +23,40 @@ public class DividerDecoration extends RecyclerView.ItemDecoration {
     public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
 
     private Drawable mDivider;
+    private int mDividerHeight = 2;//分割线高度，默认为1px
+    private int mOrientation;//列表的方向：LinearLayoutManager.VERTICAL或LinearLayoutManager.HORIZONTA
 
     public DividerDecoration(Context context) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
         a.recycle();
     }
+
+    public DividerDecoration(Context context, int orientation) {
+        if (orientation != LinearLayoutManager.VERTICAL && orientation != LinearLayoutManager.HORIZONTAL) {
+            throw new IllegalArgumentException("请输入正确的参数！");
+        }
+        mOrientation = orientation;
+
+        final TypedArray a = context.obtainStyledAttributes(ATTRS);
+        mDivider = a.getDrawable(0);
+        a.recycle();
+    }
+
+    /**
+     * 自定义分割线
+     *
+     * @param context
+     * @param orientation 列表方向
+     * @param drawableId  分割线图片
+     */
+    public DividerDecoration(Context context, int orientation, int drawableId) {
+        this(context, orientation);
+        mDivider = ContextCompat.getDrawable(context, drawableId);
+        mDividerHeight = mDivider.getIntrinsicHeight();
+    }
+
+
 
     private int getOrientation(RecyclerView parent) {
         LinearLayoutManager layoutManager;

@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -41,47 +42,40 @@ import java.util.List;
 /**
  * Created by jianglu on 2016/7/8.
  */
-public class SearchResultActivity  extends BasicActivity implements IDataObserver{
+public class SearchResultActivity extends BasicActivity implements IDataObserver{
 
-    private List<NewEntity> mSearchDatas = new ArrayList<NewEntity>();
+    private List<NewEntity> mSearchDatas;
     private NewsService service;
     private SearchAdapter mSearchAdapter;
     private ListView mListView;
-    private PopupWindow mPopupWindows;
     private String contentId;
     private int pageId;
     private final String OPERATE_ZAN = "1";
-    private final String OPERATE_COMMENT = "2";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
+        mSearchDatas = new ArrayList<NewEntity>();
         service = (NewsService) AppContext.instance().getService(Constant.NEWS_SERVICE);
         service.registerObserver(HttpConstant.NOTIFY_GET_SEARCH_RUSULT, this);
         service.registerObserver(HttpConstant.NOTIFY_GET_SEARCH_OCCSION, this);
         service.registerObserver(HttpConstant.NOTIFY_GET_SEARCH_HOTSPOT, this);
         service.registerObserver(HttpConstant.NOTIFY_GET_OPERATE, this);
-
         contentId = getIntent().getStringExtra("contentId");
-        //说明的第一个页面 资讯页面；00001---1
+        //说明的第一个页面 资讯页面；00001---00002----00003
         pageId = Integer.parseInt(contentId.substring(contentId.lastIndexOf("0") + 1)) - 1;
-
-        service.getSearchNews(contentId, contentId, getIntent().getStringExtra("queryContent"), 1, 10);
+        service.getSearchNews(contentId, contentId, getIntent().getStringExtra("queryContent"), 1, 20);
     }
 
     @Override
     public void initData() {
         mListView = (ListView) findViewById(R.id.listview_search_result);
-
         //返回键点击事件
         ((TextView)findViewById(R.id.title_back_text_search)).setOnClickListener(this);
-
         String title = null;
         if("00001".equals(contentId)){
             title = getString(R.string.info_result);
-
 
         }else if("00002".equals(contentId)) {
             title = getString(R.string.competetion_result);
@@ -90,7 +84,6 @@ public class SearchResultActivity  extends BasicActivity implements IDataObserve
         }
        //设置搜索结果的标题
         ((TextView)findViewById(R.id.title_detail_text_search)).setText(title);
-
         mSearchAdapter = new SearchAdapter(this, mSearchDatas, R.layout.item_listview_introduction );
         mListView.setAdapter(mSearchAdapter);
     }
@@ -109,16 +102,14 @@ public class SearchResultActivity  extends BasicActivity implements IDataObserve
             //设置标题
              ((TextView) holder.getView(R.id.tv_item_introduction_news_title)).setText(newEntity.getTitle());
             //设置更新时间
-            ((TextView) holder.getView(R.id.tv_item_introduction_updatetime)).setText(newEntity.getPublishDate());
+            TextView txt_brief = (TextView) holder.getView(R.id.view_line_item_brief);
+            ((TextView) holder.getView(R.id.view_line_item_brief)).setText(newEntity.getBrief());
             //分割线
-            View view_line_split = (View) holder.getView(R.id.view_line_item_introduction);
+//            View view_line_split = (View) holder.getView(R.id.view_line_item_introduction);
 
             //点赞的imagebutton
             final ImageView iv_pager_zan = (ImageView) holder.getView(R.id.iv_item_introduction_zan);
-            //评论
-            final ImageView iv_pager_comment = (ImageView) holder.getView(R.id.iv_item_introduction_comment);
-            //查看详情的 relative
-            RelativeLayout rl_checkDetail = holder.getView(R.id.rl_item_introduction_detail);
+
 
             if (newEntity.getIsLike()) {
                 iv_pager_zan.setImageResource(R.drawable.favorite_introduction_check);
@@ -165,146 +156,10 @@ public class SearchResultActivity  extends BasicActivity implements IDataObserve
                 }
             });
 
-            //评论的点击事件
-            iv_pager_comment.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    initPopupWindows(newEntity);
-                    showPopupWindows(iv_pager_comment);
-                }
-            });
-            //查看详情点击
-            rl_checkDetail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //查看详情的界面
-                    Intent intent = new Intent(getApplicationContext(), PagerDetailActivity.class);
-                    intent.putExtra("pagerId", newEntity.getId());
-                    startActivity(intent);
-
-                }
-            });
-
-
         }
 
     }
-    private void initPopupWindows(final NewEntity newEntity ){
-        View mPopupView = View.inflate(this, R.layout.comment_commit_popup, null);
-        //评论内容
-        final EditText et_commment = (EditText) mPopupView.findViewById(R.id.et_popup_comment_input);
 
-        //监听返回键事件
-        et_commment.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    if(mPopupWindows !=null && mPopupWindows.isShowing()){
-                        mPopupWindows.dismiss();
-                    }
-                    return true;
-                }
-                return false;
-
-            }
-        });
-        //提交评论按钮
-        Button btn_commit = (Button) mPopupView.findViewById(R.id.btn_comment_commit);
-
-        btn_commit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //点击提交关闭窗体  用户评论内容
-                final String user_comment = et_commment.getText().toString().trim();
-                if(TextUtils.isEmpty(user_comment)){
-                    Toast.makeText(getApplicationContext(), "内容为空 请重新输入", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                //提交评论内容到服务器
-                service.getNewsOperate(newEntity.getId(), OPERATE_COMMENT, null, user_comment, pageId, new Callback.CommonCallback<String>(){
-
-                    @Override
-                    public void onSuccess(String s) {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable, boolean b) {
-                        Toast.makeText(getApplicationContext(), "网络原因 提交失败", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onCancelled(CancelledException e) {
-
-                    }
-
-                    @Override
-                    public void onFinished() {
-
-                    }
-                });
-                //清空输入的内容
-                et_commment.setText("");
-                //关闭弹出窗体
-                closePopup();
-            }
-        });
-
-        mPopupWindows = new PopupWindow(mPopupView, -1, 50, true);
-        mPopupWindows.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
-        mPopupWindows.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        mPopupWindows.setOutsideTouchable(true);
-        mPopupWindows.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        //动画效果;
-        ScaleAnimation sa = new ScaleAnimation(1f, 1f, 0f, 1f,
-                Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f);
-        sa.setDuration(300);
-        mPopupView.startAnimation(sa);
-
-    }
-
-    private void showPopupWindows(View parent){
-        closePopup();
-        popupInputMethodWindow();
-        mPopupWindows.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
-
-    }
-
-    //关闭弹出窗体
-    private void closePopup(){
-
-        if(mPopupWindows != null && mPopupWindows.isShowing()){
-            mPopupWindows.dismiss();
-            popupInputMethodWindow();
-        }
-    }
-    //同时弹出 隐藏键盘 弹出框
-    private void popupInputMethodWindow() {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm.isActive()) {
-                    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,
-                            InputMethodManager.HIDE_NOT_ALWAYS);
-                }
-            }
-        }, 0);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-            if(mPopupWindows !=null && mPopupWindows.isShowing()){
-                mPopupWindows.dismiss();
-            }
-        }
-        return super.onKeyDown(keyCode, event);
-
-    }
 
     @Override
     public void update(int key, Object o) {
@@ -312,11 +167,9 @@ public class SearchResultActivity  extends BasicActivity implements IDataObserve
             case HttpConstant.NOTIFY_GET_SEARCH_RUSULT:
             case HttpConstant.NOTIFY_GET_SEARCH_OCCSION:
             case HttpConstant.NOTIFY_GET_SEARCH_HOTSPOT:
-
                 mSearchDatas.clear();
                 //获取新闻页面数据
                 mSearchDatas.addAll((List<NewEntity>) o);
-
                 if(mSearchDatas.size() == 0){
                     //说明搜索不到数据；
                     mListView.setVisibility(View.GONE);
@@ -325,10 +178,8 @@ public class SearchResultActivity  extends BasicActivity implements IDataObserve
                 }else {
                     mSearchAdapter.notifyDataSetChanged();
                 }
-
                 break;
             case HttpConstant.NOTIFY_GET_OPERATE:
-
                 mSearchAdapter.notifyDataSetChanged();
                 break;
             default:
@@ -347,18 +198,18 @@ public class SearchResultActivity  extends BasicActivity implements IDataObserve
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        clear();
+        Log.d(getClass().getSimpleName(), "onDestroy()" + " is run");
     }
     private void clear(){
         service.unRegisterObserve(HttpConstant.NOTIFY_GET_SEARCH_RUSULT,this);
         service.unRegisterObserve(HttpConstant.NOTIFY_GET_SEARCH_OCCSION,this);
         service.unRegisterObserve(HttpConstant.NOTIFY_GET_SEARCH_HOTSPOT,this);
-        service.unRegisterObserve(HttpConstant.NOTIFY_GET_OPERATE,this);
+        service.unRegisterObserve(HttpConstant.NOTIFY_GET_OPERATE, this);
+
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        closePopup();
     }
 }
