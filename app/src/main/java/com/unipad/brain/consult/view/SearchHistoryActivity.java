@@ -164,8 +164,9 @@ public class SearchHistoryActivity extends BasicActivity implements IDataObserve
         @Override
         public void onSearch(String text) {
             //保存数据 到本地；
-            if(TextUtils.isEmpty(text)) return;{
+            if(TextUtils.isEmpty(text)) {
                 Toast.makeText(SearchHistoryActivity.this, getString(R.string.search_conment), Toast.LENGTH_SHORT).show();
+                return;
             }
             String data = SharepreferenceUtils.getString(AppContext.instance().loginUser.getUserName() + "history", null);
             if(TextUtils.isEmpty(data)){
