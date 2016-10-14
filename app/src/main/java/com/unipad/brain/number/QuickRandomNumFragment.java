@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.unipad.brain.AbsBaseGameService;
+import com.unipad.brain.R;
 import com.unipad.brain.number.view.KeyboardDialog;
 import com.unipad.brain.number.view.NumberMemoryLayout;
 import com.unipad.common.Constant;
@@ -94,7 +95,7 @@ public class QuickRandomNumFragment extends  NumberRightFragment{
             if (service.isLastRound()) {
 
             } else {
-                ToastUtil.createTipDialog(mActivity, Constant.SHOW_GAME_PAUSE, "开始准备下一轮").show();
+                ToastUtil.createTipDialog(mActivity, Constant.SHOW_GAME_PAUSE, "开始准备下一轮", R.drawable.wait_next_turn).show();
                 new Thread() {
                     @Override
                     public void run() {

@@ -67,7 +67,8 @@ public class QuickPokerBrowseHorizontalView extends HorizontalScrollView
 		LogUtil.e("",""+bimap.getWidth());
 		PokerEntity.getInstance().setPokerWith(bimap.getWidth());
 		PokerEntity.getInstance().setPokerHeigth(bimap.getHeight());
-		post(new Runnable() {
+		layoutPokerView();
+		/**post(new Runnable() {
 			@Override
 			public void run() {
 
@@ -76,6 +77,7 @@ public class QuickPokerBrowseHorizontalView extends HorizontalScrollView
 				mHandler.sendEmptyMessage(MSG_LAYOUT_POKER);
 			}
 		});
+		 */
 
 	}
 
@@ -191,7 +193,7 @@ public class QuickPokerBrowseHorizontalView extends HorizontalScrollView
 					.getPokerSortArray();
 			if (pokerSortArray != null
 					&& pokerSortArray.size() == PokerEntity.pairNums) {
-				for (int index = 0; index < PokerEntity.pairNums; index++) {
+				for (int index = 0; index < mPokerLayout.getChildCount(); index++) {
 					imageView = (ImageView) mPokerLayout.getChildAt(index);
 					//imageView.setImageDrawable(null);
 					/**x.image().bind(imageView, "drawable://" + pokerSortArray.get(index).resId, new ImageOptions.Builder()
@@ -199,12 +201,13 @@ public class QuickPokerBrowseHorizontalView extends HorizontalScrollView
 							.setRadius(5)
 							.build());
 					 */
-					imageView.setImageBitmap(PokerEntity.getInstance().getBitmap(pokerSortArray.get(index).resId));
+				imageView.setImageDrawable(pokerSortArray.get(index).drawable);
+
 				}
 			}
 			scrollTo(0,0);
 		} catch (Exception e) {
-			LogUtil.e(TAG, e.toString());
+			e.printStackTrace();
 		}
 	}
 

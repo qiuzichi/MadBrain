@@ -94,4 +94,6 @@
     <color name="loading_dialog_bg">#88000000</color>
     <color name="dialog_gray">#646464</color>
     <color name="music_color">#2894e2</color>
+
+    <color name="recover_poker_bg">#785F6839</color>
 </resources>

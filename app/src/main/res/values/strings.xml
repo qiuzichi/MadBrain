@@ -314,4 +314,6 @@
     <string name="instruction">推荐</string>
     <string name="match_info">赛事</string>
     <string name="hot_spot">热点</string>
+    <string name="show_more_search_history">更多搜索历史</string>
+    <string name="show_limit_search_history">收起</string>
 </resources>

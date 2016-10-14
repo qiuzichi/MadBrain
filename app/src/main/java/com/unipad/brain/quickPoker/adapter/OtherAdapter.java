@@ -58,7 +58,7 @@ public class OtherAdapter extends CommonAdapter<ChannelItem> {
 	@Override
 	public void convert(ViewHolder holder, ChannelItem channelItem) {
 		ImageView item_text = (ImageView)holder.getView(R.id.text_item);
-		item_text.setImageBitmap(PokerEntity.getInstance().getBitmap(channelItem.resId));
+		item_text.setImageDrawable(channelItem.drawable);
 	}
 
 

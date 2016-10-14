@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -122,6 +123,7 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
                 String text = lvTips.getAdapter().getItem(i).toString();
                 etInput.setText(text);
                 etInput.setSelection(text.length());
+                etInput.clearFocus();
                 //hint list view gone and result list view show
 //                lvTips.setVisibility(View.GONE);
                 ivDelete.setVisibility(View.VISIBLE);
@@ -155,7 +157,7 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
         }
         //隐藏软键盘
         InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+        imm.hideSoftInputFromWindow(etInput.getWindowToken(), 0);
     }
 
     /**
@@ -203,7 +205,6 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
                     mListener.onShowHistoryDatas();
                 }
                 lvTips.setVisibility(GONE);
-                setFouceEditText();
             }
 
         }
@@ -222,7 +223,7 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
                 etInput.setText("");
                 ivDelete.setVisibility(GONE);
                 lvTips.setVisibility(GONE);
-                setFouceEditText();
+                setFouceEditText(null);
                 //显示历史搜索；
                 if (mListener != null) {
                     mListener.onShowHistoryDatas();
@@ -230,7 +231,8 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
                 break;
             case R.id.search_btn_start:
 //                lvTips.setVisibility(GONE);
-                notifyStartSearching(etInput.getText().toString());
+                String content = etInput.getText().toString().trim();
+                notifyStartSearching(content);
                 break;
 
             case R.id.txt_select_item:
@@ -322,9 +324,12 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
         }
     }
 
-    public  void setFouceEditText(){
+    public void setFouceEditText(String defaultContent){
+        if(!TextUtils.isEmpty(defaultContent)){
+            etInput.setText(defaultContent);
+            etInput.setSelection(defaultContent.length());
+        }
         etInput.requestFocus();
-        etInput.setCursorVisible(true);
     }
 
 
@@ -335,6 +340,8 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
     public void setEditInputContent(String history){
         etInput.setText(history);
         etInput.setSelection(history.length());
+        etInput.clearFocus();
+//        etInput.setCursorVisible(false);
         //hint list view gone and result list view show
 //        lvTips.setVisibility(View.GONE);
         ivDelete.setVisibility(View.VISIBLE);

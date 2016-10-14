@@ -1,19 +1,13 @@
 package com.unipad.brain.quickPoker.entity;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.SparseIntArray;
 
-import com.unipad.brain.App;
-import com.unipad.utils.LogUtil;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.WeakHashMap;
 
 public class PokerEntity {
     private int pokerWith = 0;
-    private WeakHashMap<Integer, WeakReference<Bitmap>> drableMap = new WeakHashMap<Integer, WeakReference<Bitmap>>();
+    /** the lrucache for diy resource */
+
     private int pokerHeigth;
     /**
      * 多少副扑克牌，默认至少一副
@@ -31,8 +25,8 @@ public class PokerEntity {
     private static PokerEntity instance ;
 
     private PokerEntity() {
-
     }
+
 
     public synchronized static PokerEntity getInstance() {
         if (instance == null) {
@@ -40,6 +34,7 @@ public class PokerEntity {
         }
         return instance;
     }
+
 
     public ArrayList<ChannelItem> getPokerSortArray() {
         if (pokerSortArray == null) {
@@ -65,25 +60,8 @@ public class PokerEntity {
         this.pokerHeigth = pokerHeigth;
     }
 
-    public Bitmap getBitmap(int resId) {
-        Bitmap bitmap = null;
-        WeakReference<Bitmap> reference = (WeakReference<Bitmap>) drableMap
-                .get(resId);
-        if (reference != null) {
-            bitmap = (Bitmap) reference.get();
-            LogUtil.e("","bitmap is not null");
-        }
-        if (bitmap == null) {
-            bitmap = BitmapFactory.decodeResource(App.getContext().getResources(), resId);
-            if (null != bitmap) {
-                drableMap.put(resId, new WeakReference<Bitmap>(
-                        bitmap));
-            }
-        }
-        return bitmap;
-    }
+
     public void clear(){
-        drableMap.clear();
         instance = null;
     }
 }

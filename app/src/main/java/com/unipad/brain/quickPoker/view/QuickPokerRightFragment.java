@@ -76,7 +76,7 @@ public class QuickPokerRightFragment extends BasicCommonFragment implements
     /**
      * 顶部扑克牌列表
      */
-    ArrayList<ChannelItem> userChannelList ;
+    ArrayList<ChannelItem> userChannelList;
     /**
      * 底部扑克牌列表
      */
@@ -201,64 +201,64 @@ public class QuickPokerRightFragment extends BasicCommonFragment implements
      */
     public void endAnswerMode(int time) {
         StringBuilder userData = new StringBuilder();
-        for (ChannelItem item:userChannelList){
-            userData.append(item.resId-R.drawable.poker_fangkuai_01+1).append("_");
+        for (ChannelItem item : userChannelList) {
+            userData.append(item.resId - R.drawable.poker_fangkuai_01 + 1).append("_");
         }
-        userData.deleteCharAt(userData.length()-1);
+        if (userData.length() > 0) {
+            userData.deleteCharAt(userData.length() - 1);
+        }
         service.setUserData(userData.toString());
-        if (isMatchMode()){
-        if (service.isLastRound()){
+        if (isMatchMode()) {
+            if (service.isLastRound()) {
 
-        }else {
-            ToastUtil.createTipDialog(getActivity(), Constant.SHOW_GAME_PAUSE, "开始准备下一轮").show();
-            new Thread() {
-                @Override
-                public void run() {
-                    super.run();
-                    service.parseDataByRound();
-                }
-            }.start();
-        }
+            } else {
+                ToastUtil.createTipDialog(getActivity(), Constant.SHOW_GAME_PAUSE, "开始准备下一轮",R.drawable.wait_next_turn).show();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        super.run();
+                        service.parseDataByRound();
+                    }
+                }.start();
+            }
         }
 
         /**
-        ArrayList<ChannelItem> oringe = PokerEntity.getInstance().getPokerSortArray();
-        int answer = 0;
-        String errorText = "";
-        if (userAdapter.getChannelList() != null
-                && userAdapter.getChannelList().size() != 0) {
+         ArrayList<ChannelItem> oringe = PokerEntity.getInstance().getPokerSortArray();
+         int answer = 0;
+         String errorText = "";
+         if (userAdapter.getChannelList() != null
+         && userAdapter.getChannelList().size() != 0) {
 
-            for (int i = 0; i < userAdapter.getChannelList().size(); i++) {
-                if (userAdapter.getChannelList().get(i).resId != oringe
-                        .get(i).resId) {
-                    errorText = ",第" + i + "张应为" + oringe.get(i).name + ",而您的是" + userAdapter.getChannelList().get(i).name;
-                    break;
-                } else {
-                    answer = i + 1;
-                }
-            }
+         for (int i = 0; i < userAdapter.getChannelList().size(); i++) {
+         if (userAdapter.getChannelList().get(i).resId != oringe
+         .get(i).resId) {
+         errorText = ",第" + i + "张应为" + oringe.get(i).name + ",而您的是" + userAdapter.getChannelList().get(i).name;
+         break;
+         } else {
+         answer = i + 1;
+         }
+         }
+         }
+         String content = "您用时 " + time + "秒,正确牌数" + answer + "张" + errorText;
+         String buttonText = service.isLastRound() ? null : "准备下一轮";
+         ToastUtil.createOnlyOkDialog(mActivity, Constant.SHOW_SOCRE_CONFIRM_DLG, "您本轮得分：", "得分：" + service.getScore(), buttonText,
+         new View.OnClickListener() {
+        @Override public void onClick(View v) {
+        HIDDialog.dismissDialog(Constant.COMMIT_POCKER_GAME_DLG);
+        if (service.isLastRound()) {
+        return;
         }
-        String content = "您用时 " + time + "秒,正确牌数" + answer + "张" + errorText;
-        String buttonText = service.isLastRound() ? null : "准备下一轮";
-        ToastUtil.createOnlyOkDialog(mActivity, Constant.SHOW_SOCRE_CONFIRM_DLG, "您本轮得分：", "得分：" + service.getScore(), buttonText,
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        HIDDialog.dismissDialog(Constant.COMMIT_POCKER_GAME_DLG);
-                        if (service.isLastRound()) {
-                            return;
-                        }
 
-                        ToastUtil.createTipDialog(mActivity, Constant.SHOW_GAME_PAUSE, "准备中").show();
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                super.run();
-                                service.parseDataByRound();
-                            }
-                        }.start();
-                    }
-                }).show();
+        ToastUtil.createTipDialog(mActivity, Constant.SHOW_GAME_PAUSE, "准备中").show();
+        new Thread() {
+        @Override public void run() {
+        super.run();
+        service.parseDataByRound();
+        }
+        }.start();
+        }
+        }).show();
          */
 
     }
@@ -370,10 +370,10 @@ public class QuickPokerRightFragment extends BasicCommonFragment implements
                     newTextView.getLocationInWindow(startLocation);
                     final ChannelItem channel = ((OtherAdapter) parent.getAdapter())
                             .getItem(position);
-                    progress = userChannelList.size()*100/52;
-                    if (progress < 101){
+                    progress = userChannelList.size() * 100 / 52;
+                    if (progress < 101) {
                         progress = 101;
-                    }else if (progress> 199){
+                    } else if (progress > 199) {
                         progress = 199;
                     }
                     // 添加到最后一个
