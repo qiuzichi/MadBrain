@@ -253,7 +253,7 @@ public final class ImageDecoder {
                         bitmap = rotate(bitmap, rotateAngle, true);
                     }
                     if (cancelable != null && cancelable.isCancelled()) {
-//                        throw new Callback.CancelledException("cancelled during decode image");
+                        throw new Callback.CancelledException("cancelled during decode image");
                     }
                     if (options.isCrop() && optionWith > 0 && optionHeight > 0) {
                     bitmap = cut2ScaleSize(bitmap, optionWith, optionHeight, true);

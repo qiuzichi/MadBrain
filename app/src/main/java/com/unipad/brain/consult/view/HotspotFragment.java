@@ -56,19 +56,21 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
     private int requestPagerNum = 1;
     private final int perPageDataNumber = 10;
     private boolean isGetData;
+    private boolean isRefreshData;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MyRecyclerAdapter mRecyclerViewAdapter;
-
-    //总页面大小
-    private int totalPager = 1;
     private RelativeLayout emptyView;
 
     @Override
     public void update(int key, Object o) {
-        HIDDialog.dismissAll();
+//        HIDDialog.dismissAll();
             switch (key) {
                 case HttpConstant.NOTIFY_GET_HOTSPOT:
+                    isRefreshData = false;
+                    mRecyclerViewAdapter.setLoading(false);
+                    mRecyclerViewAdapter.setIsRefresh();
+                    removeFooterView();
                     if(null == o){
                         //网络访问错误 刷新数据
                         if(newsDatas.size() == 0){
@@ -92,15 +94,7 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
 
                     emptyView.setVisibility(View.GONE);
                     mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-
-                    if(requestPagerNum == 1 && databean.size() != 0){
-                        totalPager = databean.get(0).getTotalPager();
-                    }
-
-                    if(!(totalPager == requestPagerNum)){
-                        //始终记录是最后一页的  页数
-                        requestPagerNum++;
-                    }
+                    requestPagerNum++;
 //                    if (newsDatas.size() != 0) {
 //                        for (int i = databean.size()-1; i >= 0; i--) {
 //                            for (int j = 0; j < newsDatas.size(); j++) {
@@ -167,10 +161,11 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
         );
         mSwipeRefreshLayout.setProgressViewOffset(false, 0, DensityUtil.dip2px(24));
         mSwipeRefreshLayout.setRefreshing(true);
-
+        isRefreshData = false;
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                isRefreshData = true;
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -197,18 +192,21 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
         mRecyclerViewAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-
-                if (totalPager == requestPagerNum) {
+                if(newsDatas != null && newsDatas.size() != 0 && !isRefreshData){
+                    int totalPager = newsDatas.get(0).getTotalPager();
+                    if (requestPagerNum > totalPager) {
                    /* 最后一页 直接吐司 不显示下拉加载*/
-                    if(requestPagerNum > 1)
-                        ToastUtil.showToast(getString(R.string.loadmore_null_data));
-                    return;
-                }
+                        if(requestPagerNum > 2)
+                            ToastUtil.showToast(getString(R.string.loadmore_null_data));
+                        return;
+                    }
 
-                newsDatas.add(null);
-                mRecyclerViewAdapter.notifyItemInserted(newsDatas.size() - 1);
-                loadMoreData(true);
-                mRecyclerViewAdapter.setLoading(true);
+                    mRecyclerViewAdapter.setLoading(true);
+                    newsDatas.add(null);
+                    mRecyclerViewAdapter.notifyItemInserted(newsDatas.size() - 1);
+                    getNews(ConsultTab.HOTSPOT.getTypeId(), null, requestPagerNum, perPageDataNumber);
+                    loadMoreData(true, 3000);
+                }
             }
         });
 
@@ -231,32 +229,20 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
             super.onPause();
         }
     }
-    private void loadMoreData(final Boolean isLoading){
+    private void loadMoreData(final Boolean isLoading, int time){
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (isLoading) {
-                    mRecyclerViewAdapter.setLoading(false);
-                    newsDatas.remove(newsDatas.size() - 1);
-                    mRecyclerViewAdapter.notifyItemRemoved(newsDatas.size());
-
-                    if (!(totalPager == requestPagerNum)) {
-                        getNews(ConsultTab.HOTSPOT.getTypeId(), null, requestPagerNum, perPageDataNumber);
-                    } else {
-                        mRecyclerViewAdapter.notifyItemChanged(newsDatas.size());
-                        //重新加载adapter 不然不更新数据
-                        mRecyclerView.setAdapter(mRecyclerViewAdapter);
-                        ToastUtil.showToast(getString(R.string.loadmore_null_data));
-                    }
-
+                    removeFooterView();
                 }
             }
-        }, 3000);
+        }, time);
     }
 
     private void getNews(String contentType,String title,int page,int size ){
         service.getNews(contentType,title,page,size );
-        ToastUtil.createWaitingDlg(getActivity(),null,Constant.LOGIN_WAIT_DLG).show(15);
+//        ToastUtil.createWaitingDlg(getActivity(),null,Constant.LOGIN_WAIT_DLG).show(15);
     }
 
 
@@ -286,6 +272,14 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
         super.onDestroy();
         clear();
     }
+
+    private void removeFooterView() {
+        if (newsDatas.size() > 1 && 1 == mRecyclerViewAdapter.getItemViewType(newsDatas.size() - 1)){
+            newsDatas.remove(newsDatas.size() - 1);
+            mRecyclerViewAdapter.notifyItemRemoved(newsDatas.size());
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){

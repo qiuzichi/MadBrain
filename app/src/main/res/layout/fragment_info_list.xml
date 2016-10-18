@@ -11,17 +11,17 @@
         android:layout_height="@dimen/adver_lunbo_height"
         android:background="@color/info_bg_username">
 
-        <com.unipad.brain.consult.widget.CircularImageView
+        <ImageView
             android:id="@+id/iv_header"
-            android:layout_width="@dimen/newlist_item_height"
-            android:layout_height="@dimen/newlist_item_height"
+            android:layout_width="@dimen/newlist_height"
+            android:layout_height="@dimen/newlist_height"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="@dimen/margin_10dip"
             android:layout_marginRight="@dimen/margin_10dip"
             android:layout_marginTop="@dimen/margin_30dp"
-            app:civ_border_color="@color/consult_tab_normal_bg"
             android:src="@drawable/set_headportrait" />
 
+           <!-- app:civ_border_color="@color/consult_tab_normal_bg"-->
 
         <TextView
             android:id="@+id/tv_uese_name_consult"

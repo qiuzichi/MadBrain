@@ -61,7 +61,7 @@
                 android:layout_marginRight="@dimen/margin_30dp"
                 android:layout_marginTop="@dimen/margin_10dip"
                 android:background="@color/white"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:hint="@string/start_search"
                 android:singleLine="true"
                 android:textColor="@color/black" />

@@ -59,13 +59,8 @@ public class InfoListFragment extends ConsultBaseFragment implements AdapterView
         }
         user_name.setSelected(true);
         ((TextView)mInfoListView.findViewById(R.id.txt_user_group)).setText(DateUtil.getMatchGroud(getmContext()));
-        if(TextUtils.isEmpty(AppContext.instance().loginUser.getLevel())){
-            ((TextView)mInfoListView.findViewById(R.id.tv_uese_level_consult)).setText(getString(R.string.person_level) + 0);
-        } else {
-            ((TextView)mInfoListView.findViewById(R.id.tv_uese_level_consult)).setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
-        }
-
-        final CircularImageView user_photo = (CircularImageView)mInfoListView.findViewById(R.id.iv_header);
+        ((TextView)mInfoListView.findViewById(R.id.tv_uese_level_consult)).setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
+        final ImageView user_photo = (ImageView)mInfoListView.findViewById(R.id.iv_header);
         ImageOptions imageOptions =new ImageOptions.Builder()
                 //.setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小
 //                .setRadius(DensityUtil.dip2px(360))//ImageView  设置拐角弧度

@@ -79,6 +79,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private OnShowUpdateDialgo mOnShowUpdateDialgo;
     private NewsService service;
     private ImageOptions imageOptions;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     public MyRecyclerAdapter(Activity mActivity, final RecyclerView mRecyclerView, List<NewEntity> datas ,int pageId, final SwipeRefreshLayout mSwipeRefreshLayout) {
@@ -88,6 +89,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.mRecyclerView = mRecyclerView;
         this.mLayoutInflater = LayoutInflater.from(mActivity);
         this.pageId = pageId;
+        this.mSwipeRefreshLayout = mSwipeRefreshLayout;
 
         service = (NewsService) AppContext.instance().getService(Constant.NEWS_SERVICE);
         service.registerObserver(HttpConstant.NOTIFY_GET_OPERATE, this);
@@ -98,32 +100,22 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-
                     int lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-                    int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-                    //获取 RecycleView第一个子view
-                    View childView = mRecyclerView.getChildAt(0);
-                    //获取第一个子view的顶部坐标
-                    if (null != childView) {
-                        int top = childView.getTop();
-                        //正常来说RecycleView的顶部坐标应该是0,但是严格来考虑,当RecycleView设置了paddingTop时,
-                        // 所有子view的绘制将以paddingTop的位置为起始位置,所以实际的顶部应该是paddingTop的高度的数值.
-                        int topEdge = mRecyclerView.getPaddingTop();
-                        mSwipeRefreshLayout.setEnabled(top >= topEdge);
-                    }
 
                     if (!isLoadMoreData && newState == RecyclerView.SCROLL_STATE_IDLE
                             && lastVisibleItem + 1  == mRecyclerView.getAdapter().getItemCount()) {
-                            onLoadMoreListener.onLoadMore();
+                        onLoadMoreListener.onLoadMore();
                     }
+                    setIsRefresh();
+
                 }
 
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-//                    lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-//                    firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-//                    mSwipeRefreshLayout.setEnabled(linearLayoutManager.findFirstVisibleItemPosition() == 0);
+//                    int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+//                    if(!isLoadMoreData)
+//                        mSwipeRefreshLayout.setEnabled(linearLayoutManager.findFirstVisibleItemPosition() == 0);
                 }
             });
         }
@@ -278,6 +270,22 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void setLoading(Boolean isLoading) {
         isLoadMoreData = isLoading;
+    }
+
+    public void setIsRefresh(){
+        View childView = mRecyclerView.getChildAt(0);
+        //获取第一个子view的顶部坐标
+        if (null != childView) {
+            int top = childView.getTop();
+            //正常来说RecycleView的顶部坐标应该是0,但是严格来考虑,当RecycleView设置了paddingTop时,
+            // 所有子view的绘制将以paddingTop的位置为起始位置,所以实际的顶部应该是paddingTop的高度的数值.
+            int topEdge = mRecyclerView.getPaddingTop();
+            if(!isLoadMoreData){
+                mSwipeRefreshLayout.setEnabled(top >= topEdge);
+            } else {
+                mSwipeRefreshLayout.setEnabled(false);
+            }
+        }
     }
 
     public void setHeadVisibility(boolean isVisibility){

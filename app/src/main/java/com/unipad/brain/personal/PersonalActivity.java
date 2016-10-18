@@ -186,12 +186,12 @@ public class PersonalActivity extends BasicActivity implements IDataObserver {
                 }
                 fragment = mFavoriteFragment;
                 break;
-            case R.id.personal_wallet:
-                if (mWalletFragment == null) {
-                    mWalletFragment = new PersonalWalletFragment();
-                }
-                fragment = mWalletFragment;
-                break;
+//            case R.id.personal_wallet:
+//                if (mWalletFragment == null) {
+//                    mWalletFragment = new PersonalWalletFragment();
+//                }
+//                fragment = mWalletFragment;
+//                break;
             case R.id.personal_msg:
                 if (mMsgFragment == null) {
                     mMsgFragment = new PersonalMsgFragment();

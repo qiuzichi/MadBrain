@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,6 +39,7 @@ import com.unipad.utils.ToastUtil;
 import org.xutils.common.Callback;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 /**
  * Created by jianglu on 2016/7/8.
@@ -50,7 +52,13 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
     private ListView mListView;
     private String contentId;
     private int pageId;
+    private final int permaryDataNumber = 10;
+    private int requestPager;
     private final String OPERATE_ZAN = "1";
+    private boolean isLoading = false;
+    //上拉加载更多；
+    private View mListViewFooter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +73,7 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
         contentId = getIntent().getStringExtra("contentId");
         //说明的第一个页面 资讯页面；00001---00002----00003
         pageId = Integer.parseInt(contentId.substring(contentId.lastIndexOf("0") + 1)) - 1;
-        service.getSearchNews(contentId, contentId, getIntent().getStringExtra("queryContent"), 1, 20);
+        service.getSearchNews(contentId, contentId, getIntent().getStringExtra("queryContent"), requestPager = 1, permaryDataNumber);
     }
 
     @Override
@@ -86,6 +94,73 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
         ((TextView)findViewById(R.id.title_detail_text_search)).setText(title);
         mSearchAdapter = new SearchAdapter(this, mSearchDatas, R.layout.item_listview_introduction );
         mListView.setAdapter(mSearchAdapter);
+
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                switch (scrollState){
+                    case SCROLL_STATE_IDLE :
+                        if(canLoad()){
+                            if (mSearchDatas.size() != 0) {
+                                int TotalPager = mSearchDatas.get(0).getTotalPager();
+                                if (requestPager > TotalPager) {
+                                    ToastUtil.showToast(getString(R.string.loadmore_null_data));
+                                } else {
+                                    setLoading(true);
+                                    service.getSearchNews(contentId, contentId, getIntent().getStringExtra("queryContent"), requestPager, permaryDataNumber);
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
+        });
+    }
+
+    private void initFooterView(){
+        if(mListViewFooter == null){
+            mListViewFooter = View.inflate(this, R.layout.recycler_footer_layout, null);
+        }
+    }
+
+    /**
+     * 是否可以加载更多, 条件是到了最底部, listview不在加载中, 且为上拉操作.
+     *
+     * @return
+     */
+    private boolean canLoad() {
+        return isBottom() && !isLoading ;
+    }
+
+    /**
+     * 判断是否到了最底部
+     */
+    private boolean isBottom() {
+
+        if (mListView != null && mListView.getAdapter() != null) {
+            return mListView.getLastVisiblePosition() == (mListView
+                    .getAdapter().getCount() - 1);
+        }
+        return false;
+    }
+
+    /**
+     * @param loading
+     */
+    public void setLoading(boolean loading) {
+        initFooterView();
+        isLoading = loading;
+        if (isLoading) {
+            mListView.addFooterView(mListViewFooter);
+        } else {
+            mListView.removeFooterView(mListViewFooter);
+        }
     }
 
     private class SearchAdapter extends CommonAdapter<NewEntity>{
@@ -167,15 +242,21 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
             case HttpConstant.NOTIFY_GET_SEARCH_RUSULT:
             case HttpConstant.NOTIFY_GET_SEARCH_OCCSION:
             case HttpConstant.NOTIFY_GET_SEARCH_HOTSPOT:
-                mSearchDatas.clear();
+                //加载完成；删除footerview
+                if(mListViewFooter != null)
+                    setLoading(false);
+                if(o == null){
+                    ToastUtil.showToast(getString(R.string.net_error_refrush_data));
+                    return;
+                }
                 //获取新闻页面数据
                 mSearchDatas.addAll((List<NewEntity>) o);
                 if(mSearchDatas.size() == 0){
                     //说明搜索不到数据；
                     mListView.setVisibility(View.GONE);
                     ((TextView)findViewById(R.id.tv_listview_empty)).setVisibility(View.VISIBLE);
-                    return;
                 }else {
+                    requestPager ++;
                     mSearchAdapter.notifyDataSetChanged();
                 }
                 break;
