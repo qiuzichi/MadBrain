@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.unipad.brain.AbsBaseGameService;
 import com.unipad.brain.App;
 import com.unipad.brain.R;
 import com.unipad.brain.number.dao.NumService;
@@ -390,5 +391,19 @@ public abstract class NumberRightFragment extends BasicCommonFragment implements
             mRememoryLayout.removeAllViews();
         }
     }
+    @Override
+    public void updatePreper() {
+        super.updatePreper();
+        if (service.state == AbsBaseGameService.GO_IN_MATCH_START_MEMORY){
+            mStubShade.setVisibility(View.VISIBLE);
+        }
+    }
 
+    @Override
+    public void updateAfter() {
+        super.updateAfter();
+        if (service.state == AbsBaseGameService.GO_IN_MATCH_START_MEMORY){
+            mStubShade.setVisibility(View.GONE);
+        }
+    }
 }

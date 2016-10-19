@@ -11,6 +11,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -20,6 +21,7 @@ import com.unipad.AppContext;
 import com.unipad.IOperateGame;
 import com.unipad.brain.AbsBaseGameService;
 import com.unipad.brain.R;
+import com.unipad.brain.dialog.SettingDialog;
 import com.unipad.brain.home.bean.RuleGame;
 import com.unipad.brain.home.dao.HomeGameHandService;
 import com.unipad.common.widget.HIDDialog;
@@ -29,10 +31,8 @@ import com.unipad.observer.IDataObserver;
 import com.unipad.utils.CountDownTime;
 import com.unipad.utils.DateUtil;
 import com.unipad.utils.LogUtil;
-import com.unipad.utils.PicUtil;
 import com.unipad.utils.ToastUtil;
 
-import org.xutils.common.Callback;
 import org.xutils.common.util.DensityUtil;
 import org.xutils.image.ImageOptions;
 import org.xutils.x;
@@ -45,7 +45,7 @@ public class CommonFragment extends Fragment implements View.OnClickListener, Co
     private static final int[] COLORS = {R.color.bg_one, R.color.bg_two, R.color.bg_three};
     private static final String TAG = "CommonFragment";
     private CommonActivity mActivity;
-    private RelativeLayout mParentLayout;
+    private ViewGroup mParentLayout;
     private TextView mTextName, mTextAgeAds, mTextTime, mTextCompeteProcess;
     private Button mBtnCompeteMode;
     private CountDownTime mCountDownTime;
@@ -57,10 +57,12 @@ public class CommonFragment extends Fragment implements View.OnClickListener, Co
     private ICommunicate mICommunicate;
     private SparseArray mColorArray = new SparseArray();
     private int memoryTime;
+    private SettingDialog settingDialog;
+    private Button settingButton;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mParentLayout = (RelativeLayout) inflater.inflate(R.layout.common_frg_left, container, false);
+        mParentLayout = (ViewGroup) inflater.inflate(R.layout.common_frg_left, container, false);
         return mParentLayout;
     }
 
@@ -77,7 +79,48 @@ public class CommonFragment extends Fragment implements View.OnClickListener, Co
         mBtnCompeteMode = (Button) mParentLayout.findViewById(R.id.btn_compete_process);
         mBtnCompeteMode.setOnClickListener(this);
         mParentLayout.findViewById(R.id.text_exit).setOnClickListener(this);
+        String projectId = mActivity.getProjectId();
+        if (projectId.equals(Constant.GAME_BINARY_NUM) ||
+                projectId.equals(Constant.GAME_LONG_NUM) ||
+                projectId.equals(Constant.GAME_RANDOM_NUM) ||
+                projectId.equals(Constant.GAME_LONG_POCKER)){
+            settingButton = (Button)((ViewStub)mParentLayout.findViewById(R.id.button_viewstub)).inflate();
+            settingButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (settingDialog == null){
+                        settingDialog = new SettingDialog(mActivity, mActivity.getProjectId(), false) {
+                            @Override
+                            public void updateOtherView(int pre,int next) {
+                                if (mICommunicate != null){
+                                    mICommunicate.updateView(pre,next);
+                                }
+                            }
 
+                            @Override
+                            public void updateBefore() {
+                                if (mICommunicate != null){
+                                    mICommunicate.updatePreper();
+                                }
+                            }
+
+                            @Override
+                            public void updateAfter() {
+                                if (mICommunicate != null){
+                                    mICommunicate.updateAfter();
+                                }
+                            }
+                        };
+                    }
+                    if (mActivity.getService().state == AbsBaseGameService.GO_IN_MATCH_START_MEMORY){
+                        settingDialog.setIsNeedUpdateView(true);
+                    }else{
+                        settingDialog.setIsNeedUpdateView(false);
+                    }
+                    settingDialog.show();
+                }
+            });
+        }
         mTextAgeAds.setSelected(true);
         mTextName.setSelected(true);
         this.getBgColorArray(mParentLayout);
@@ -109,6 +152,7 @@ public class CommonFragment extends Fragment implements View.OnClickListener, Co
         }else {
             mIconImageView.setImageResource(R.drawable.set_headportrait);
         }
+
     }
 
 
@@ -164,6 +208,9 @@ public class CommonFragment extends Fragment implements View.OnClickListener, Co
                 startRememoryTimeCount();
                 memoryTime = takeTIme;
                 mActivity.getService().state = AbsBaseGameService.GO_IN_MATCH_END_MEMORY;
+                if (settingDialog != null){
+                    settingButton.setVisibility(View.GONE);
+                }
                 mICommunicate.memoryTimeToEnd(memoryTime);
 
             }
@@ -280,6 +327,9 @@ public class CommonFragment extends Fragment implements View.OnClickListener, Co
     public void startMemory() {
         mBtnCompeteMode.setEnabled(true);
         mCountDownTime.startCountTime();
+        if (settingButton != null){
+            settingButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -335,7 +385,11 @@ public class CommonFragment extends Fragment implements View.OnClickListener, Co
          */
         void exitActivity();
 
+        void updateView(int pre,int next);
 
+        void updatePreper();
+
+        void updateAfter();
     }
 
 }

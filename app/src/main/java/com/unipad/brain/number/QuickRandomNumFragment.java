@@ -119,4 +119,13 @@ public class QuickRandomNumFragment extends  NumberRightFragment{
             sendMsgToPreper();
         }
     }
+    @Override
+    public void updateView(int pre, int next) {
+        super.updateView(pre, next);
+        if (service.state == AbsBaseGameService.GO_IN_MATCH_START_MEMORY){
+            NumberMemoryLayout memoryLayout = (NumberMemoryLayout) frameLayout.getChildAt(0);
+            memoryLayout.updateView(pre, next);
+        }
+
+    }
 }

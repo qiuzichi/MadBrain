@@ -2,6 +2,7 @@ package com.unipad.brain.number;
 
 import android.view.View;
 
+import com.unipad.brain.AbsBaseGameService;
 import com.unipad.brain.R;
 import com.unipad.brain.number.view.NumberMemoryLayout;
 import com.unipad.common.AbsMatchActivity;
@@ -37,7 +38,7 @@ public class BinaryRightFragment extends NumberRightFragment{
     @Override
     public void initMemoryView() {
         frameLayout.removeAllViews();
-        frameLayout.addView(new NumberMemoryLayout(getActivity(), service.lineNumbers,SharepreferenceUtils.getInt(mActivity.getProjectId()+"_linemode",0)));
+        frameLayout.addView(new NumberMemoryLayout(getActivity(), service.lineNumbers, SharepreferenceUtils.getInt(mActivity.getProjectId() + "_linemode", 0)));
     }
 
     @Override
@@ -48,5 +49,14 @@ public class BinaryRightFragment extends NumberRightFragment{
         }else{
             showAnswer();
         }
+    }
+    @Override
+    public void updateView(int pre, int next) {
+        super.updateView(pre, next);
+        if (service.state == AbsBaseGameService.GO_IN_MATCH_START_MEMORY){
+            NumberMemoryLayout memoryLayout = (NumberMemoryLayout) frameLayout.getChildAt(0);
+            memoryLayout.updateView(pre, next);
+        }
+
     }
 }

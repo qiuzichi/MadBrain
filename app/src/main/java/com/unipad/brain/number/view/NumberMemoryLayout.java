@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.unipad.brain.R;
+import com.unipad.utils.LogUtil;
 import com.unipad.utils.StringUtil;
 
 /**
@@ -114,5 +115,19 @@ public class NumberMemoryLayout extends LinearLayout {
             }
         }
     }
-
+    public void updateView(int pre, int next) {
+        for (int i = 0; i < lineNumbers.size(); i++) {
+            ViewGroup viewGroup = (ViewGroup) getChildAt(i);
+            viewGroup = (ViewGroup) viewGroup.getChildAt(0);
+            int count = viewGroup.getChildCount();
+            for (int j = 1; j <= count; j++) {
+                if (pre !=0 && j%pre==0){
+                    viewGroup.getChildAt(j-1).setBackground(null);
+                }
+                if (next !=0 && j%next == 0){
+                    viewGroup.getChildAt(j-1).setBackgroundResource(R.drawable.line_ver);
+                }
+            }
+        }
+    }
 }
