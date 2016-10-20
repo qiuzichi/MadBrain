@@ -79,6 +79,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private OnShowUpdateDialgo mOnShowUpdateDialgo;
     private NewsService service;
     private ImageOptions imageOptions;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     public MyRecyclerAdapter(Activity mActivity, final RecyclerView mRecyclerView, List<NewEntity> datas ,int pageId, final SwipeRefreshLayout mSwipeRefreshLayout) {
@@ -88,6 +89,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.mRecyclerView = mRecyclerView;
         this.mLayoutInflater = LayoutInflater.from(mActivity);
         this.pageId = pageId;
+        this.mSwipeRefreshLayout = mSwipeRefreshLayout;
 
         service = (NewsService) AppContext.instance().getService(Constant.NEWS_SERVICE);
         service.registerObserver(HttpConstant.NOTIFY_GET_OPERATE, this);
@@ -98,32 +100,22 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-
                     int lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-                    int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-                    //获取 RecycleView第一个子view
-                    View childView = mRecyclerView.getChildAt(0);
-                    //获取第一个子view的顶部坐标
-                    if (null != childView) {
-                        int top = childView.getTop();
-                        //正常来说RecycleView的顶部坐标应该是0,但是严格来考虑,当RecycleView设置了paddingTop时,
-                        // 所有子view的绘制将以paddingTop的位置为起始位置,所以实际的顶部应该是paddingTop的高度的数值.
-                        int topEdge = mRecyclerView.getPaddingTop();
-                        mSwipeRefreshLayout.setEnabled(top >= topEdge);
-                    }
 
                     if (!isLoadMoreData && newState == RecyclerView.SCROLL_STATE_IDLE
                             && lastVisibleItem + 1  == mRecyclerView.getAdapter().getItemCount()) {
-                            onLoadMoreListener.onLoadMore();
+                        onLoadMoreListener.onLoadMore();
                     }
+                    setIsRefresh();
+
                 }
 
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-//                    lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-//                    firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-//                    mSwipeRefreshLayout.setEnabled(linearLayoutManager.findFirstVisibleItemPosition() == 0);
+//                    int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+//                    if(!isLoadMoreData)
+//                        mSwipeRefreshLayout.setEnabled(linearLayoutManager.findFirstVisibleItemPosition() == 0);
                 }
             });
         }
@@ -150,7 +142,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             final NewEntity bean = newsDatas.get(position);
 
             ((ItemViewHolder) holder).text_title.setText(bean.getTitle());
-            ((ItemViewHolder) holder).text_updatetime.setText(bean.getPublishDate());
+            ((ItemViewHolder) holder).txt_brief.setText(bean.getBrief());
+//            ((ItemViewHolder) holder).txt_brief.setEllipsis("...更多");//...替换剩余字符串
+//            ((ItemViewHolder) holder).txt_brief.setMaxLines(3);
 
             final ImageView iv_icon = ((ItemViewHolder) holder).iv_picture;
             if(null == imageOptions){
@@ -221,9 +215,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     showPopupWindows(iv_comment);
                 }
             });
-            final RelativeLayout rl_checkDetail =  ((ItemViewHolder) holder).rl_checkDetail;
+            final TextView txt_brief =  ((ItemViewHolder) holder).txt_brief;
             //查看详情点击
-            rl_checkDetail.setOnClickListener(new View.OnClickListener() {
+            txt_brief.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //查看详情的界面
@@ -278,6 +272,22 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         isLoadMoreData = isLoading;
     }
 
+    public void setIsRefresh(){
+        View childView = mRecyclerView.getChildAt(0);
+        //获取第一个子view的顶部坐标
+        if (null != childView) {
+            int top = childView.getTop();
+            //正常来说RecycleView的顶部坐标应该是0,但是严格来考虑,当RecycleView设置了paddingTop时,
+            // 所有子view的绘制将以paddingTop的位置为起始位置,所以实际的顶部应该是paddingTop的高度的数值.
+            int topEdge = mRecyclerView.getPaddingTop();
+            if(!isLoadMoreData){
+                mSwipeRefreshLayout.setEnabled(top >= topEdge);
+            } else {
+                mSwipeRefreshLayout.setEnabled(false);
+            }
+        }
+    }
+
     public void setHeadVisibility(boolean isVisibility){
         isShowVersion = isVisibility;
         MyRecyclerAdapter adapter = (MyRecyclerAdapter) mRecyclerView.getAdapter();
@@ -321,7 +331,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView text_title;
-        TextView text_updatetime;
+        TextView txt_brief;
         ImageView iv_pager_zan;
         ImageView iv_pager_comment;
         ImageView iv_picture;
@@ -329,11 +339,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public ItemViewHolder(View view) {
             super(view);
             text_title = (TextView) view.findViewById(R.id.tv_item_introduction_news_title);
-            text_updatetime = (TextView) view.findViewById(R.id.tv_item_introduction_updatetime);
+            txt_brief = (TextView) view.findViewById(R.id.view_line_item_brief);
             iv_picture = (ImageView) view.findViewById(R.id.iv_item_introduction_icon);
             iv_pager_zan = (ImageView) view.findViewById(R.id.iv_item_introduction_zan);
             iv_pager_comment = (ImageView) view.findViewById(R.id.iv_item_introduction_comment);
-            rl_checkDetail = (RelativeLayout) view.findViewById(R.id.rl_item_introduction_detail);
+//            rl_checkDetail = (RelativeLayout) view.findViewById(R.id.rl_item_introduction_detail);
         }
     }
 

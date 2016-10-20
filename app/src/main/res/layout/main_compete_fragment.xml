@@ -14,82 +14,78 @@
             android:layout_weight="3"
             android:background="@color/white">
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/rl_head"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:background="@color/main_1"
+                android:layout_height="@dimen/adver_lunbo_height"
+                android:background="@color/info_bg_username"
                 android:orientation="horizontal">
 
-                <RelativeLayout
-                    android:id="@+id/rl_img_icon"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="6"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/iv_user_pic"
-                        android:layout_width="@dimen/newlist_height"
-                        android:layout_height="@dimen/newlist_height"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="@dimen/margin_10dip"
-                        android:src="@drawable/set_headportrait" />
-                </RelativeLayout>
+                <ImageView
+                    android:id="@+id/iv_user_pic"
+                    android:layout_width="@dimen/newlist_height"
+                    android:layout_height="@dimen/newlist_height"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/margin_10dip"
+                    android:layout_marginRight="@dimen/margin_10dip"
+                    android:layout_marginTop="@dimen/margin_30dp"
+                    android:src="@drawable/set_headportrait" />
+
+                <TextView
+                    android:id="@+id/txt_uese_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_user_pic"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text="@string/about_us"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/common_text_24" />
 
 
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/rl_img_icon"
-                    android:layout_weight="7"
-                    android:gravity="center_vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/hisrecord_height_answer"
+                    android:background="@color/info_bg_usergroup"
+                    android:gravity="center"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    >
 
-                    <LinearLayout
+
+                    <TextView
+                        android:id="@+id/txt_user_group_compete"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_gravity="center"
+                        android:drawableLeft="@drawable/user_group"
+                        android:drawablePadding="@dimen/margin_edge"
+                        android:text="@string/old_group"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_18" />
 
-                        <TextView
-                            android:id="@+id/txt_uese_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginLeft="@dimen/margin_5dip"
-                            android:layout_marginRight="@dimen/margin_5dip"
-
-                            android:text="@string/about_us"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/person_name_size" />
-
-
-                        <ImageView
-                            android:id="@+id/devide_view_line"
-                            android:layout_width="fill_parent"
-                            android:layout_height="@dimen/margin_1dp"
-                            android:layout_below="@+id/txt_uese_name"
-                            android:layout_marginTop="@dimen/margin_5dip"
-                            android:src="@color/white" />
+                    <TextView
+                        android:id="@+id/txt_uese_level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/margin_edge"
+                        android:drawableLeft="@drawable/user_level"
+                        android:drawablePadding="@dimen/margin_edge"
+                        android:text="@string/person_level"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_18" />
 
 
-                        <TextView
-                            android:id="@+id/txt_uese_level"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/user_favorite"
-                            android:drawablePadding="@dimen/margin_5dip"
-                            android:text="@string/person_level"
-                            android:layout_gravity="center"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/person_name_size" />
-
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-            </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
 
             <ListView
                 android:id="@+id/lv_project"

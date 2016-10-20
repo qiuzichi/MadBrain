@@ -101,6 +101,8 @@ public class HitopNewsList extends HitopRequest<List<NewEntity>>{
         }catch (Exception e) {
             return null;
         }
+
+        Log.d("HitopNewsList", newsList.toString());
         int key =HttpConstant.NOTIFY_GET_NEWS;
         if(TextUtils.isEmpty(keyId)){
             if ("00001".equals(contenttype)){

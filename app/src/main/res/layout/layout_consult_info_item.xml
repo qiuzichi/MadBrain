@@ -5,7 +5,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/compitition_entry_fee"
+        android:layout_height="@dimen/hisrecord_widht_item"
         android:layout_centerInParent="true"
         android:gravity="center"
         android:layout_toRightOf="@+id/iv_header"
@@ -23,7 +23,9 @@
             android:id="@+id/tv_info_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10dip"
             android:text="ssss"
+            android:textSize="@dimen/common_text_30"
             android:layout_gravity="center_horizontal"></TextView>
 
         <ImageView

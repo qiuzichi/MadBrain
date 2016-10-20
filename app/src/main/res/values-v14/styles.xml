@@ -19,6 +19,11 @@
     </item>
 </style>
 
+<style name="dialog_wait_requestinternet" parent="android:style/Theme.Holo.Dialog">
+    <item name="android:windowBackground"> @color/transparent
+    </item>
+</style>
+
 <style name="dlg_title_white_20dip_wwrap_hwrap">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>

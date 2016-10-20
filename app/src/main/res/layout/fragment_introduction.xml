@@ -3,33 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/rl_advert_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/adver_lunbo_height">
-
-        <com.unipad.brain.consult.widget.RecommendGallery
-            android:id="@+id/point_gallery"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:spacing="0dp"
-            android:unselectedAlpha="1" />
-
-        <com.unipad.brain.consult.widget.RecommendPot
-            android:id="@+id/ad_pot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp" />
-    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        android:layout_below="@id/rl_advert_view">
+        >
 
         <TextView
             android:id="@+id/tv_load_error_show"
@@ -47,6 +27,7 @@
         android:id="@+id/swipe_refresh_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:layout_below="@id/rl_advert_view">
 
         <RelativeLayout
@@ -64,24 +45,27 @@
                     android:id="@+id/text_update_version"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/update_tips"
+                    android:drawablePadding="@dimen/margin_edge"
+                    android:clickable="true"
                     android:layout_marginLeft="@dimen/margin_10dip"
                     android:layout_weight="7"
                     android:gravity="center_vertical"
-                    android:textColor="@color/light_blue2"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/text_size_18" />
 
-                <ImageView
-                    android:id="@+id/update_version_imgview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginBottom="@dimen/margin_5dip"
-                    android:layout_marginRight="@dimen/news_title_height"
-                    android:layout_marginTop="@dimen/margin_5dip"
-                    android:layout_weight="3"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:src="@drawable/arrow_right" />
+                <!--<ImageView-->
+                    <!--android:id="@+id/update_version_imgview"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_marginBottom="@dimen/margin_5dip"-->
+                    <!--android:layout_marginRight="@dimen/news_title_height"-->
+                    <!--android:layout_marginTop="@dimen/margin_5dip"-->
+                    <!--android:layout_weight="3"-->
+                    <!--android:clickable="true"-->
+                    <!--android:gravity="center"-->
+                    <!--android:src="@drawable/arrow_right" />-->
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
@@ -90,7 +74,15 @@
                 android:layout_height="match_parent"
                 android:layout_below="@id/rl_reminder_version"
                 android:cacheColorHint="@null"
+
+                android:background="@color/white"
                 android:scrollbars="vertical" />
+
+            <!--<View-->
+                <!--android:layout_width="@dimen/margin_1dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_below="@id/rl_reminder_version"-->
+                <!--android:background="@color/info_list_bg" />-->
         </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 

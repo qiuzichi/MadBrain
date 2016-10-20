@@ -3,17 +3,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/rl_advert_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/adver_lunbo_height">
+
+        <com.unipad.brain.consult.widget.RecommendGallery
+            android:id="@+id/point_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:spacing="0dp"
+            android:unselectedAlpha="1" />
+
+        <com.unipad.brain.consult.widget.RecommendPot
+            android:id="@+id/ad_pot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp" />
+    </RelativeLayout>
+
+
     <LinearLayout
         android:id="@+id/layout_top"
+        android:layout_below="@id/rl_advert_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/newlist_height"
+        android:layout_height="@dimen/set_tabwidget_height"
+        android:background="@color/consult_tab_searchtab"
         android:orientation="horizontal">
 
         <TabWidget
             android:id="@+id/tabwidget_consult_main"
             android:layout_weight="1"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/newlist_height"
+            android:divider="@drawable/tabwidget_divider_line"
+            android:layout_height="@dimen/set_tabwidget_height"
             android:layout_centerVertical="true"
             ></TabWidget>
 
@@ -21,26 +46,38 @@
             android:id="@+id/layout_search_input"
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/newlist_height"
-            android:layout_gravity="center_vertical"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_marginLeft="@dimen/margin_10dip"
             >
 
-            <SearchView
+            <Button
                 android:id="@+id/searchview_search_bar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/newlist_height"
+                android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/margin_5dip"
-                android:layout_marginRight="@dimen/margin_edge"
+                android:layout_marginBottom="@dimen/margin_10dip"
+                android:layout_marginLeft="@dimen/margin_30dp"
+                android:layout_marginRight="@dimen/margin_30dp"
+                android:layout_marginTop="@dimen/margin_10dip"
                 android:background="@color/white"
-                android:gravity="center_vertical"
-                android:hint="根据内容搜索"
-                android:paddingRight="@dimen/margin_10dip"
-                android:textColor="@color/black"
+                android:gravity="center"
+                android:hint="@string/start_search"
                 android:singleLine="true"
-                android:imeOptions="actionSearch"
-                 />
+                android:textColor="@color/black" />
+
+            <!--<ImageView-->
+                <!--android:id="@+id/btn_start_search"-->
+                <!--android:layout_width="@dimen/newlist_height"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="@dimen/margin_5dip"-->
+                <!--android:layout_marginBottom="@dimen/margin_10dip"-->
+                <!--android:layout_marginTop="@dimen/margin_10dip"-->
+                <!--android:layout_toRightOf="@id/searchview_search_bar"-->
+                <!--android:background="@drawable/search_btn_shape"-->
+                <!--android:padding="@dimen/margin_5dip"-->
+                <!--android:src="@drawable/search_button_blue" />-->
 
         </RelativeLayout>
     </LinearLayout>
@@ -49,5 +86,6 @@
         android:id="@+id/viewPager_consult"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_top"></com.unipad.brain.consult.widget.CustomViewPager>
+        android:layout_below="@id/layout_top"
+       />
 </RelativeLayout>

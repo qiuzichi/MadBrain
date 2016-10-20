@@ -3,8 +3,8 @@ package com.unipad.brain.consult.dao;
 import android.text.TextUtils;
 
 import com.unipad.brain.consult.entity.ConsultTab;
+import com.unipad.brain.consult.view.IntroductionFragment;
 import com.unipad.brain.home.MainBasicFragment;
-import com.unipad.common.BaseFragment;
 
 /**
  * Created by 63 on 2016/6/20.
@@ -24,7 +24,7 @@ public class ConsultFragmentFactory {
         String name = null;
         switch (consultTab){
             case INTRODUCATION:
-                name = "com.unipad.brain.consult.view.IntroductionFragment";
+                name = new IntroductionFragment().getClass().getName();
                 break;
             case OCCASIONS:
                 name = "com.unipad.brain.consult.view.OccasionsFragment";

@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import com.unipad.AppContext;
 import com.unipad.IOperateGame;
 import com.unipad.brain.AbsBaseGameService;
 import com.unipad.brain.R;
+import com.unipad.brain.dialog.SettingDialog;
 import com.unipad.brain.home.bean.RuleGame;
 import com.unipad.brain.home.dao.HomeGameHandService;
 import com.unipad.common.widget.HIDDialog;
@@ -50,7 +52,7 @@ import java.util.Map;
 public class PractiseCommLeftFragment extends Fragment implements View.OnClickListener, CountDownTime.TimeListener, IOperateGame {
     private static final int[] COLORS = {R.color.bg_one, R.color.bg_two, R.color.bg_three};
     private PractiseGameActivity mActivity;
-    private RelativeLayout mParentLayout;
+    private ViewGroup mParentLayout;
     private TextView mTextName, mTextAgeAds, mTextTime, mTextCompeteProcess;
     private Button mBtnCompeteMode;
     private CountDownTime mCountDownTime;
@@ -63,11 +65,12 @@ public class PractiseCommLeftFragment extends Fragment implements View.OnClickLi
     private SparseArray mColorArray = new SparseArray();
     private int memoryTime;
     private int reMemoryTime;
-
+    private SettingDialog settingDialog;
+    private Button settingButton;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mParentLayout = (RelativeLayout) inflater.inflate(R.layout.common_frg_left, container, false);
+        mParentLayout = (ViewGroup) inflater.inflate(R.layout.common_frg_left, container, false);
         return mParentLayout;
     }
 
@@ -87,13 +90,14 @@ public class PractiseCommLeftFragment extends Fragment implements View.OnClickLi
 
         mTextAgeAds.setSelected(true);
         mTextAgeAds.setText((getString(R.string.person_level) + AppContext.instance().loginUser.getLevel()));
+        ((TextView) mParentLayout.findViewById(R.id.txt_user_group_match)).setText("" + DateUtil.getMatchGroud(mActivity));
         mTextName.setSelected(true);
         this.getBgColorArray(mParentLayout);
 
         mCountDownTime = new CountDownTime(0, false);
         mCountDownTime.setTimeListener(this);
         mTextTime.setText(mCountDownTime.getTimeString());
-        mTextName.setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(mActivity));
+        mTextName.setText(AppContext.instance().loginUser.getUserName());
         mIconImageView = (ImageView) mParentLayout.findViewById(R.id.user_photo);
         ImageOptions imageOptions =new ImageOptions.Builder()
                 //.setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小
@@ -119,6 +123,51 @@ public class PractiseCommLeftFragment extends Fragment implements View.OnClickLi
         reMemoryTime = (int) SharepreferenceUtils.readLong(
                 mActivity.getProjectId() + "_re_memoryTime",
                 300);
+        String projectId = mActivity.getProjectId();
+        settingButton = (Button)((ViewStub)mParentLayout.findViewById(R.id.button_viewstub)).inflate();
+        if (projectId.equals(Constant.GAME_BINARY_NUM) ||
+                projectId.equals(Constant.GAME_LONG_NUM) ||
+                projectId.equals(Constant.GAME_RANDOM_NUM) ||
+                projectId.equals(Constant.GAME_LONG_POCKER)){
+            settingButton.setVisibility(View.VISIBLE);
+            settingButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (settingDialog == null){
+                        settingDialog = new SettingDialog(mActivity, mActivity.getProjectId(), false) {
+                            @Override
+                            public void updateOtherView(int pre,int next) {
+                                if (mICommunicate != null){
+                                    mICommunicate.updateView(pre,next);
+                                }
+                            }
+
+                            @Override
+                            public void updateBefore() {
+                                if (mICommunicate != null){
+                                    mICommunicate.updatePreper();
+                                }
+                            }
+
+                            @Override
+                            public void updateAfter() {
+                                if (mICommunicate != null){
+                                    mICommunicate.updateAfter();
+                                }
+                            }
+                        };
+                    }
+                    if (mActivity.getService().state == AbsBaseGameService.GO_IN_MATCH_START_MEMORY){
+                        settingDialog.setIsNeedUpdateView(true);
+                    }else{
+                        settingDialog.setIsNeedUpdateView(false);
+                    }
+                    settingDialog.show();
+                }
+            });
+        }else{
+            settingButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
@@ -178,6 +227,7 @@ public class PractiseCommLeftFragment extends Fragment implements View.OnClickLi
                 startRememoryTimeCount();
                 memoryTime = takeTIme;
                 mActivity.getService().state = AbsBaseGameService.GO_IN_MATCH_END_MEMORY;
+                settingButton.setVisibility(View.INVISIBLE);
                 mICommunicate.memoryTimeToEnd(memoryTime);
             }
 

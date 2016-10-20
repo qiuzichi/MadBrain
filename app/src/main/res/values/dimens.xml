@@ -5,6 +5,7 @@
     <dimen name="bg_wh">52dp</dimen>
     <dimen name="common_lf_margin">16dp</dimen>
     <dimen name="common_text_24">24sp</dimen>
+    <dimen name="common_text_30">30sp</dimen>
     <dimen name="common_text_22">22sp</dimen>
     <dimen name="binary_line_h">50dp</dimen>
     <dimen name="binary_line_layout_padding">8dp</dimen>
@@ -16,7 +17,7 @@
     <dimen name="personal_title_h">200dp</dimen>
     <dimen name="person_text_age_s">20sp</dimen>
     <dimen name="margin_5dip">5dp</dimen>
-    <dimen name="margin_10dip">20dp</dimen>
+    <dimen name="margin_10dip">10dp</dimen>
     <dimen name="margin_edge">10dp</dimen>
     <dimen name="margin_interval">3dp</dimen>
     <dimen name="personal_photo_wh">86dp</dimen>
@@ -60,12 +61,13 @@
     <dimen name="history_answer_item_heigth">60dip</dimen>
     <dimen name="point_navigation_space">20dp</dimen>
     <dimen name="Thumb_height">150dp</dimen>
-    <dimen name="Thumb_weight">150dp</dimen>
-    //轮播图的高度
+    <dimen name="Thumb_weight">218dp</dimen>
+    <!--//轮播图的高度-->
     <dimen name="adver_lunbo_height">230dp</dimen>
     <dimen name="newlist_height">100dp</dimen>
     <dimen name="newlist_item_height">120dp</dimen>
     <dimen name="compitition_entry_fee">150dp</dimen>
+    <dimen name="tabwidget_tab_width">160dp</dimen>
 
     <dimen name="comment_use_height">100dp</dimen>
     <dimen name="comment_commit_height">30dp</dimen>
@@ -91,6 +93,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <!--标签页的高度-->
+    <dimen name="set_tabwidget_height">80dip</dimen>
 
     <dimen name="portraits_image_width">176dp</dimen>
     <dimen name="portraits_image_height">176dp</dimen>

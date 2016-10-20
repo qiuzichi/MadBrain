@@ -1,0 +1,107 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_title_home"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/binary_line_h"
+        android:background="@color/main_lf_bg">
+
+        <TextView
+            android:id="@+id/title_back_text_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_10dip"
+            android:drawableLeft="@drawable/back"
+            android:drawablePadding="@dimen/radius_4dip"
+            android:gravity="center"
+            android:text="@string/back"
+            android:textColor="@color/white"
+            android:textSize="@dimen/common_text_22" />
+        />
+
+        <TextView
+            android:id="@+id/title_detail_text_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/pager_detail"
+            android:textColor="@color/white"
+            android:textSize="@dimen/common_text_24" />
+    </RelativeLayout>
+
+    <com.unipad.brain.consult.widget.CustomSearchView
+        android:id="@+id/custom_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+    </com.unipad.brain.consult.widget.CustomSearchView>
+
+
+
+
+    <RelativeLayout
+        android:id="@+id/rl_history_visit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/view_line_divide"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_edge"
+            android:background="@color/text_gray" />
+
+        <RelativeLayout
+            android:id="@+id/rl_txt_history"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/head_portrait_width"
+            android:layout_below="@id/view_line_divide"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_history"
+                android:layout_marginLeft="@dimen/margin_30dp"
+                android:layout_marginRight="@dimen/margin_30dp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/common_text_30" />
+
+            <TextView
+                android:id="@+id/txt_clear_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/margin_30dp"
+                android:drawableLeft="@drawable/clean_datas"
+                android:drawablePadding="@dimen/margin_edge"
+                android:text="@string/clear"
+                android:textColor="@color/stroke_color"
+                android:textSize="@dimen/common_text_22" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_1dp"
+            android:id="@+id/divide_line_2"
+            android:layout_below="@id/rl_txt_history"
+            android:background="@color/search_bg_color" />
+
+
+        <ListView
+            android:id="@+id/listview_search_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divide_line_2"
+            android:background="@color/white" />
+    </RelativeLayout>
+
+
+</LinearLayout>

@@ -248,10 +248,10 @@
     <string name="race_pay">比赛费用</string>
     <string name="person_entry_fee">选手报名</string>
     <string name="person_level">等级·</string>
-    <string name="child_group">·儿童组</string>
-    <string name="young_group">·少年组</string>
-    <string name="adult_level">·成人组</string>
-    <string name="old_group">·老年组</string>
+    <string name="child_group">儿童组</string>
+    <string name="young_group">少年组</string>
+    <string name="adult_level">成人组</string>
+    <string name="old_group">老年组</string>
     <string name="search_conment">输入关键字搜索</string>
     <string name="listitem_empty">搜索不到内容</string>
     <string name="info_result">资讯搜索结果</string>
@@ -312,4 +312,10 @@
     <string name="long_poker_remember_way">记忆方式</string>
     <string name="setting">设置</string>
     <string name="no_setting">不设置</string>
+    <string name="search_history">搜索历史</string>
+    <string name="instruction">推荐</string>
+    <string name="match_info">赛事</string>
+    <string name="hot_spot">热点</string>
+    <string name="show_more_search_history">更多搜索历史</string>
+    <string name="show_limit_search_history">收起</string>
 </resources>

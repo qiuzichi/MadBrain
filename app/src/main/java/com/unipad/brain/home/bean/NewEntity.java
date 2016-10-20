@@ -141,8 +141,8 @@ public class NewEntity {
 
     @Override
     public boolean equals(Object o) {
-        if(o == null) return false;
         if(this == o) return true;
+        if(o == null) return false;
         if(getClass() != o.getClass()) return false;
         if(o instanceof NewEntity){
             NewEntity bean = (NewEntity)o;

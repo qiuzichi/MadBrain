@@ -45,6 +45,7 @@ public class ViewHolder{
 		if (convertView == null)
 		{
 			return new ViewHolder(context, parent, layoutId, position);
+
 		} else
 		{
 			ViewHolder holder = (ViewHolder) convertView.getTag();
@@ -282,5 +283,4 @@ public class ViewHolder{
 		view.setOnLongClickListener(listener);
 		return this;
 	}
-
 }

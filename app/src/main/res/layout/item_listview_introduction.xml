@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/introduction_single_bg"
+    android:background="@color/white"
     >
     <ImageView
-        android:layout_height="@dimen/Thumb_weight"
+        android:layout_height="@dimen/Thumb_height"
         android:layout_width="@dimen/Thumb_weight"
         android:src="@drawable/set_headportrait"
         android:scaleType="fitXY"
@@ -19,104 +20,110 @@
             android:layout_width="match_parent"
             android:clickable="false"
             android:layout_height="match_parent">
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/Thumb_weight"
-                android:orientation="horizontal"
-                >
+                android:layout_height="@dimen/Thumb_height"
+                android:layout_marginRight="@dimen/margin_10dip"
+                android:layout_marginTop="@dimen/margin_edge"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_10dip"
+                    android:layout_marginRight="@dimen/margin_edge"
+                    android:layout_marginTop="@dimen/margin_5dip"
+                    android:src="@drawable/pager_item_detail" />
+
                 <RelativeLayout
                     android:id="@+id/ll_item_listview_introduction"
-                    android:layout_width="0dp"
-                    android:layout_weight="8"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                   >
+                    android:layout_marginRight="@dimen/margin_10dip">
 
                     <TextView
                         android:id="@+id/tv_item_introduction_news_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:text="@string/news_title"
-                        android:textSize="@dimen/common_text_24"
                         android:singleLine="true"
-                        android:layout_marginTop="@dimen/login_margin_top"
-                        android:paddingLeft="@dimen/margin_10dip"
-                        />
-                    <View
-                        android:id="@+id/view_line_item_introduction"
-                        android:layout_height="@dimen/margin_1dp"
-                        android:layout_width="match_parent"
-                        android:background="@color/introduction_blueline"
-                        android:layout_marginLeft="@dimen/margin_10dip"
-                        android:layout_marginRight="@dimen/margin_10dip"
-                        android:layout_below="@+id/tv_item_introduction_news_title"
-                        android:layout_marginTop="@dimen/view_margin_height"
+                        android:text="@string/news_title"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/common_text_24" />
 
-                        />
+                    <TextView
+                        android:id="@+id/view_line_item_brief"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_item_introduction_news_title"
+                        android:layout_marginBottom="@dimen/margin_edge"
+                        android:layout_marginTop="@dimen/margin_edge"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+                        android:textColor="@color/memory_order"
+                        android:textSize="@dimen/text_size_18" />
 
                     <RelativeLayout
-                        android:layout_below="@id/view_line_item_introduction"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-
-                        >
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/view_line_item_brief">
 
                         <ImageView
                             android:id="@+id/iv_item_introduction_zan"
                             android:layout_width="@dimen/favorite_width"
                             android:layout_height="@dimen/favorite_width"
-                            android:scaleType="fitXY"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="@dimen/margin_30dp"
-                            android:src="@drawable/select__favorite_introduction"
-                        />
+                            android:scaleType="fitXY"
+                            android:src="@drawable/select__favorite_introduction" />
 
                         <ImageView
                             android:id="@+id/iv_item_introduction_comment"
                             android:layout_width="@dimen/favorite_width"
-                            android:visibility="gone"
                             android:layout_height="@dimen/favorite_width"
                             android:layout_centerVertical="true"
+                            android:layout_marginBottom="@dimen/margin_edge"
                             android:layout_marginLeft="@dimen/margin_30dp"
                             android:layout_toRightOf="@id/iv_item_introduction_zan"
                             android:scaleType="fitXY"
-                            android:src="@drawable/comment_introduction_normal" />
+                            android:src="@drawable/comment_introduction_normal"
+                            android:visibility="gone" />
 
-                        <TextView
-                            android:id="@+id/tv_item_introduction_updatetime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="@dimen/margin_10dip"
-                            android:clickable="false"
-                            android:text="@string/hint_begin_data" />
+                        <!--<TextView-->
+                        <!--android:id="@+id/tv_item_introduction_updatetime"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_marginRight="@dimen/margin_10dip"-->
+                        <!--android:clickable="false"-->
+                        <!--android:text="@string/hint_begin_data" />-->
 
                     </RelativeLayout>
 
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:id="@+id/rl_item_introduction_detail"
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:clickable="true"
-                    android:background="@color/introduction_checkdetail_bg_blue"
-                    android:layout_height="@dimen/Thumb_weight">
+                <!--<RelativeLayout-->
+                    <!--android:id="@+id/rl_item_introduction_detail"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:clickable="true"-->
+                    <!--android:background="@color/introduction_checkdetail_bg_blue"-->
+                    <!--android:layout_height="@dimen/Thumb_weight">-->
 
 
-                    <TextView
-                        android:id="@+id/tv_item_introduction_detail"
-                        android:layout_width="@dimen/text_size_18"
-                        android:layout_height="wrap_content"
-                        android:text="@string/check_detail"
-                        android:textColor="@color/introduction_text_color_blue"
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true"
-                        android:textSize="@dimen/text_size_18"
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_item_introduction_detail"-->
+                        <!--android:layout_width="@dimen/text_size_18"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="@string/check_detail"-->
+                        <!--android:textColor="@color/introduction_text_color_blue"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_centerHorizontal="true"-->
+                        <!--android:textSize="@dimen/text_size_18"-->
 
-                        />
-                </RelativeLayout>
+                        <!--/>-->
+                <!--</RelativeLayout>-->
             </LinearLayout>
         </RelativeLayout>
 </RelativeLayout>

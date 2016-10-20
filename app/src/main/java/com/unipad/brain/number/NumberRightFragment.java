@@ -255,7 +255,10 @@ public abstract class NumberRightFragment extends BasicCommonFragment implements
                 if (!service.isPause) {
                     HIDDialog waitDialog = HIDDialog.getExistDialog(Constant.INIT_REMEMORY_DLG);
                     if (waitDialog != null) {
-                        ((TextView) waitDialog.findViewById(R.id.dialog_text)).setText("加载答题卡中:" + progress);
+                       TextView tipView = (TextView) waitDialog.findViewById(R.id.dialog_text);
+                        if (tipView != null){
+                            tipView.setText("加载答题卡中:" + progress);
+                        }
                     }
                 }
             }

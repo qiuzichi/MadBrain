@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/head_portrait_width"
+    android:background="@color/search_bg_color">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/head_portrait_width"
+        android:id="@+id/txt_show_more_history"
+        android:layout_centerInParent="true"
+        android:text="@string/show_more_search_history"
+        android:textColor="@color/stroke_color"
+        android:drawableRight="@drawable/arrow_right"
+        android:gravity="center"
+        android:drawablePadding="@dimen/margin_10dip"
+        android:textSize="@dimen/common_text_24" />
+
+</RelativeLayout>

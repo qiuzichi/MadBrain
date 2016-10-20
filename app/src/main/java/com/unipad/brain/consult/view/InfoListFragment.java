@@ -1,9 +1,7 @@
 package com.unipad.brain.consult.view;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -16,12 +14,10 @@ import com.unipad.brain.consult.ConsultBaseFragment;
 import com.unipad.brain.consult.adapter.MyInfoListAdapter;
 import com.unipad.brain.consult.entity.ConsultClassBean;
 import com.unipad.brain.consult.entity.ListEnum;
-import com.unipad.brain.home.MainBasicFragment;
+import com.unipad.brain.consult.widget.CircularImageView;
 import com.unipad.http.HttpConstant;
 import com.unipad.utils.DateUtil;
-import com.unipad.utils.PicUtil;
 
-import org.xutils.common.Callback;
 import org.xutils.common.util.DensityUtil;
 import org.xutils.image.ImageOptions;
 import org.xutils.x;
@@ -56,16 +52,21 @@ public class InfoListFragment extends ConsultBaseFragment implements AdapterView
 
     private void  initTitleBar(){
         TextView user_name = (TextView) mInfoListView.findViewById(R.id.tv_uese_name_consult);
-        user_name.setText(AppContext.instance().loginUser.getUserName() + DateUtil.getMatchGroud(getmContext()));
+        if(TextUtils.isEmpty(AppContext.instance().loginUser.getUserName())){
+            user_name.setText("lisa");
+        } else {
+            user_name.setText(AppContext.instance().loginUser.getUserName());
+        }
         user_name.setSelected(true);
+        ((TextView)mInfoListView.findViewById(R.id.txt_user_group)).setText(DateUtil.getMatchGroud(getmContext()));
         ((TextView)mInfoListView.findViewById(R.id.tv_uese_level_consult)).setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());
-
         final ImageView user_photo = (ImageView)mInfoListView.findViewById(R.id.iv_header);
         ImageOptions imageOptions =new ImageOptions.Builder()
                 //.setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小
-                .setRadius(DensityUtil.dip2px(360))//ImageView圆角半径
+//                .setRadius(DensityUtil.dip2px(360))//ImageView  设置拐角弧度
                 .setCrop(true)// 如果ImageView的大小不是定义为wrap_content, 不要crop.
-                .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+                .setCircular(true)  //设置图片显示为圆形
+                .setImageScaleType(ImageView.ScaleType.CENTER_INSIDE)
                         // .setLoadingDrawableId(R.mipmap.ic_launcher)//加载中默认显示图片
                         // .setFailureDrawableId(R.mipmap.ic_launcher)//加载失败后默认显示图片
                 .build();

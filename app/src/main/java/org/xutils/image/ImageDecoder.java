@@ -249,13 +249,13 @@ public final class ImageDecoder {
                 if (cancelable != null && cancelable.isCancelled()) {
                     throw new Callback.CancelledException("cancelled during decode image");
                 }
-                if (rotateAngle != 0) {
-                    bitmap = rotate(bitmap, rotateAngle, true);
-                }
-                if (cancelable != null && cancelable.isCancelled()) {
-                    throw new Callback.CancelledException("cancelled during decode image");
-                }
-                if (options.isCrop() && optionWith > 0 && optionHeight > 0) {
+                    if (rotateAngle != 0) {
+                        bitmap = rotate(bitmap, rotateAngle, true);
+                    }
+                    if (cancelable != null && cancelable.isCancelled()) {
+                        throw new Callback.CancelledException("cancelled during decode image");
+                    }
+                    if (options.isCrop() && optionWith > 0 && optionHeight > 0) {
                     bitmap = cut2ScaleSize(bitmap, optionWith, optionHeight, true);
                 }
             }

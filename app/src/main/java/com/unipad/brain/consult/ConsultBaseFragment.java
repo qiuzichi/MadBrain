@@ -27,6 +27,12 @@ public abstract class ConsultBaseFragment extends MainBasicFragment{
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LogUtil.d(tag(), "onCreate");
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         LogUtil.d(tag(), "onCreateView");
