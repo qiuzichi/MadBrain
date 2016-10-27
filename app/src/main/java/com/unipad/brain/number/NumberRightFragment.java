@@ -245,7 +245,8 @@ public abstract class NumberRightFragment extends BasicCommonFragment implements
             public void begin() {
                 LogUtil.e("", "begin...");
                 if (!service.isPause)
-                    ToastUtil.createWaitingDlg(mActivity, "加载答题卡中", Constant.INIT_REMEMORY_DLG).show();
+                    ToastUtil.createTipDialog(mActivity, Constant.INIT_REMEMORY_DLG, mActivity.getString(R.string.dialog_load_answer_card), R.drawable.wait_match_loading).show();
+//                    ToastUtil.createWaitingDlg(mActivity, "加载答题卡中", Constant.INIT_REMEMORY_DLG).show();
             }
 
             @Override
@@ -254,7 +255,7 @@ public abstract class NumberRightFragment extends BasicCommonFragment implements
                 if (!service.isPause) {
                     HIDDialog waitDialog = HIDDialog.getExistDialog(Constant.INIT_REMEMORY_DLG);
                     if (waitDialog != null) {
-                        ((TextView) waitDialog.findViewById(R.id.dialog_text)).setText("加载答题卡中:" + progress);
+                        ((TextView) waitDialog.findViewById(R.id.dialog_tip_content)).setText(mActivity.getString(R.string.dialog_load_answer_card) +" : " + progress);
                     }
                 }
             }

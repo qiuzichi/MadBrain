@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +39,9 @@ import com.unipad.http.HttpConstant;
 import com.unipad.observer.IDataObserver;
 import com.unipad.utils.ToastUtil;
 import org.xutils.common.Callback;
+import org.xutils.image.ImageOptions;
+import org.xutils.x;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Inflater;
@@ -58,6 +63,10 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
     private boolean isLoading = false;
     //上拉加载更多；
     private View mListViewFooter;
+    private ImageOptions imageOptions;
+    private boolean isActionDown;
+    private float downY;
+    private boolean isUpMove;
 
 
     @Override
@@ -74,6 +83,7 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
         //说明的第一个页面 资讯页面；00001---00002----00003
         pageId = Integer.parseInt(contentId.substring(contentId.lastIndexOf("0") + 1)) - 1;
         service.getSearchNews(contentId, contentId, getIntent().getStringExtra("queryContent"), requestPager = 1, permaryDataNumber);
+
     }
 
     @Override
@@ -84,7 +94,6 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
         String title = null;
         if("00001".equals(contentId)){
             title = getString(R.string.info_result);
-
         }else if("00002".equals(contentId)) {
             title = getString(R.string.competetion_result);
         }else if("00003".equals(contentId)) {
@@ -95,37 +104,79 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
         mSearchAdapter = new SearchAdapter(this, mSearchDatas, R.layout.item_listview_introduction );
         mListView.setAdapter(mSearchAdapter);
 
-        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        isUpMove = false;
+        downY = 0;
+        // 拖动listview时，如果点击到的地方是item里的一些view，可能出现ACTION_DOWN触发不了的问题。
+        // 利用isActionDown，当为false时就触发了ACTION_MOVE，第一个action需要当成ACTION_DOWN处理
+        isActionDown = false;
+        mListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                switch (scrollState){
-                    case SCROLL_STATE_IDLE :
-                        if(canLoad()){
-                            if (mSearchDatas.size() != 0) {
-                                int TotalPager = mSearchDatas.get(0).getTotalPager();
-                                if (requestPager > TotalPager) {
-                                    ToastUtil.showToast(getString(R.string.loadmore_null_data));
-                                } else {
-                                    setLoading(true);
-                                    service.getSearchNews(contentId, contentId, getIntent().getStringExtra("queryContent"), requestPager, permaryDataNumber);
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        isActionDown = true;
+                        downY = event.getY();
+                        Log.i("onTouchListener", "downY:" + downY);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (!isActionDown) {
+                            // 当为false时就触发了ACTION_MOVE，第一个action需要当成ACTION_DOWN处理
+                            isActionDown = true;
+                            downY = event.getY();
+                            Log.i("onTouchListener", "downY:" + downY + " no action down");
+                        } else {
+                            float currentY = event.getY();
+                            Log.i("onTouchListener", "downY:" + downY + " currentY::"
+                                    + currentY + " currentY - downY:"
+                                    + (currentY - downY));
+                            if (currentY - downY < -20 && !isUpMove) {
+                                // 向上拉，隐藏
+                                isUpMove = true;
+                                Log.i("onTouchListener", "downY:" + downY + " currentY::"
+                                        + currentY + " currentY - downY:"
+                                        + (currentY - downY) + " hide");
+                                if(canLoad()){
+                                    if (mSearchDatas.size() != 0) {
+                                        int TotalPager = mSearchDatas.get(0).getTotalPager();
+                                        if (requestPager > TotalPager) {
+                                            ToastUtil.showToast(getString(R.string.loadmore_null_data));
+                                            isUpMove = false;
+                                        } else {
+                                            setLoading(true);
+                                            service.getSearchNews(contentId, contentId, getIntent().getStringExtra("queryContent"), requestPager, permaryDataNumber);
+                                        }
+                                    }
                                 }
+
+                            } else if (currentY - downY > 20 && isUpMove) {
+                                // 向下拉，显示
+                                isUpMove = false;
+                                Log.i("onTouchListener", "downY:" + downY + " currentY::"
+                                        + currentY + " currentY - downY:"
+                                        + (currentY - downY) + " show");
                             }
+
                         }
+
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        isActionDown = false;// isActionDown重置
                         break;
                     default:
                         break;
                 }
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                return false;
             }
         });
+
+
     }
 
     private void initFooterView(){
         if(mListViewFooter == null){
             mListViewFooter = View.inflate(this, R.layout.recycler_footer_layout, null);
+            mListViewFooter.setLayoutParams(new AbsListView.LayoutParams(
+                    AbsListView.LayoutParams.MATCH_PARENT, com.unipad.utils.DensityUtil.dip2px(this,80)));
         }
     }
 
@@ -151,7 +202,8 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
     }
 
     /**
-     * @param loading
+     * @param loading true 正在加载数据
+     *                false  隐藏加载进度条；
      */
     public void setLoading(boolean loading) {
         initFooterView();
@@ -173,7 +225,18 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
         public void convert(ViewHolder holder, final NewEntity newEntity) {
             //设置  缩略图
             ImageView iv_picture = (ImageView) holder.getView(R.id.iv_item_introduction_icon);
-            new BitmapUtils(mContext).display(iv_picture, newEntity.getThumbUrl());
+            if(null == imageOptions){
+                 imageOptions = new ImageOptions.Builder()
+                        //                    .setSize(DensityUtil.dip2px(120), DensityUtil.dip2px(120))//图片大小
+                        //                    .setRadius(DensityUtil.dip2px(5))//ImageView圆角半径
+                        .setCrop(true)// 如果ImageView的大小不是定义为wrap_content, 不要crop.
+                        .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+                                //                    .setLoadingDrawableId(R.mipmap.iv_icon)//加载中默认显示图片
+                        .setFailureDrawableId(R.drawable.error_remind)//加载失败后默认显示图片
+                        .build();
+            }
+
+            x.image().bind(iv_picture, newEntity.getThumbUrl(), imageOptions);
             //设置标题
              ((TextView) holder.getView(R.id.tv_item_introduction_news_title)).setText(newEntity.getTitle());
             //设置更新时间
@@ -192,6 +255,21 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
                 //默认情况下
                 iv_pager_zan.setImageResource(R.drawable.favorite_introduction_normal);
             }
+
+            ((TextView) holder.getView(R.id.tv_item_introduction_news_title)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //查看详情的界面
+                    openDetialPager(newEntity);
+                }
+            });
+            txt_brief.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //查看详情的界面
+                  openDetialPager(newEntity);
+                }
+            });
 
             //点赞  点击事件
             iv_pager_zan.setOnClickListener(new View.OnClickListener() {
@@ -233,6 +311,12 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
 
         }
 
+        private void openDetialPager(NewEntity newEntity ){
+            Intent intent = new Intent(SearchResultActivity.this, PagerDetailActivity.class);
+            intent.putExtra("pagerId", newEntity.getId());
+            SearchResultActivity.this.startActivity(intent);
+        }
+
     }
 
 
@@ -243,6 +327,7 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
             case HttpConstant.NOTIFY_GET_SEARCH_OCCSION:
             case HttpConstant.NOTIFY_GET_SEARCH_HOTSPOT:
                 //加载完成；删除footerview
+                isUpMove = false;
                 if(mListViewFooter != null)
                     setLoading(false);
                 if(o == null){
@@ -257,6 +342,16 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
                     ((TextView)findViewById(R.id.tv_listview_empty)).setVisibility(View.VISIBLE);
                 }else {
                     requestPager ++;
+                    if(requestPager > mSearchDatas.get(0).getTotalPager()){
+                        View footerView = View.inflate(this, R.layout.recycler_footer_layout, null);
+                        footerView.setLayoutParams(new AbsListView.LayoutParams
+                                (AbsListView.LayoutParams.MATCH_PARENT, com.unipad.utils.DensityUtil.dip2px(this,80)));
+                        ((ProgressBar)footerView.findViewById(R.id.progressbar_loadmore_footer)).setVisibility(View.GONE);
+                        TextView text_loadMore = (TextView) footerView.findViewById(R.id.tv_item_introduction_footer);
+                        text_loadMore.setText(getString(R.string.no_available));
+                        text_loadMore.setTextColor(getResources().getColor(R.color.stroke_color));
+                        mListView.addFooterView(footerView);
+                    }
                     mSearchAdapter.notifyDataSetChanged();
                 }
                 break;
@@ -273,6 +368,7 @@ public class SearchResultActivity extends BasicActivity implements IDataObserver
         switch (v.getId()){
             case R.id.title_back_text_search:
                 finish();
+
                 break;
         }
     }

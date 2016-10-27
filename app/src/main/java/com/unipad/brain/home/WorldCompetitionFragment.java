@@ -128,8 +128,8 @@ public class WorldCompetitionFragment extends BaseFragment implements ICompetiti
 						// 判断滚动到底部
 						if (lv_competition.getLastVisiblePosition() == (lv_competition.getCount() - 1)) {
 
-							if (requestPagerNum == totalPager) {
-								if (requestPagerNum >= 2) {
+							if (requestPagerNum > totalPager) {
+								if (requestPagerNum > 2) {
 									ToastUtil.showToast(getString(R.string.loadmore_null_data));
 								}
 								return;
@@ -159,11 +159,12 @@ public class WorldCompetitionFragment extends BaseFragment implements ICompetiti
 		mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
+				activity.getGameList(Constant.WORD_GAME, requestPagerNum = 1, 10);
+
 				new Handler().postDelayed(new Runnable() {
 					@Override
 					public void run() {
 						mSwipeRefreshLayout.setRefreshing(false);
-						activity.getGameList(Constant.WORD_GAME, requestPagerNum = 1, 10);
 					}
 				}, 2000);
 			}
@@ -239,6 +240,7 @@ public class WorldCompetitionFragment extends BaseFragment implements ICompetiti
 		switch (key){
 			case HttpConstant.WORD_GET_HOME_GAME_LIST:
 				List<CompetitionBean> beans = (List<CompetitionBean>) o;
+				mSwipeRefreshLayout.setRefreshing(false);
 				if(beans.size() == 0){
 					if(competitionPersenter.getDatas().size() == 0){
 						mSwipeRefreshLayout.setVisibility(View.GONE);
@@ -250,7 +252,7 @@ public class WorldCompetitionFragment extends BaseFragment implements ICompetiti
 				mSwipeRefreshLayout.setVisibility(View.VISIBLE);
 
 				totalPager = beans.get(0).getTotalPage();
-				if(totalPager != requestPagerNum){
+				if(totalPager >= requestPagerNum){
 					requestPagerNum ++;
 				}
 				competitionPersenter.setData((List<CompetitionBean>) o);

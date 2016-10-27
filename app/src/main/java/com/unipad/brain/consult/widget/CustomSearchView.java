@@ -337,6 +337,23 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
         lvTips.setVisibility(View.GONE);
     }
 
+    /**
+     * 初始化position  同时设置 title 的名称；
+     * @param title
+     */
+    public void setSelectText(String title){
+        if(!TextUtils.isEmpty(title)){
+            int position  = Integer.parseInt(title.substring(title.length() -1))- 1;
+            if(mCurrentPosition == position)
+                return;
+            mCurrentPosition = position;
+            txtSelect.setText(ConsultTab.values()[position].getType());
+        }
+    }
+
+    /**
+     * @param history 设置输入框 搜索的内容
+     */
     public void setEditInputContent(String history){
         etInput.setText(history);
         etInput.setSelection(history.length());

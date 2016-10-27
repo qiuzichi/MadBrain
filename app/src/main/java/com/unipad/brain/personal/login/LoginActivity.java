@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.unipad.AppContext;
 import com.unipad.UserDetailEntity;
@@ -124,6 +125,10 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
             return;
         }
         ToastUtil.createWaitingDlg(this,null,Constant.LOGIN_WAIT_DLG).show(15);
+        HIDDialog waitDialog = HIDDialog.getExistDialog(Constant.LOGIN_WAIT_DLG);
+        if (waitDialog != null) {
+            ((TextView) waitDialog.findViewById(R.id.dialog_text)).setVisibility(View.GONE);
+        }
         service.loginIn(userName.getText().toString().trim(), userPwd.getText().toString().trim());
     }
 
@@ -143,6 +148,7 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         switch (key) {
             case HttpConstant.LOGIN_UPDATE_UI:
                 HIDDialog.dismissAll();
+
                 AppContext.instance().loginUser.setLoginPwd(MD5Utils.MD5_two(userPwd.getText().toString().trim()));
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);

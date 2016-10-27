@@ -23,6 +23,7 @@ public class DividerDecoration extends RecyclerView.ItemDecoration {
     public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
 
     private Drawable mDivider;
+    private boolean hasFooter;
     private int mDividerHeight = 2;//分割线高度，默认为1px
     private int mOrientation;//列表的方向：LinearLayoutManager.VERTICAL或LinearLayoutManager.HORIZONTA
 
@@ -32,12 +33,17 @@ public class DividerDecoration extends RecyclerView.ItemDecoration {
         a.recycle();
     }
 
-    public DividerDecoration(Context context, int orientation) {
+    /**
+     * @param context
+     * @param orientation  水平 或者垂直
+     * @param hasFooter  是否包含脚步view
+     */
+    public DividerDecoration(Context context, int orientation, boolean hasFooter) {
         if (orientation != LinearLayoutManager.VERTICAL && orientation != LinearLayoutManager.HORIZONTAL) {
             throw new IllegalArgumentException("请输入正确的参数！");
         }
         mOrientation = orientation;
-
+        this.hasFooter = hasFooter;
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
         a.recycle();
@@ -51,7 +57,7 @@ public class DividerDecoration extends RecyclerView.ItemDecoration {
      * @param drawableId  分割线图片
      */
     public DividerDecoration(Context context, int orientation, int drawableId) {
-        this(context, orientation);
+        this(context, orientation, true);
         mDivider = ContextCompat.getDrawable(context, drawableId);
         mDividerHeight = mDivider.getIntrinsicHeight();
     }
@@ -81,37 +87,50 @@ public class DividerDecoration extends RecyclerView.ItemDecoration {
     }
 
     public void drawVertical(Canvas c, RecyclerView parent) {
-        final int left = parent.getPaddingLeft();
-        final int right = parent.getWidth() - parent.getPaddingRight();
-        final int recyclerViewTop = parent.getPaddingTop();
-        final int recyclerViewBottom = parent.getHeight() - parent.getPaddingBottom();
-        final int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
-                    .getLayoutParams();
-            final int top = Math.max(recyclerViewTop, child.getBottom() + params.bottomMargin);
-            final int bottom = Math.min(recyclerViewBottom, top + mDivider.getIntrinsicHeight());
-            mDivider.setBounds(left, top, right, bottom);
-            mDivider.draw(c);
-        }
+//        final int left = parent.getPaddingLeft();
+//        final int right = parent.getWidth() - parent.getPaddingRight();
+//        final int recyclerViewTop = parent.getPaddingTop();
+//        final int recyclerViewBottom = parent.getHeight() - parent.getPaddingBottom();
+//        final int childCount = parent.getChildCount();
+//        for (int i = 0; i < childCount; i++) {
+//            final View child = parent.getChildAt(i);
+//            // 有脚部时，最后一条不画
+//            if (hasFooter) {
+//                continue;
+//            }
+//            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
+//                    .getLayoutParams();
+//            final int top = Math.max(recyclerViewTop, child.getBottom() + params.bottomMargin);
+//            final int bottom = Math.min(recyclerViewBottom, top + mDivider.getIntrinsicHeight());
+//            mDivider.setBounds(left, top, right, bottom);
+//            mDivider.draw(c);
+//        }
     }
 
+    /** 如果什么不执行draw（c） 就不会出现分割线
+     * @param c
+     * @param parent
+     */
     public void drawHorizontal(Canvas c, RecyclerView parent) {
-        final int top = parent.getPaddingTop();
-        final int bottom = parent.getHeight() - parent.getPaddingBottom();
-        final int recyclerViewLeft = parent.getPaddingLeft();
-        final int recyclerViewRight = parent.getWidth() - parent.getPaddingRight();
-        final int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
-                    .getLayoutParams();
-            final int left = Math.max(recyclerViewLeft, child.getRight() + params.rightMargin);
-            final int right = Math.min(recyclerViewRight, left + mDivider.getIntrinsicHeight());
-            mDivider.setBounds(left, top, right, bottom);
-            mDivider.draw(c);
-        }
+//        final int top = parent.getPaddingTop();
+//        final int bottom = parent.getHeight() - parent.getPaddingBottom();
+//        final int recyclerViewLeft = parent.getPaddingLeft();
+//        final int recyclerViewRight = parent.getWidth() - parent.getPaddingRight();
+//        final int childCount = parent.getChildCount();
+//        for (int i = 0; i < childCount; i++) {
+//            final View child = parent.getChildAt(i);
+//            // 有脚部时，最后一条不画
+//            if (hasFooter &&
+//                    parent.getChildLayoutPosition(child) == parent.getLayoutManager().getItemCount() - 1) {
+//                continue;
+//            }
+//            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
+//                    .getLayoutParams();
+//            final int left = Math.max(recyclerViewLeft, child.getRight() + params.rightMargin);
+//            final int right = Math.min(recyclerViewRight, left + mDivider.getIntrinsicHeight());
+//            mDivider.setBounds(left, top, right, bottom);
+//            mDivider.draw(c);
+//        }
     }
 
     @Override

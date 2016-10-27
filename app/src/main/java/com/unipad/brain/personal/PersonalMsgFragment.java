@@ -111,12 +111,13 @@ public class PersonalMsgFragment extends PersonalCommonFragment implements IData
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                competitionBeans.clear();
+                service.getApplyList(AppContext.instance().loginUser.getUserId());
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
-                        competitionBeans.clear();
-                        service.getApplyList(AppContext.instance().loginUser.getUserId());
+
                     }
                 }, 2000);
             }
@@ -196,7 +197,7 @@ public class PersonalMsgFragment extends PersonalCommonFragment implements IData
                     int code = jsonObject.optInt("ret_code");
                     if(code == 0){
                         JSONObject data = jsonObject.optJSONObject("data");
-                        String allow = data.optString("allow");
+                       // String allow = data.optString("allow");
                        // if("0".equals(allow)){
                             Intent intent = new Intent(mActivity, CommonActivity.class);
                             intent.putExtra("projectId",data.optString("projectId"));
@@ -208,7 +209,8 @@ public class PersonalMsgFragment extends PersonalCommonFragment implements IData
                        //     ToastUtil.showToast(getString(R.string.gameed));
                        // }
                     } else {
-                        ToastUtil.showToast("系统错误");
+                        //ret_code":"-1","ret_msg":"比赛已经结束
+                        ToastUtil.showToast("" + jsonObject.optString("ret_msg"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

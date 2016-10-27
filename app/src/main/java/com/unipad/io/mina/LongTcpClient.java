@@ -25,7 +25,7 @@ public class LongTcpClient implements ClientSessionHandler.IDataHandler {
 
     private static LongTcpClient instance;
 
-    private static final String HOSTNAME = "221.5.109.34";
+    private static final String HOSTNAME = "211.149.174.33";
 
     private static final int PORT = 7003;
 

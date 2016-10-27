@@ -2,15 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/stroke_color"
-    android:orientation="vertical"
-    >
+    android:background="@color/white"
+    android:orientation="vertical">
+
     <RelativeLayout
         android:id="@+id/rl_title_home"
         android:layout_width="match_parent"
         android:layout_height="@dimen/binary_line_h"
-        android:background="@color/main_lf_bg"
-        >
+        android:background="@color/main_lf_bg">
 
         <TextView
             android:id="@+id/title_back_text_search"
@@ -35,8 +34,7 @@
             android:layout_centerInParent="true"
             android:text="@string/pager_detail"
             android:textColor="@color/white"
-            android:textSize="@dimen/common_text_24"
-            />
+            android:textSize="@dimen/common_text_24" />
 
 
     </RelativeLayout>
@@ -45,7 +43,9 @@
     <ListView
         android:id="@+id/listview_search_result"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:dividerHeight="0dp"
+        android:divider="@null"
         android:background="@color/white"></ListView>
 
     <TextView
@@ -59,7 +59,6 @@
         android:textColor="@color/stroke_color"
         android:textSize="@dimen/listview_empty_size"
         android:textStyle="bold"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 </LinearLayout>

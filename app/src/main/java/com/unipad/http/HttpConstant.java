@@ -45,7 +45,7 @@ public class HttpConstant {
      */
     public static String APPLY_GAME = "/api/match/apply";
     // 获取图片路径 http://192.168.0.104:8090/crazybrain-mng
-    public static final String url = "http://221.5.109.34/crazybrain-mng";
+    public static final String url = "http://211.149.174.33:8090/crazybrain-mng";
 
     public static String PATH_FILE_URL  = url +  "/image/getFile?filePath=";
     // 更新用户信息
@@ -164,13 +164,12 @@ public class HttpConstant {
     //获取资讯页面的结果
     public static final int NOTIFY_GET_SEARCH_RUSULT = 0x20009;
     //获取赛事页面的结果
-    public static final int NOTIFY_GET_SEARCH_OCCSION = 0x20011;
+    public static final int NOTIFY_GET_SEARCH_OCCSION = 0x20010;
     //获取热点页面的结果
-    public static final int NOTIFY_GET_SEARCH_HOTSPOT = 0x20012;
+    public static final int NOTIFY_GET_SEARCH_HOTSPOT = 0x20011;
     //下载apk 请求
-    public static final int NOTIFY_DOWNLOAD_APK = 0x20010;
-
+    public static final int NOTIFY_DOWNLOAD_APK = 0x20012;
     //最新赛事报名
-    public static final int NOTIFY_APPLY_NEWCOMPETITION = 0x20011;
+    public static final int NOTIFY_APPLY_NEWCOMPETITION = 0x20013;
 
 }

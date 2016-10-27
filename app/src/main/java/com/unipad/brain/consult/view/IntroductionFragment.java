@@ -116,16 +116,18 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
             @Override
             public void onRefresh() {
                 isRefreshData = true;
+                if(newsDatas.size() > 1 && newsDatas.get(0).getTotalPager() > 1)
+                    mRecyclerViewAdapter.setFooterIsFoot(false);
+
+                newsDatas.clear();
+                service.getNews(ConsultTab.INTRODUCATION.getTypeId(), null, requestPagerNum = 1, permaryDataNumber);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
-                        newsDatas.clear();
 //                        if(mRecyclerViewAdapter.getIsVisibility()){
 //                            newsDatas.add(0, new NewEntity("header"));
 //                        }
-                        service.getNews(ConsultTab.INTRODUCATION.getTypeId(), null, requestPagerNum = 1, permaryDataNumber);
-
                     }
                 }, 1000);
             }
@@ -135,7 +137,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mRecyclerView.addItemDecoration(new DividerDecoration(mActivity,  LinearLayoutManager.VERTICAL, R.drawable.list_divider_line));
+        mRecyclerView.addItemDecoration(new DividerDecoration(mActivity, LinearLayoutManager.VERTICAL, R.drawable.list_divider_line));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mSwipeRefreshLayout.setRefreshing(false);
 
@@ -145,12 +147,11 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
         mRecyclerViewAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                if(newsDatas != null && newsDatas.size() != 0 && !isRefreshData){
+                if (newsDatas != null && newsDatas.size() != 0 && !isRefreshData) {
                     int totalPager = newsDatas.get(0).getTotalPager();
                     if (requestPagerNum > totalPager) {
                    /* 最后一页 直接吐司 不显示下拉加载*/
-                        if (requestPagerNum > 2)
-                            ToastUtil.showToast(getString(R.string.loadmore_null_data));
+//                        ToastUtil.showToast(getString(R.string.loadmore_null_data));
                         return;
                     }
                     mRecyclerViewAdapter.setLoading(true);
@@ -357,11 +358,10 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
 //        HIDDialog.dismissAll();
             switch (key) {
                 case HttpConstant.NOTIFY_GET_NEWS:
+                    requestPagerNum++;
                     isRefreshData = false;
-                    mRecyclerViewAdapter.setLoading(false);
-                    mRecyclerViewAdapter.setIsRefresh();
                     removeFooterView();
-
+                    mRecyclerViewAdapter.setIsRefresh();
                     if(null == o ){
                         //网络访问错误 刷新数据
                         if(newsDatas.size() == 0){
@@ -371,6 +371,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                         ToastUtil.showToast(getString(R.string.net_error_refrush_data));
                         return;
                     }
+
                     //获取新闻页面数据
                     List<NewEntity> databean = (List<NewEntity>) o;
                     if(databean.size() == 0){
@@ -383,8 +384,13 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                     }
                     emptyView.setVisibility(View.GONE);
                     mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-                    requestPagerNum++;
                     newsDatas.addAll(databean);
+
+                    if(requestPagerNum > newsDatas.get(0).getTotalPager()){
+                        newsDatas.add(null);
+                        mRecyclerViewAdapter.notifyItemInserted(newsDatas.size() - 1);
+                        mRecyclerViewAdapter.setFooterIsFoot(true);
+                    }
                     mRecyclerViewAdapter.notifyDataSetChanged();
                     break;
 
@@ -414,9 +420,13 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
     }
 
     private void removeFooterView() {
+
         if (newsDatas.size() > 1 && 1 == mRecyclerViewAdapter.getItemViewType(newsDatas.size() - 1)){
-            newsDatas.remove(newsDatas.size() - 1);
-            mRecyclerViewAdapter.notifyItemRemoved(newsDatas.size());
+            if(mRecyclerViewAdapter.getLoading()){
+                mRecyclerViewAdapter.setLoading(false);
+                newsDatas.remove(newsDatas.size() - 1);
+                mRecyclerViewAdapter.notifyItemRemoved(newsDatas.size());
+            }
         }
     }
 }

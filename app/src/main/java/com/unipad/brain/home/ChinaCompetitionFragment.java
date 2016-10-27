@@ -116,12 +116,12 @@ public class ChinaCompetitionFragment extends BaseFragment implements ICompetiti
 			public void onScrollStateChanged(AbsListView absListView, int i) {
 				switch (i) {
 					// 当不滚动时
-					case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
+					case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
 						// 判断滚动到底部
 						if (lv_competition.getLastVisiblePosition() == (lv_competition.getCount() - 1)) {
 
-							if (requestPagerNum == totalPager) {
-								if (requestPagerNum >= 2) {
+							if (requestPagerNum > totalPager) {
+								if (requestPagerNum > 2) {
 									ToastUtil.showToast(getString(R.string.loadmore_null_data));
 								}
 								return;
@@ -143,7 +143,6 @@ public class ChinaCompetitionFragment extends BaseFragment implements ICompetiti
 			public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				/*第一项可见 的时候 才可以响应swipe的滑动刷新事件*/
 				mSwipeRefreshLayout.setEnabled(firstVisibleItem == 0);
-
 			}
 		});
 
@@ -151,11 +150,11 @@ public class ChinaCompetitionFragment extends BaseFragment implements ICompetiti
 		mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
+				activity.getGameList(Constant.CHIMA_GAME, requestPagerNum = 1, 10);
 				new Handler().postDelayed(new Runnable() {
 					@Override
 					public void run() {
 						mSwipeRefreshLayout.setRefreshing(false);
-						activity.getGameList(Constant.CHIMA_GAME, 1, 10);
 					}
 				}, 2000);
 			}
@@ -164,7 +163,7 @@ public class ChinaCompetitionFragment extends BaseFragment implements ICompetiti
 		emptyView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				activity.getGameList(Constant.CHIMA_GAME, 1, 10);
+				activity.getGameList(Constant.CHIMA_GAME, requestPagerNum = 1, 10);
 				showLoadProgress(View.VISIBLE);
 			}
 		});
@@ -242,19 +241,19 @@ public class ChinaCompetitionFragment extends BaseFragment implements ICompetiti
 		switch (key){
 			case HttpConstant.CHINA_GET_HOME_GAME_LIST:
 				List<CompetitionBean> beans = (List<CompetitionBean>) o;
+				mSwipeRefreshLayout.setRefreshing(false);
 				if(beans.size() == 0){
 					if(competitionPersenter.getDatas().size() == 0){
 						mSwipeRefreshLayout.setVisibility(View.GONE);
 						emptyView.setVisibility(View.VISIBLE);
 					}
-
 					return;
 				}
 				emptyView.setVisibility(View.GONE);
 				mSwipeRefreshLayout.setVisibility(View.VISIBLE);
 
 				totalPager = beans.get(0).getTotalPage();
-				if(totalPager != requestPagerNum){
+				if(totalPager >= requestPagerNum){
 					requestPagerNum ++;
 				}
 				competitionPersenter.setData((List<CompetitionBean>) o);

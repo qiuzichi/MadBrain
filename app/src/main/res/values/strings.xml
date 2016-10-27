@@ -254,7 +254,7 @@
     <string name="old_group">老年组</string>
     <string name="search_conment">输入关键字搜索</string>
     <string name="listitem_empty">搜索不到内容</string>
-    <string name="info_result">资讯搜索结果</string>
+    <string name="info_result">推荐搜索结果</string>
     <string name="competetion_result">赛事搜索结果</string>
     <string name="hotspot_result">热点搜索结果</string>
     <string name="update_version_info">优化更多细节，提升客户体验 尝鲜版不容错过</string>
@@ -276,7 +276,7 @@
     <string name="loadmore_null_data">最后一页  已经没有新的数据了</string>
     <string name="no_new_data">没有新数据了</string>
     <string name="not_news_data">暂无数据 ... 点击加载</string>
-    <string name="no_available">暂无数据</string>
+    <string name="no_available">暂无更多数据</string>
     <string name="net_error_refrush_data">访问网络失败 重新刷新数据 </string>
     <string name="hostory_null_data">没有历史战绩数据</string>
 
@@ -316,4 +316,9 @@
     <string name="hot_spot">热点</string>
     <string name="show_more_search_history">更多搜索历史</string>
     <string name="show_limit_search_history">收起</string>
+
+
+    <string name="dialog_load_answer_card">加载答题卡中</string>
+
+
 </resources>

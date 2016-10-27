@@ -85,6 +85,7 @@
     <dimen name="update_dialog_height_60dp">60dp</dimen>
     <dimen name="update_notification_height_80dp">80dp</dimen>
     <dimen name="margin_30dp">30dp</dimen>
+    <dimen name="margin_50dp">50dp</dimen>
     <dimen name="text_size_competition">30sp</dimen>
     <dimen name="view_divide_line_height">0.5dip</dimen>
 

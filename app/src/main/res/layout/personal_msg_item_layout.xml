@@ -25,7 +25,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:gravity="center_vertical"
+                    android:drawableLeft="@drawable/race_date_item"
+                    android:drawablePadding="@dimen/margin_edge"
                     android:text="@string/competition_date1"
                     android:textColor="@color/black" />
             </RelativeLayout>
@@ -60,7 +61,8 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:gravity="center_vertical"
+                    android:drawableLeft="@drawable/race_name_item"
+                    android:drawablePadding="@dimen/margin_edge"
                     android:textColor="@color/black"
                     android:layout_centerInParent="true"
                     android:text="@string/competition_project"/>
@@ -94,7 +96,8 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:gravity="center_vertical"
+                    android:drawableLeft="@drawable/race_address_item"
+                    android:drawablePadding="@dimen/margin_edge"
                     android:textColor="@color/black"
                     android:layout_centerInParent="true"
                     android:text="@string/competition_addr"/>
@@ -128,7 +131,8 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:gravity="center"
+                    android:drawableLeft="@drawable/race_fee_item"
+                    android:drawablePadding="@dimen/margin_edge"
                     android:textColor="@color/black"
                     android:layout_centerInParent="true"
                     android:text="@string/apply_cost1"/>

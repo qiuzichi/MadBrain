@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/personal_title_h"
         android:gravity="center"
-        android:background="@color/main_lf_bg">
+        android:background="@color/main_1">
 
         <ImageView
             android:id="@+id/user_photo"

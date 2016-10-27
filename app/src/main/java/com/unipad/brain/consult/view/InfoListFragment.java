@@ -52,11 +52,8 @@ public class InfoListFragment extends ConsultBaseFragment implements AdapterView
 
     private void  initTitleBar(){
         TextView user_name = (TextView) mInfoListView.findViewById(R.id.tv_uese_name_consult);
-        if(TextUtils.isEmpty(AppContext.instance().loginUser.getUserName())){
-            user_name.setText("lisa");
-        } else {
-            user_name.setText(AppContext.instance().loginUser.getUserName());
-        }
+        if(AppContext.instance().loginUser == null) return;
+        user_name.setText(AppContext.instance().loginUser.getUserName());
         user_name.setSelected(true);
         ((TextView)mInfoListView.findViewById(R.id.txt_user_group)).setText(DateUtil.getMatchGroud(getmContext()));
         ((TextView)mInfoListView.findViewById(R.id.tv_uese_level_consult)).setText(getString(R.string.person_level) + AppContext.instance().loginUser.getLevel());

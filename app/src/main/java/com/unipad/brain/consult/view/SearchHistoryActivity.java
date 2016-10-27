@@ -86,6 +86,7 @@ public class SearchHistoryActivity extends BasicActivity implements IDataObserve
         mListView = (ListView) findViewById(R.id.listview_search_history);
         mShowHistory = (RelativeLayout) findViewById(R.id.rl_history_visit);
         mSearchView = (CustomSearchView) findViewById(R.id.custom_search_view);
+        mSearchView.setSelectText(contentId);
 //        CustomSearchView mSearchView = new CustomSearchView(this);
        // frameLayout.addView(mSearchView);
         //获取焦点
