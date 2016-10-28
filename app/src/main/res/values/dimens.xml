@@ -17,7 +17,7 @@
     <dimen name="personal_title_h">200dp</dimen>
     <dimen name="person_text_age_s">20sp</dimen>
     <dimen name="margin_5dip">5dp</dimen>
-    <dimen name="margin_10dip">20dp</dimen>
+    <dimen name="margin_10dip">10dp</dimen>
     <dimen name="margin_edge">10dp</dimen>
     <dimen name="margin_interval">3dp</dimen>
     <dimen name="personal_photo_wh">86dp</dimen>
@@ -62,7 +62,7 @@
     <dimen name="point_navigation_space">20dp</dimen>
     <dimen name="Thumb_height">150dp</dimen>
     <dimen name="Thumb_weight">218dp</dimen>
-    //轮播图的高度
+    <!--//轮播图的高度-->
     <dimen name="adver_lunbo_height">230dp</dimen>
     <dimen name="newlist_height">100dp</dimen>
     <dimen name="newlist_item_height">120dp</dimen>
@@ -113,4 +113,5 @@
     <dimen name="memory_text">24sp</dimen>
 
     <dimen name="dip_2">2dp</dimen>
+    <dimen name="setting_in_game_dialog_with">150dp</dimen>
 </resources>

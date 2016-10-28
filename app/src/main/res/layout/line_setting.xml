@@ -2,7 +2,7 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/rl_competition_mode_set"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_marginTop="@dimen/margin_30dp"
         android:layout_height="wrap_content">
         <TextView
@@ -24,11 +24,22 @@
             android:paddingTop="@dimen/margin_10dip"
             android:gravity="center_horizontal"
             >
-
+            <RadioButton
+                android:id="@+id/btn_default_mode_0"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="@dimen/margin_30dp"
+                android:background="@drawable/sel_mode_group_bg"
+                android:button="@color/transparent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/no_setting"
+                android:textSize="@dimen/common_text_24"
+                android:textColor="@color/white"
+                />
 
             <RadioButton
                 android:id="@+id/btn_default_mode"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_marginRight="@dimen/margin_30dp"
                 android:background="@drawable/sel_mode_group_bg"
                 android:button="@color/transparent"
@@ -42,7 +53,7 @@
                 android:id="@+id/btn_default_mode_3"
                 android:layout_toRightOf="@+id/btn_default_mode"
                 android:layout_marginRight="@dimen/margin_30dp"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:background="@drawable/sel_mode_group_bg"
                 android:button="@color/transparent"
                 android:gravity="center"
@@ -55,7 +66,7 @@
 
             <RadioButton
                 android:id="@+id/btn_default_mode_4"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_toRightOf="@+id/btn_default_mode_3"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"

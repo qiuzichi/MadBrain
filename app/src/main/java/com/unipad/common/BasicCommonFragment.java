@@ -180,4 +180,19 @@ public abstract class BasicCommonFragment extends Fragment implements
         return isNeedStartGame;
 
     }
+
+    @Override
+    public void updateAfter() {
+
+    }
+
+    @Override
+    public void updatePreper() {
+
+    }
+
+    @Override
+    public void updateView(int pre, int next) {
+
+    }
 }

@@ -97,11 +97,6 @@ public class NumberRememoryLayout extends LinearLayout implements
         mRightCursorBg = mContext.getResources().getDrawable(R.drawable.cursor_right_anim);
         mLeftCursorAnim = (AnimationDrawable) mLeftCursorBg;
         mRightCursorAnim = (AnimationDrawable) mRightCursorBg;
-
-
-        if (callback != null) {
-            callback.begin();
-        }
         mHandler.sendEmptyMessage(NumService.MSG_OPEN_THREAD);
     }
 
@@ -190,11 +185,11 @@ public class NumberRememoryLayout extends LinearLayout implements
                 }).start();
                 break;
             case NumService.MSG_REFRESH_UI:
-                for (int index = msg.arg1; index < mLoadedItem; index++) {
+                int begin = msg.arg1;
+
+                for (int index = begin; index < mLoadedItem; index++) {
                     this.addLineLayout(index);
-                    if (callback != null) {
-                        callback.loading(mLoadedItem * 100 / mLines);
-                    }
+
                 }
 
                 if (mLoadedItem >= mLines) {
@@ -219,6 +214,15 @@ public class NumberRememoryLayout extends LinearLayout implements
                         callback.finish();
                     }
                 } else {
+                    if (begin == 0){
+                        if (callback != null) {
+                            callback.begin();
+                        }
+                    }else{
+                        if (callback != null) {
+                            callback.loading(mLoadedItem * 100 / mLines);
+                        }
+                    }
                     mHandler.sendEmptyMessage(NumService.MSG_OPEN_THREAD);
                 }
                 break;

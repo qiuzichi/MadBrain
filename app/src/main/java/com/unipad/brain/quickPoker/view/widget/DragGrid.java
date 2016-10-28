@@ -18,7 +18,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.unipad.brain.R;
 import com.unipad.brain.quickPoker.adapter.DragAdapter;
@@ -186,9 +185,9 @@ public class DragGrid extends GridView {
                     }
                     break;
                 case MotionEvent.ACTION_UP:
-                    LogUtil.e("", "touch x = " + x + ",y = " + y);
-                    LogUtil.e("", "window x = " + windowParams.x + ", y =" + windowParams.y);
-                    LogUtil.e("", "raw x = " + ev.getRawX() + ", y =" + ev.getRawY());
+  
+                 
+
                     if (positionInWindow == null) {
                         positionInWindow = new int[2];
 

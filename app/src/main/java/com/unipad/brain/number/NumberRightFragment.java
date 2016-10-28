@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.unipad.brain.AbsBaseGameService;
 import com.unipad.brain.App;
 import com.unipad.brain.R;
 import com.unipad.brain.number.dao.NumService;
@@ -245,8 +246,7 @@ public abstract class NumberRightFragment extends BasicCommonFragment implements
             public void begin() {
                 LogUtil.e("", "begin...");
                 if (!service.isPause)
-                    ToastUtil.createTipDialog(mActivity, Constant.INIT_REMEMORY_DLG, mActivity.getString(R.string.dialog_load_answer_card), R.drawable.wait_match_loading).show();
-//                    ToastUtil.createWaitingDlg(mActivity, "加载答题卡中", Constant.INIT_REMEMORY_DLG).show();
+                    ToastUtil.createWaitingDlg(mActivity, "加载答题卡中", Constant.INIT_REMEMORY_DLG).show();
             }
 
             @Override
@@ -255,7 +255,10 @@ public abstract class NumberRightFragment extends BasicCommonFragment implements
                 if (!service.isPause) {
                     HIDDialog waitDialog = HIDDialog.getExistDialog(Constant.INIT_REMEMORY_DLG);
                     if (waitDialog != null) {
-                        ((TextView) waitDialog.findViewById(R.id.dialog_tip_content)).setText(mActivity.getString(R.string.dialog_load_answer_card) +" : " + progress);
+                       TextView tipView = (TextView) waitDialog.findViewById(R.id.dialog_text);
+                        if (tipView != null){
+                            tipView.setText(mActivity.getString(R.string.dialog_load_answer_card) +" : " + progress);
+                        }
                     }
                 }
             }
@@ -391,5 +394,19 @@ public abstract class NumberRightFragment extends BasicCommonFragment implements
             mRememoryLayout.removeAllViews();
         }
     }
+    @Override
+    public void updatePreper() {
+        super.updatePreper();
+        if (service.state == AbsBaseGameService.GO_IN_MATCH_START_MEMORY){
+            mStubShade.setVisibility(View.VISIBLE);
+        }
+    }
 
+    @Override
+    public void updateAfter() {
+        super.updateAfter();
+        if (service.state == AbsBaseGameService.GO_IN_MATCH_START_MEMORY){
+            mStubShade.setVisibility(View.GONE);
+        }
+    }
 }

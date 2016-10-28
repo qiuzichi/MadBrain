@@ -310,6 +310,8 @@
     <string name="long_poker_answer_tip">第<xliff:g id="NUM">%1d</xliff:g>牌最后一个已填完！</string>
     <string name="long_poker_answer_num_tip">第<xliff:g id="NUM">%1d</xliff:g>张</string>
     <string name="long_poker_remember_way">记忆方式</string>
+    <string name="setting">设置</string>
+    <string name="no_setting">不设置</string>
     <string name="search_history">搜索历史</string>
     <string name="instruction">推荐</string>
     <string name="match_info">赛事</string>
