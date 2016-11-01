@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.unipad.AppContext;
+import com.unipad.brain.AbsBaseGameService;
 import com.unipad.brain.R;
 import com.unipad.brain.home.util.SharedPreferencesUtil;
 import com.unipad.brain.longPoker.IProgress;
@@ -51,6 +52,8 @@ public class LongPokerRightFragment extends BasicCommonFragment implements IProg
     private NormalSpinerAdapter listAdapter;
 
     private TextView numTextView;
+
+    private SpaceItemDecoration itemDecoration;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -66,6 +69,53 @@ public class LongPokerRightFragment extends BasicCommonFragment implements IProg
     public void startMemory() {
         //mViewParent.addView(memoryLayout,0);
         shadeView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void updateAfter() {
+        LogUtil.e("", "after = " + pre);
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        int widthNumView = layoutManager.getChildAt(0).getWidth();//显示第几副view的宽度
+        int widthPoker = layoutManager.getChildAt(1).getWidth();//m每张扑克牌控件的宽度
+        int group = SharepreferenceUtils.getInt(mActivity.getProjectId() + "_dividemode", 0);//几张为一组
+        int betweenPokerWidth = layoutManager.getChildAt(2).getLeft()-layoutManager.getChildAt(1).getLeft();//两张扑克牌之间的距离
+        int groupWidth;
+        if (group == 0){
+            groupWidth = betweenPokerWidth;
+        }else{
+            groupWidth = layoutManager.getChildAt(group+1).getLeft()-layoutManager.getChildAt(1).getLeft();
+        }
+        int yu = (pre+1)%53;//余数
+        int scroWidth;//扑克牌需要滚动的距离
+        int aPokerWidth;//一副扑克牌view的宽度
+        if (group == 0) {
+            aPokerWidth = widthNumView +(52 - 1) * betweenPokerWidth+widthPoker;
+            scroWidth = widthNumView + (yu - 1)  * betweenPokerWidth + (pre+1)/53 * aPokerWidth;
+        } else {
+            aPokerWidth = widthNumView + (52 - 1) / group * groupWidth +(52 - 1) % group * betweenPokerWidth+widthPoker;
+            scroWidth = (yu - 1) / group * groupWidth + widthNumView + (yu - 1) % group * betweenPokerWidth + (pre+1)/53 * aPokerWidth;
+        }
+        recyclerView.smoothScrollBy(scroWidth,0);
+    }
+
+    @Override
+    public void updatePreper() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        pre = layoutManager.findFirstVisibleItemPosition();
+        View view = layoutManager.getChildAt(0);
+
+        LogUtil.e("","pre postion = "+pre);
+
+
+    }
+    private int pre;
+    @Override
+    public void updateView(int pre, int next) {
+        if (service.state == AbsBaseGameService.GO_IN_MATCH_START_MEMORY){
+            itemDecoration.setItems(next);
+            LogUtil.e("", "update view ...");
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -267,7 +317,8 @@ public class LongPokerRightFragment extends BasicCommonFragment implements IProg
         //设置布局管理器
         recyclerView.setLayoutManager(layoutManager);
         //设置item间隙
-        recyclerView.addItemDecoration(new SpaceItemDecoration(5, -150,5, SharepreferenceUtils.getInt(mActivity.getProjectId()+"_dividemode",3)));
+       itemDecoration =  new SpaceItemDecoration(5, -150,5, SharepreferenceUtils.getInt(mActivity.getProjectId()+"_dividemode",0));
+        recyclerView.addItemDecoration(itemDecoration);
         //设置为垂直布局，这也是默认的
         layoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         //设置Adapter
