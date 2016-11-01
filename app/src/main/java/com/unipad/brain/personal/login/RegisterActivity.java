@@ -21,6 +21,7 @@ import com.unipad.brain.dialog.ShowDialog;
 import com.unipad.brain.personal.dao.PersonCenterService;
 import com.unipad.brain.view.WheelMainView;
 import com.unipad.common.Constant;
+import com.unipad.common.widget.HIDDialog;
 import com.unipad.http.HitopRegist;
 import com.unipad.http.HttpConstant;
 import com.unipad.observer.IDataObserver;
@@ -143,6 +144,7 @@ public class RegisterActivity extends BasicActivity implements View.OnClickListe
         httpRegist.buildRequestParams("user_born", birthday);
         httpRegist.buildRequestParams("user_password", MD5Utils.MD5_two(pwd));
         httpRegist.post();
+        ToastUtil.createWaitingDlg(RegisterActivity.this,null,Constant.LOGIN_WAIT_DLG).show(15);
     }
 
     @Override
@@ -158,6 +160,7 @@ public class RegisterActivity extends BasicActivity implements View.OnClickListe
 
     @Override
     public void update(int key, Object o) {
+        HIDDialog.dismissAll();
         switch (key) {
             case HttpConstant.REGIST_OK:
                 Intent intent = new Intent();

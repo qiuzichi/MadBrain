@@ -126,4 +126,9 @@
                 <!--</RelativeLayout>-->
             </LinearLayout>
         </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/list_divider_line"/>
 </RelativeLayout>

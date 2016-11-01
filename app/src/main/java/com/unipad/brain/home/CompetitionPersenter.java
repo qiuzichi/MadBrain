@@ -70,15 +70,16 @@ public class CompetitionPersenter {
 
     public void setData(List<CompetitionBean> beans) {
 //        competitionBeans.clear();
-        if(competitionBeans.size() != 0){
-            for(int i = beans.size() -1 ; i>=0; i --){
-                for(int j=0; j< competitionBeans.size(); i++){
-                    if(beans.get(i).equals(competitionBeans.get(j))){
+        if (competitionBeans.size() != 0) {
+            for (int i = beans.size() - 1; i >= 0; i--) {
+                for (int j = 0; j < competitionBeans.size(); j++) {
+                    if (beans.get(i).equals(competitionBeans.get(j))) {
                         break;
                     } else {
-                        if(j == competitionBeans.size() -1){
+                        if (j == competitionBeans.size() - 1) {
                             //添加最前面 新数据
                             competitionBeans.add(0, beans.get(i));
+                            break;
                         }
                         continue;
                     }

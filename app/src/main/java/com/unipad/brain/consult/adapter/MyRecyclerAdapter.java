@@ -80,6 +80,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private NewsService service;
     private ImageOptions imageOptions;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private FooterViewHolder footerView;
 
 
     public MyRecyclerAdapter(Activity mActivity, final RecyclerView mRecyclerView, List<NewEntity> datas ,int pageId, final SwipeRefreshLayout mSwipeRefreshLayout) {
@@ -102,7 +103,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     super.onScrollStateChanged(recyclerView, newState);
                     int lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
 
-                    if (!isLoadMoreData && newState == RecyclerView.SCROLL_STATE_IDLE
+                    if (!isLoadMoreData && newState == RecyclerView.SCROLL_STATE_DRAGGING
                             && lastVisibleItem + 1  == mRecyclerView.getAdapter().getItemCount()) {
                         onLoadMoreListener.onLoadMore();
                     }
@@ -129,7 +130,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     RadioGroup.LayoutParams.WRAP_CONTENT));
             return new ItemViewHolder(view);
         } else  if(viewType == TYPE_FOOTER){
-            return new FooterViewHolder(mLayoutInflater.inflate(R.layout.recycler_footer_layout, parent, false));
+            footerView = new FooterViewHolder(mLayoutInflater.inflate(R.layout.recycler_footer_layout, parent, false));
+            return footerView;
         }else if(viewType == TYPE_HEADER) {
             return new HeaderViewHolder(mLayoutInflater.inflate(R.layout.recycle_header_layout, parent, false));
         }
@@ -221,14 +223,23 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onClick(View v) {
                     //查看详情的界面
-                    Intent intent = new Intent(mActivity, PagerDetailActivity.class);
-                    intent.putExtra("pagerId", bean.getId());
-                    mActivity.startActivity(intent);
+                    openDetailPager(bean);
+                }
+            });
+
+            ((ItemViewHolder) holder).text_title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openDetailPager(bean);
                 }
             });
 
         } else if (holder instanceof FooterViewHolder) {
             ((FooterViewHolder) holder).pr_moreData.setIndeterminate(true);
+
+            if(newsDatas.get(0).getTotalPager() == 1){
+                setFooterIsFoot(true);
+            }
         } else if (holder instanceof HeaderViewHolder) {
 
             ((HeaderViewHolder) holder).text_version.setText("检查到最新版本");
@@ -243,6 +254,12 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 }
             });
         }
+    }
+
+    private void openDetailPager(NewEntity newEntity){
+        Intent intent = new Intent(mActivity, PagerDetailActivity.class);
+        intent.putExtra("pagerId", newEntity.getId());
+        mActivity.startActivity(intent);
     }
 
     @Override
@@ -271,6 +288,31 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void setLoading(Boolean isLoading) {
         isLoadMoreData = isLoading;
     }
+
+    public boolean getLoading() {
+        return isLoadMoreData;
+    }
+
+    /**
+     * 设置是最后一个view 的进度条 显示 或者 隐藏
+     * 暂无 数据    或者  正在加载数据。。。
+     */
+    public void setFooterIsFoot(Boolean isNotMoreDatas){
+        if(mRecyclerView.getAdapter().getItemViewType(newsDatas.size() -1) == TYPE_FOOTER){
+            if(footerView == null) return;
+            if(isNotMoreDatas){
+                footerView.pr_moreData.setVisibility(View.GONE);
+                footerView.text_loadMore.setText(mActivity.getString(R.string.no_available));
+                footerView.text_loadMore.setTextColor(mActivity.getResources().getColor(R.color.stroke_color));
+
+            } else {
+                footerView.pr_moreData.setVisibility(View.VISIBLE);
+                footerView.text_loadMore.setText(mActivity.getString(R.string.loadmore_data));
+                footerView.text_loadMore.setTextColor(mActivity.getResources().getColor(R.color.black));
+            }
+        }
+    }
+
 
     public void setIsRefresh(){
         View childView = mRecyclerView.getChildAt(0);

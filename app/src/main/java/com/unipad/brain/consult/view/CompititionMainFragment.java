@@ -1,13 +1,20 @@
 package com.unipad.brain.consult.view;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.unipad.AppContext;
@@ -39,11 +46,16 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
     private NewCompetitionAdapter mNewCompetitionAdapter;
     private ShowDialog showDialog;
     private TextView tv_error;
-    private int requestPagerNum = 1;
-    private int totalPager = 1;
-    private Boolean isLoadMoreData;
+    private int requestPagerNum;
+    private int requestRefreshDatas;
+    private final int permaryDataNumber = 10;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ListView mListView;
+    private View mListViewFooter;
+    private Boolean isLoading;
+    private boolean isUpMove;
+    private float downY;
+    private boolean isActionDown;
 
 
     @Override
@@ -60,7 +72,7 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
         service.registerObserver(HttpConstant.NOTIFY_GET_NEWCOMPETITION, this);
         service.registerObserver(HttpConstant.NOTIFY_APPLY_NEWCOMPETITION, this);
         //默认加载第一页的数据 10条 分页加载数据
-        service.getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestPagerNum, 10);
+        service.getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestPagerNum = 1, permaryDataNumber);
         mListView = (ListView) view.findViewById(R.id.listview_compitition_main);
         tv_error = (TextView) view.findViewById(R.id.tv_load_error_show);
 
@@ -83,55 +95,124 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
     }
 
     private void initEvent() {
-    /*避免出现item太大 之后 避免冲突scroll*/
-        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+         /*避免出现item太大 之后 避免冲突scroll*/
+        isUpMove = false;
+        downY = 0;
+        // 拖动listview时，如果点击到的地方是item里的一些view，可能出现ACTION_DOWN触发不了的问题。
+        // 利用isActionDown，当为false时就触发了ACTION_MOVE，第一个action需要当成ACTION_DOWN处理
+        isActionDown = false;
+        mListView.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
-            public void onScrollStateChanged(AbsListView absListView, int i) {
-                switch (i) {
-                    // 当不滚动时
-                    case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
-                        // 判断滚动到底部
-                        if (mListView.getLastVisiblePosition() == (mListView.getCount() - 1)) {
-                            if (requestPagerNum == totalPager) {
-                                ToastUtil.showToast(getString(R.string.loadmore_null_data));
-                                return;
-                            } else {
-                                if (isLoadMoreData) {
-                                    ToastUtil.showToast(getString(R.string.loadmore_data));
-                                    return;
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        isActionDown = true;
+                        downY = event.getY();
+                        Log.i("onTouchListener", "downY:" + downY);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (!isActionDown) {
+                            // 当为false时就触发了ACTION_MOVE，第一个action需要当成ACTION_DOWN处理
+                            isActionDown = true;
+                            downY = event.getY();
+                            Log.i("onTouchListener", "downY:" + downY + " no action down");
+                        } else {
+                            float currentY = event.getY();
+                            Log.i("onTouchListener", "downY:" + downY + " currentY::"
+                                    + currentY + " currentY - downY:"
+                                    + (currentY - downY));
+                            if (currentY - downY < -20 && !isUpMove) {
+                                // 向上拉，隐藏
+                                isUpMove = true;
+                                Log.i("onTouchListener", "downY:" + downY + " currentY::"
+                                        + currentY + " currentY - downY:"
+                                        + (currentY - downY) + " hide");
+                                if (canLoad()) {
+                                    if (mNewCompetitionDatas.size() != 0) {
+                                        int TotalPager = mNewCompetitionDatas.get(0).getTotalPage();
+                                        if (requestPagerNum > TotalPager) {
+                                            ToastUtil.showToast(getString(R.string.loadmore_null_data));
+                                            isUpMove = false;
+                                        } else if(isLoading) {
+                                                ToastUtil.showToast(getString(R.string.loadmore_data));
+                                                isUpMove = false;
+                                        } else {
+                                            setLoading(true);
+                                            getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestPagerNum, permaryDataNumber);
+                                        }
+                                    }
                                 }
-                                isLoadMoreData = true;
-                                getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestPagerNum, 10);
+
+                            } else if (currentY - downY > 20 && isUpMove) {
+                                // 向下拉，显示
+                                isUpMove = false;
+                                Log.i("onTouchListener", "downY:" + downY + " currentY::"
+                                        + currentY + " currentY - downY:"
+                                        + (currentY - downY) + " show");
                             }
+
                         }
+
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        isActionDown = false;// isActionDown重置
+                        break;
+                    default:
                         break;
                 }
-            }
-
-            @Override
-            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem == 0)
-                    /*第一项可见 的时候 才可以响应swipe的滑动刷新事件*/
-                    mSwipeRefreshLayout.setEnabled(true);
-                else {
-                    mSwipeRefreshLayout.setEnabled(false);
-                }
-
+                return false;
             }
         });
+
+//        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+//
+//            @Override
+//            public void onScrollStateChanged(AbsListView absListView, int i) {
+//                switch (i) {
+//                    // 当滚动时
+//                    case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+//                        // 判断滚动到底部
+//                        if (canLoad()) {
+//                            if (requestPagerNum > mNewCompetitionDatas.get(0).getTotalPage()) {
+//                                ToastUtil.showToast(getString(R.string.loadmore_null_data));
+//                                return;
+//                            } else {
+//                                if (isLoading) {
+//                                    ToastUtil.showToast(getString(R.string.loadmore_data));
+//                                    return;
+//                                }
+//                                setLoading(true);
+//                                getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestPagerNum, permaryDataNumber);
+//                            }
+//                        }
+//                        break;
+//                }
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//                if (firstVisibleItem == 0)
+//                    /*第一项可见 的时候 才可以响应swipe的滑动刷新事件*/
+//                    mSwipeRefreshLayout.setEnabled(true);
+//                else {
+//                    mSwipeRefreshLayout.setEnabled(false);
+//                }
+//
+//            }
+//        });
 
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+//                mNewCompetitionDatas.clear();
+                //默认加载第一页的数据 10条 分页加载数据
+                service.getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestRefreshDatas = 1, permaryDataNumber);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
-//                        mNewCompetitionDatas.clear();
-                        //默认加载第一页的数据 10条 分页加载数据
-                        service.getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, 1, 10);
                     }
                 }, 2000);
             }
@@ -140,7 +221,7 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
         tv_error.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { //点击重新加载数据
-                getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, 1, 10);
+                getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestPagerNum = 1, permaryDataNumber);
             }
         });
     }
@@ -149,6 +230,53 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
         service.getNewCompetition(userId, projectId, gradeId, page, size);
         ToastUtil.createWaitingDlg(getmContext(), null, Constant.LOGIN_WAIT_DLG).show(15);
     }
+
+    private void initFooterView(){
+        if(mListViewFooter == null){
+            mListViewFooter = View.inflate(getmContext(), R.layout.recycler_footer_layout, null);
+            mListViewFooter.setLayoutParams(new AbsListView.LayoutParams(
+                    AbsListView.LayoutParams.MATCH_PARENT, com.unipad.utils.DensityUtil.dip2px(getmContext(),80)));
+        }
+    }
+
+    /**
+     * 是否可以加载更多, 条件是到了最底部, listview不在加载中, 且为上拉操作.
+     *
+     * @return
+     */
+    private boolean canLoad() {
+        return isBottom() && !isLoading ;
+    }
+
+    /**
+     * 判断是否到了最底部
+     */
+    private boolean isBottom() {
+
+        if (mListView != null && mListView.getAdapter() != null) {
+
+            return mListView.getLastVisiblePosition() == (mListView
+                    .getAdapter().getCount() - 1);
+        }
+        return false;
+    }
+
+    /**
+     * @param loading true 正在加载数据
+     *                false  隐藏加载进度条；
+     */
+    public void setLoading(boolean loading) {
+        initFooterView();
+        isLoading = loading;
+        if (isLoading) {
+            mListView.addFooterView(mListViewFooter);
+            mListView.setAdapter(mNewCompetitionAdapter);
+        } else {
+            mListView.removeFooterView(mListViewFooter);
+        }
+
+    }
+
     private class NewCompetitionAdapter extends CommonAdapter<CompetitionBean> {
 
         public NewCompetitionAdapter(Context context, List<CompetitionBean> datas, int layoutId) {
@@ -213,6 +341,9 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
             case HttpConstant.NOTIFY_GET_NEWCOMPETITION:
                 //获取数据  关闭dialog
                 HIDDialog.dismissAll();
+                isUpMove = false;
+                mSwipeRefreshLayout.setRefreshing(false);
+                setLoading(false);
                 List<CompetitionBean> databean = (List<CompetitionBean>) o;
                 if(databean.size() == 0){
                     if(mNewCompetitionDatas.size() ==0 ){
@@ -225,14 +356,6 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
 
                 tv_error.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-                if (requestPagerNum == 1 && databean.size() != 0) {
-                    totalPager = databean.get(0).getTotalPage();
-                }
-
-                if (requestPagerNum != totalPager) {
-                    requestPagerNum++;
-                }
-
                 if (mNewCompetitionDatas.size() != 0) {
                     for (int i = databean.size()-1; i >= 0; i--) {
                         for (int j = 0; j < mNewCompetitionDatas.size(); j++) {
@@ -240,8 +363,13 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
                                 break;
                             } else {
                                 if (j == mNewCompetitionDatas.size() - 1) {
-                                    //不同 则是新数据
-                                    mNewCompetitionDatas.add(0, databean.get(i));
+                                        //不同 则是新数据
+                                    if(requestRefreshDatas  == 1 && i<mNewCompetitionDatas.size()){
+                                        mNewCompetitionDatas.add(i,databean.get(i));
+                                        requestRefreshDatas = 0;
+                                    } else {
+                                        mNewCompetitionDatas.add(databean.get(i));
+                                    }
                                     break;
                                 }
                                 continue;
@@ -251,8 +379,23 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
                 } else {
                     mNewCompetitionDatas.addAll(databean);
                 }
+
+                if(requestPagerNum <= mNewCompetitionDatas.get(0).getTotalPage()){
+                    requestPagerNum++;
+                }
+
+                if(requestPagerNum > mNewCompetitionDatas.get(0).getTotalPage() && mListView.getFooterViewsCount() == 0){
+                    View footerView = View.inflate(getmContext(), R.layout.recycler_footer_layout, null);
+                    footerView.setLayoutParams(new AbsListView.LayoutParams(
+                            AbsListView.LayoutParams.MATCH_PARENT, com.unipad.utils.DensityUtil.dip2px(getmContext(), 80)));
+                    ((ProgressBar) footerView.findViewById(R.id.progressbar_loadmore_footer)).setVisibility(View.GONE);
+                    TextView text_loadMore = (TextView) footerView.findViewById(R.id.tv_item_introduction_footer);
+                    text_loadMore.setText(getString(R.string.no_available));
+                    text_loadMore.setTextColor(getResources().getColor(R.color.stroke_color));
+                    mListView.addFooterView(footerView);
+                }
                 mNewCompetitionAdapter.notifyDataSetChanged();
-                isLoadMoreData = false;
+
                 break;
 
             case HttpConstant.NOTIFY_APPLY_NEWCOMPETITION:

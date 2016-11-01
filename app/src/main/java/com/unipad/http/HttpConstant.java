@@ -164,13 +164,12 @@ public class HttpConstant {
     //获取资讯页面的结果
     public static final int NOTIFY_GET_SEARCH_RUSULT = 0x20009;
     //获取赛事页面的结果
-    public static final int NOTIFY_GET_SEARCH_OCCSION = 0x20011;
+    public static final int NOTIFY_GET_SEARCH_OCCSION = 0x20010;
     //获取热点页面的结果
-    public static final int NOTIFY_GET_SEARCH_HOTSPOT = 0x20012;
+    public static final int NOTIFY_GET_SEARCH_HOTSPOT = 0x20011;
     //下载apk 请求
-    public static final int NOTIFY_DOWNLOAD_APK = 0x20010;
-
+    public static final int NOTIFY_DOWNLOAD_APK = 0x20012;
     //最新赛事报名
-    public static final int NOTIFY_APPLY_NEWCOMPETITION = 0x20011;
+    public static final int NOTIFY_APPLY_NEWCOMPETITION = 0x20013;
 
 }

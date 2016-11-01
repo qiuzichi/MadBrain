@@ -70,7 +70,7 @@ public class Identity {
     }
     
     //获取时间串
-    private static String getIDDate(final String idCard,boolean newIDFlag){
+    public static String getIDDate(final String idCard,boolean newIDFlag){
         String dateStr = "";
         if(newIDFlag)
             dateStr = idCard.substring(fPart,fPart+8);

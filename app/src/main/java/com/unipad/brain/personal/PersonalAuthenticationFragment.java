@@ -81,7 +81,7 @@ public class PersonalAuthenticationFragment extends PersonalCommonFragment imple
     // 上传图片
     private int indexUpLoadFile;
     // 自定义dialog
-    private ShowDialog showDialog;
+   // private ShowDialog showDialog;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -119,13 +119,23 @@ public class PersonalAuthenticationFragment extends PersonalCommonFragment imple
         mLayoutStep2.setVisibility(View.GONE);
 
         ed_data = (Button)mLayoutStep2.findViewById(R.id.ed_data);
-        showDialog = new ShowDialog(mActivity);
+        //showDialog = new ShowDialog(mActivity);
         ed_data.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WheelMainView wheelMainView = new WheelMainView(mActivity);
-                wheelMainView.setChangingListener(PersonalAuthenticationFragment.this);
-                showDialog.showDialog(wheelMainView,ShowDialog.TYPE_CENTER,mActivity.getWindowManager(),0.5f,0.6f);
+//                WheelMainView wheelMainView = new WheelMainView(mActivity);
+//                wheelMainView.setChangingListener(PersonalAuthenticationFragment.this);
+//                showDialog.showDialog(wheelMainView,ShowDialog.TYPE_CENTER,mActivity.getWindowManager(),0.5f,0.6f);
+                final String id = ed_id.getText().toString();
+                if(!TextUtils.isEmpty(id)){
+                    String date =  Identity.getIDDate(id,true);
+                    if(date.length() == 8){
+                        date = date.substring(0,4)+"-"+date.substring(4,6)+"-"+date.substring(6,8);
+                    }
+                    ed_data.setText(date);
+                } else {
+                    ToastUtil.showToast(mActivity.getString(R.string.string_identity));
+                }
             }
         });
         ed_id=(EditText) mLayoutStep2.findViewById(R.id.ed_id);

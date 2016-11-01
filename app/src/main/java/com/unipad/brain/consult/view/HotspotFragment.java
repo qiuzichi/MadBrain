@@ -67,10 +67,10 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
 //        HIDDialog.dismissAll();
             switch (key) {
                 case HttpConstant.NOTIFY_GET_HOTSPOT:
+                    requestPagerNum++;
                     isRefreshData = false;
-                    mRecyclerViewAdapter.setLoading(false);
-                    mRecyclerViewAdapter.setIsRefresh();
                     removeFooterView();
+                    mRecyclerViewAdapter.setIsRefresh();
                     if(null == o){
                         //网络访问错误 刷新数据
                         if(newsDatas.size() == 0){
@@ -94,7 +94,6 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
 
                     emptyView.setVisibility(View.GONE);
                     mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-                    requestPagerNum++;
 //                    if (newsDatas.size() != 0) {
 //                        for (int i = databean.size()-1; i >= 0; i--) {
 //                            for (int j = 0; j < newsDatas.size(); j++) {
@@ -112,6 +111,13 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
 //                        }
 //                    } else {
                     newsDatas.addAll(databean);
+                    //最后一个footerview 修改成为固定底部 暂无更多数据
+                    if(requestPagerNum > newsDatas.get(0).getTotalPager()){
+                        newsDatas.add(null);
+                        mRecyclerViewAdapter.notifyItemInserted(newsDatas.size() - 1);
+                        mRecyclerViewAdapter.setFooterIsFoot(true);
+                    }
+
 //                    }
                     mRecyclerViewAdapter.notifyDataSetChanged();
                     break;
@@ -134,7 +140,6 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         newsDatas = new ArrayList<NewEntity>();
-
         initData();
         initRecycler();
     }
@@ -166,13 +171,14 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
             @Override
             public void onRefresh() {
                 isRefreshData = true;
+                if(newsDatas.size() > 1 && newsDatas.get(0).getTotalPager() > 1)
+                    mRecyclerViewAdapter.setFooterIsFoot(false);
+                newsDatas.clear();
+                service.getNews(ConsultTab.HOTSPOT.getTypeId(), null, requestPagerNum = 1, perPageDataNumber);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
-                        newsDatas.clear();
-
-                        service.getNews(ConsultTab.HOTSPOT.getTypeId(), null, requestPagerNum = 1, perPageDataNumber);
                     }
                 }, 1000);
             }
@@ -196,8 +202,7 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
                     int totalPager = newsDatas.get(0).getTotalPager();
                     if (requestPagerNum > totalPager) {
                    /* 最后一页 直接吐司 不显示下拉加载*/
-                        if(requestPagerNum > 2)
-                            ToastUtil.showToast(getString(R.string.loadmore_null_data));
+                        ToastUtil.showToast(getString(R.string.loadmore_null_data));
                         return;
                     }
 
@@ -275,8 +280,11 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
 
     private void removeFooterView() {
         if (newsDatas.size() > 1 && 1 == mRecyclerViewAdapter.getItemViewType(newsDatas.size() - 1)){
-            newsDatas.remove(newsDatas.size() - 1);
-            mRecyclerViewAdapter.notifyItemRemoved(newsDatas.size());
+            if(mRecyclerViewAdapter.getLoading()){
+                mRecyclerViewAdapter.setLoading(false);
+                newsDatas.remove(newsDatas.size() - 1);
+                mRecyclerViewAdapter.notifyItemRemoved(newsDatas.size());
+            }
         }
     }
 

@@ -257,7 +257,7 @@ public abstract class NumberRightFragment extends BasicCommonFragment implements
                     if (waitDialog != null) {
                        TextView tipView = (TextView) waitDialog.findViewById(R.id.dialog_text);
                         if (tipView != null){
-                            tipView.setText("加载答题卡中:" + progress);
+                            tipView.setText(mActivity.getString(R.string.dialog_load_answer_card) +" : " + progress);
                         }
                     }
                 }
