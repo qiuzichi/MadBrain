@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginBottom="40dp"
             android:id="@+id/radio_group_competition_mode"
             android:layout_below="@id/txt_title_competition"
             android:paddingTop="@dimen/margin_10dip"
@@ -26,13 +27,13 @@
             >
             <RadioButton
                 android:id="@+id/btn_default_mode_0"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_marginRight="@dimen/margin_30dp"
                 android:background="@drawable/sel_mode_group_bg"
                 android:button="@color/transparent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/no_setting"
+                android:text="0"
                 android:textSize="@dimen/common_text_24"
                 android:textColor="@color/white"
                 />
