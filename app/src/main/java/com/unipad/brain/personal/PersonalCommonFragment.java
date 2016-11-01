@@ -77,6 +77,9 @@ public abstract class PersonalCommonFragment extends Fragment implements View.On
     // 当前显示的页面
     public int thisShowView;
 
+    //网络请求的超时时间 12秒
+    protected final int DELAYETIMEOUT = 12000;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

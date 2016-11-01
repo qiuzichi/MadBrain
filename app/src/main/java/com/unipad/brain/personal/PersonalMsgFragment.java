@@ -61,7 +61,7 @@ public class PersonalMsgFragment extends PersonalCommonFragment implements IData
                 R.color.black
         );
         mSwipeRefreshLayout.setProgressViewOffset(false, 0, DensityUtil.dip2px(24));
-        mSwipeRefreshLayout.setRefreshing(false);
+//        mSwipeRefreshLayout.setRefreshing(false);
 
         competitionBeans = new ArrayList<CompetitionBean>();
         service = (PersonCenterService) AppContext.instance().getService(Constant.PERSONCENTER);
@@ -71,7 +71,6 @@ public class PersonalMsgFragment extends PersonalCommonFragment implements IData
         service.getApplyList(AppContext.instance().loginUser.getUserId());
 
         initEvent();
-
     }
 
     @Override
@@ -81,6 +80,20 @@ public class PersonalMsgFragment extends PersonalCommonFragment implements IData
     }
 
     private void initEvent(){
+        //下拉动画生效
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
+        //网络超时自动取消下拉刷新；
+        mSwipeRefreshLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        }, DELAYETIMEOUT);
 
         lv_apple.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -99,11 +112,9 @@ public class PersonalMsgFragment extends PersonalCommonFragment implements IData
 
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem == 0)
                     /*第一项可见 的时候 才可以响应swipe的滑动刷新事件*/
-                    mSwipeRefreshLayout.setEnabled(true);
-                else
-                    mSwipeRefreshLayout.setEnabled(false);
+                    mSwipeRefreshLayout.setEnabled(firstVisibleItem == 0 ? true : false);
+
             }
         });
 
@@ -119,7 +130,7 @@ public class PersonalMsgFragment extends PersonalCommonFragment implements IData
                         mSwipeRefreshLayout.setRefreshing(false);
 
                     }
-                }, 2000);
+                }, DELAYETIMEOUT);
             }
         });
     }
@@ -162,6 +173,7 @@ public class PersonalMsgFragment extends PersonalCommonFragment implements IData
          // 此方法用于更新UI
         switch (key){
             case HttpConstant.USER_APPLYED:
+                mSwipeRefreshLayout.setRefreshing(false);
                 if(o instanceof String){
                     ToastUtil.showToast((String)o);
                 } else {

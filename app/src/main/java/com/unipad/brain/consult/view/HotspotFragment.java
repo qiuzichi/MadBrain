@@ -55,6 +55,7 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
     private List<NewEntity> newsDatas ;
     private int requestPagerNum = 1;
     private final int perPageDataNumber = 10;
+
     private boolean isGetData;
     private boolean isRefreshData;
     private RecyclerView mRecyclerView;
@@ -69,6 +70,7 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
                 case HttpConstant.NOTIFY_GET_HOTSPOT:
                     requestPagerNum++;
                     isRefreshData = false;
+                    mSwipeRefreshLayout.setRefreshing(false);
                     removeFooterView();
                     mRecyclerViewAdapter.setIsRefresh();
                     if(null == o){
@@ -165,13 +167,13 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
                 R.color.black
         );
         mSwipeRefreshLayout.setProgressViewOffset(false, 0, DensityUtil.dip2px(24));
-        mSwipeRefreshLayout.setRefreshing(true);
+
         isRefreshData = false;
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 isRefreshData = true;
-                if(newsDatas.size() > 1 && newsDatas.get(0).getTotalPager() > 1)
+                if (newsDatas.size() > 1 && newsDatas.get(0).getTotalPager() > 1)
                     mRecyclerViewAdapter.setFooterIsFoot(false);
                 newsDatas.clear();
                 service.getNews(ConsultTab.HOTSPOT.getTypeId(), null, requestPagerNum = 1, perPageDataNumber);
@@ -180,19 +182,16 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
-                }, 1000);
+                }, DELAYETIMEOUT);
             }
         });
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
         mRecyclerView.addItemDecoration(new DividerDecoration(mActivity, LinearLayoutManager.VERTICAL, R.drawable.list_divider_line));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mSwipeRefreshLayout.setRefreshing(false);
 
         mRecyclerViewAdapter = new MyRecyclerAdapter(mActivity, mRecyclerView, newsDatas,2, mSwipeRefreshLayout);
-
 //        mRecyclerViewAdapter = new MyRecyclerViewAdapter();
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerViewAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -210,7 +209,7 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
                     newsDatas.add(null);
                     mRecyclerViewAdapter.notifyItemInserted(newsDatas.size() - 1);
                     getNews(ConsultTab.HOTSPOT.getTypeId(), null, requestPagerNum, perPageDataNumber);
-                    loadMoreData(true, 3000);
+                    loadMoreData(true, DELAYETIMEOUT);
                 }
             }
         });
@@ -228,6 +227,20 @@ public class HotspotFragment extends MainBasicFragment implements IDataObserver 
                 service.getNews(ConsultTab.HOTSPOT.getTypeId(), null, requestPagerNum, perPageDataNumber);
                 Log.d("hotspot visit ", "获取消息 界面可见");
                 isGetData = true;
+                //下拉动画生效
+                mSwipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
+                //网络超时自动取消下拉刷新；
+                mSwipeRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, DELAYETIMEOUT);
             }
 
         } else if (!isVisibleToUser) {

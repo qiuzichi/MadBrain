@@ -51,6 +51,8 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
     private List<CompetitionBean> competitionBeans;
     private TextView txt_nodata;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    //网络请求的超时时间 12秒
+    private final int DELAYETIMEOUT = 12000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +93,23 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
                 R.color.black
         );
         mSwipeRefreshLayout.setProgressViewOffset(false, 0, DensityUtil.dip2px(24));
-        mSwipeRefreshLayout.setRefreshing(false);
+
+        //下拉动画生效 初始化之后开始播放下拉刷新
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
+        //网络超时自动取消下拉刷新；
+        mSwipeRefreshLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        }, DELAYETIMEOUT);
+
+
          /*避免出现item太大 之后 避免冲突scroll*/
         lv_com.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -109,14 +127,15 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                competitionBeans.clear();
+                service.getCompetitionList(cityBeans.get((Integer) mSwipeRefreshLayout.getTag()).cityId);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
 //                        competitionBeans.clear();
-                        service.getCompetitionList(cityBeans.get((Integer) mSwipeRefreshLayout.getTag()).cityId);
                     }
-                }, 2000);
+                }, DELAYETIMEOUT);
             }
         });
     }
@@ -209,6 +228,7 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
                 break;
             case HttpConstant.CITY_GAME:
                 // 赛事
+                mSwipeRefreshLayout.setRefreshing(false);
                 if (o instanceof String) {
                     ToastUtil.showToast((String) o);
                 } else {
@@ -263,24 +283,24 @@ public class LocationActivity extends BasicActivity implements IDataObserver, Ad
                         }
                     });
 
-                    if (competitionBeans.size() != 0) {
-                        for (int i = databean.size()-1; i >= 0; i--) {
-                            for (int j = 0; j < competitionBeans.size(); j++) {
-                                if (databean.get(i).equals(competitionBeans.get(j))) {
-                                    break;
-                                } else {
-                                    if (j == competitionBeans.size() - 1) {
-                                        //不同 则是新数据
-                                        competitionBeans.add(0, databean.get(i));
-                                        break;
-                                    }
-                                    continue;
-                                }
-                            }
-                        }
-                    } else {
+//                    if (competitionBeans.size() != 0) {
+//                        for (int i = databean.size()-1; i >= 0; i--) {
+//                            for (int j = 0; j < competitionBeans.size(); j++) {
+//                                if (databean.get(i).equals(competitionBeans.get(j))) {
+//                                    break;
+//                                } else {
+//                                    if (j == competitionBeans.size() - 1) {
+//                                        //不同 则是新数据
+//                                        competitionBeans.add(databean.get(i));
+//                                        break;
+//                                    }
+//                                    continue;
+//                                }
+//                            }
+//                        }
+//                    } else {
                         competitionBeans.addAll(databean);
-                    }
+//                    }
                     ((BaseAdapter)lv_com.getAdapter()).notifyDataSetChanged();
                 }
                 break;

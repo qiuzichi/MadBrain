@@ -17,6 +17,8 @@ import java.util.List;
 
 public abstract class MainBasicFragment extends Fragment implements View.OnClickListener {
     protected Activity mActivity;
+    //网络请求的超时时间 12秒
+    protected final int DELAYETIMEOUT = 12000;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

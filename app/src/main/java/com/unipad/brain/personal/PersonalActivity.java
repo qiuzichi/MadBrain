@@ -303,12 +303,13 @@ public class PersonalActivity extends BasicActivity implements IDataObserver {
                         ToastUtil.showToast(getString(R.string.util_getpicfile_failed));
                         return;
                     }
-                    //File file = new File(path);
+                    File file = new File(filePath);
                     Bitmap picMap =  PicUtil.getImageThumbnail(filePath,86,86);
                     if(picMap != null){
-                        mCurrentFragment.setImageBitmap(PicUtil.getRoundedCornerBitmap(picMap,360));
+                        mCurrentFragment.setImageBitmap(PicUtil.getRoundedCornerBitmap(picMap, 360));
 
-                        setHeadImgView();
+                       // setHeadImgView();
+                        startCrop(file);
                     }
 //                    if (file.length() > 0 && (file.getParent() != null && !"".equals(file.getParent()))) {
 //                        chatFunctionView.setFileName();

@@ -49,6 +49,7 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
     private int requestPagerNum;
     private int requestRefreshDatas;
     private final int permaryDataNumber = 10;
+    private final int DELAYETIMEOUT = 12000;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ListView mListView;
     private View mListViewFooter;
@@ -71,8 +72,7 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
         service = (NewsService) AppContext.instance().getService(Constant.NEWS_SERVICE);
         service.registerObserver(HttpConstant.NOTIFY_GET_NEWCOMPETITION, this);
         service.registerObserver(HttpConstant.NOTIFY_APPLY_NEWCOMPETITION, this);
-        //默认加载第一页的数据 10条 分页加载数据
-        service.getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestPagerNum = 1, permaryDataNumber);
+
         mListView = (ListView) view.findViewById(R.id.listview_compitition_main);
         tv_error = (TextView) view.findViewById(R.id.tv_load_error_show);
 
@@ -84,7 +84,24 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
                 R.color.black
         );
         mSwipeRefreshLayout.setProgressViewOffset(false, 0, DensityUtil.dip2px(24));
-        mSwipeRefreshLayout.setRefreshing(false);
+
+        //默认加载第一页的数据 10条 分页加载数据
+        service.getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestPagerNum = 1, permaryDataNumber);
+        //下拉动画生效 初始化之后开始播放下拉刷新
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
+        //网络超时自动取消下拉刷新；
+        mSwipeRefreshLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        }, DELAYETIMEOUT);
+//        mSwipeRefreshLayout.setRefreshing(false);
 
         mListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
 
@@ -206,7 +223,7 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                mNewCompetitionDatas.clear();
+                mNewCompetitionDatas.clear();
                 //默认加载第一页的数据 10条 分页加载数据
                 service.getNewCompetition(AppContext.instance().loginUser.getUserId(), null, null, requestRefreshDatas = 1, permaryDataNumber);
                 new Handler().postDelayed(new Runnable() {
@@ -214,7 +231,7 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
-                }, 2000);
+                }, DELAYETIMEOUT);
             }
         });
 
@@ -356,29 +373,29 @@ public class CompititionMainFragment extends ConsultBaseFragment implements IDat
 
                 tv_error.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-                if (mNewCompetitionDatas.size() != 0) {
-                    for (int i = databean.size()-1; i >= 0; i--) {
-                        for (int j = 0; j < mNewCompetitionDatas.size(); j++) {
-                            if (databean.get(i).equals(mNewCompetitionDatas.get(j))) {
-                                break;
-                            } else {
-                                if (j == mNewCompetitionDatas.size() - 1) {
-                                        //不同 则是新数据
-                                    if(requestRefreshDatas  == 1 && i<mNewCompetitionDatas.size()){
-                                        mNewCompetitionDatas.add(i,databean.get(i));
-                                        requestRefreshDatas = 0;
-                                    } else {
-                                        mNewCompetitionDatas.add(databean.get(i));
-                                    }
-                                    break;
-                                }
-                                continue;
-                            }
-                        }
-                    }
-                } else {
+//                if (mNewCompetitionDatas.size() != 0) {
+//                    for (int i = databean.size()-1; i >= 0; i--) {
+//                        for (int j = 0; j < mNewCompetitionDatas.size(); j++) {
+//                            if (databean.get(i).equals(mNewCompetitionDatas.get(j))) {
+//                                break;
+//                            } else {
+//                                if (j == mNewCompetitionDatas.size() - 1) {
+//                                        //不同 则是新数据
+//                                    if(requestRefreshDatas  == 1 && i<mNewCompetitionDatas.size()){
+//                                        mNewCompetitionDatas.add(i,databean.get(i));
+//                                        requestRefreshDatas = 0;
+//                                    } else {
+//                                        mNewCompetitionDatas.add(databean.get(i));
+//                                    }
+//                                    break;
+//                                }
+//                                continue;
+//                            }
+//                        }
+//                    }
+//                } else {
                     mNewCompetitionDatas.addAll(databean);
-                }
+//                }
 
                 if(requestPagerNum <= mNewCompetitionDatas.get(0).getTotalPage()){
                     requestPagerNum++;

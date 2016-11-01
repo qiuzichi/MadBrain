@@ -110,13 +110,12 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                 R.color.black
         );
         mSwipeRefreshLayout.setProgressViewOffset(false, 0, DensityUtil.dip2px(24));
-        mSwipeRefreshLayout.setRefreshing(true);
         isRefreshData = false;
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 isRefreshData = true;
-                if(newsDatas.size() > 1 && newsDatas.get(0).getTotalPager() > 1)
+                if (newsDatas.size() > 1 && newsDatas.get(0).getTotalPager() > 1)
                     mRecyclerViewAdapter.setFooterIsFoot(false);
 
                 newsDatas.clear();
@@ -129,7 +128,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
 //                            newsDatas.add(0, new NewEntity("header"));
 //                        }
                     }
-                }, 1000);
+                }, DELAYETIMEOUT);
             }
 
         });
@@ -139,7 +138,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
 
         mRecyclerView.addItemDecoration(new DividerDecoration(mActivity, LinearLayoutManager.VERTICAL, R.drawable.list_divider_line));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mSwipeRefreshLayout.setRefreshing(false);
+//        mSwipeRefreshLayout.setRefreshing(false);
 
         mRecyclerViewAdapter = new MyRecyclerAdapter(mActivity, mRecyclerView, newsDatas, 0, mSwipeRefreshLayout);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
@@ -151,7 +150,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                     int totalPager = newsDatas.get(0).getTotalPager();
                     if (requestPagerNum > totalPager) {
                    /* 最后一页 直接吐司 不显示下拉加载*/
-//                        ToastUtil.showToast(getString(R.string.loadmore_null_data));
+                        ToastUtil.showToast(getString(R.string.loadmore_null_data));
                         return;
                     }
                     mRecyclerViewAdapter.setLoading(true);
@@ -159,7 +158,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                     mRecyclerViewAdapter.notifyItemInserted(newsDatas.size() - 1);
                     //请求网络 获取数据
                     getNews(ConsultTab.INTRODUCATION.getTypeId(), null, requestPagerNum, permaryDataNumber);
-                    loadMoreData(true, 3000);
+                    loadMoreData(true, DELAYETIMEOUT);
                 }
             }
         });
@@ -272,6 +271,21 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
             if (!isGetData) {
                 service.getNews(ConsultTab.INTRODUCATION.getTypeId(), null, requestPagerNum, permaryDataNumber);
                 service.getApkVersion();
+
+                //下拉动画生效
+                mSwipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
+                //网络超时自动取消下拉刷新；
+                mSwipeRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, DELAYETIMEOUT);
                 Log.d("introduction visit ", "获取消息 界面可见");
                 isGetData = true;
             }
@@ -360,6 +374,7 @@ public class IntroductionFragment extends MainBasicFragment implements IDataObse
                 case HttpConstant.NOTIFY_GET_NEWS:
                     requestPagerNum++;
                     isRefreshData = false;
+                    mSwipeRefreshLayout.setRefreshing(false);
                     removeFooterView();
                     mRecyclerViewAdapter.setIsRefresh();
                     if(null == o ){

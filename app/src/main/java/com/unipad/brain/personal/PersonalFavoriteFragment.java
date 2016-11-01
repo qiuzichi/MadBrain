@@ -62,7 +62,7 @@ public class PersonalFavoriteFragment extends PersonalCommonFragment implements 
                 R.color.black
         );
         mSwipeRefreshLayout.setProgressViewOffset(false, 0, DensityUtil.dip2px(24));
-        mSwipeRefreshLayout.setRefreshing(false);
+//        mSwipeRefreshLayout.setRefreshing(false);
 
         initEvent();
     }
@@ -70,14 +70,16 @@ public class PersonalFavoriteFragment extends PersonalCommonFragment implements 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                competitionBeans.clear();
+                service.getFollwList(AppContext.instance().loginUser.getUserId());
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
-                        competitionBeans.clear();
-                        service.getFollwList(AppContext.instance().loginUser.getUserId());
+
                     }
-                }, 2000);
+                }, DELAYETIMEOUT);
             }
         });
 
@@ -99,11 +101,8 @@ public class PersonalFavoriteFragment extends PersonalCommonFragment implements 
 
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem == 0)
-                    /*第一项可见 的时候 才可以响应swipe的滑动刷新事件*/
-                    mSwipeRefreshLayout.setEnabled(true);
-                else
-                    mSwipeRefreshLayout.setEnabled(false);
+                /*第一项可见 的时候 才可以响应swipe的滑动刷新事件*/
+                mSwipeRefreshLayout.setEnabled(firstVisibleItem == 0 ? true : false);
             }
         });
 
@@ -159,6 +158,20 @@ public class PersonalFavoriteFragment extends PersonalCommonFragment implements 
         super.onStart();
         if (competitionBeans.size() == 0){
             service.getFollwList(AppContext.instance().loginUser.getUserId());
+            //下拉动画生效
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                }
+            });
+            //网络超时自动取消下拉刷新；
+            mSwipeRefreshLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }, DELAYETIMEOUT);
         }
         thisShowView = 6;
     }
@@ -172,16 +185,19 @@ public class PersonalFavoriteFragment extends PersonalCommonFragment implements 
     public void update(int key, Object o) {
         switch (key){
             case HttpConstant.USER_FOLLOW:
-               competitionBeans.addAll((List<CompetitionBean>)o);
-               lv_follow.setAdapter(new CommonAdapter<CompetitionBean>(mActivity, competitionBeans, R.layout.personal_my_favorite) {
-                   @Override
-                   public void convert(ViewHolder holder, CompetitionBean competitionBean) {
-                       holder.setText(R.id.txt_year,competitionBean.getCompetitionDate());
-                         holder.setText(R.id.txt_name,competitionBean.getName());
-                         holder.setText(R.id.txt_addr,competitionBean.getAddr());
-                         holder.setText(R.id.txt_cost,competitionBean.getCost());
-                   }
-               });
+
+                mSwipeRefreshLayout.setRefreshing(false);
+
+                competitionBeans.addAll((List<CompetitionBean>) o);
+                lv_follow.setAdapter(new CommonAdapter<CompetitionBean>(mActivity, competitionBeans, R.layout.personal_my_favorite) {
+                    @Override
+                    public void convert(ViewHolder holder, CompetitionBean competitionBean) {
+                        holder.setText(R.id.txt_year, competitionBean.getCompetitionDate());
+                        holder.setText(R.id.txt_name, competitionBean.getName());
+                        holder.setText(R.id.txt_addr, competitionBean.getAddr());
+                        holder.setText(R.id.txt_cost, competitionBean.getCost());
+                    }
+                });
                 break;
             case HttpConstant.GET_RULE_NOTIFY:
 

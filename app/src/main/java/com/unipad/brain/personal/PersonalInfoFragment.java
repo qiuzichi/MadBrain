@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -155,6 +156,7 @@ public class PersonalInfoFragment extends PersonalCommonFragment implements IDat
                         AppContext.instance().loginUser.setSchool(detailEntity.getSchool());
                         AppContext.instance().loginUser.setMail(detailEntity.getMail());
                         AppContext.instance().loginUser.setAddr(detailEntity.getAddr());
+                        AppContext.instance().loginUser.setPhoto(detailEntity.getPhoto());
                         ToastUtil.showToast(mActivity.getString(R.string.updata_userinfo));
                     } else {
                         ToastUtil.showToast((String)o);
